@@ -1,1 +1,1 @@
-Leia o TUTORIAL_FINAL.pdf para instruções completas.
+README IZG PRO FULL
