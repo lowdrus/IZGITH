@@ -1,18 +1,20 @@
-# EULA / AVISO LEGAL — IZGITH
+# IZGITH EULA / AVISO LEGAL
 
-Documento exclusivamente informativo. O uso da extensao nao depende de aceitar ou recusar este texto.
+Documento informativo. A leitura nao condiciona o uso da extensao e nao existe botao de aceitar/recusar.
 
-1. O IZGITH e uma ferramenta de apoio para auditoria, preparacao e organizacao de pacotes Chromium.
-2. O usuario e responsavel por possuir os direitos, licencas e autorizacoes necessarios sobre qualquer conteudo manipulado.
-3. O IZGITH nao concede direitos sobre software, marcas, imagens, arquivos ou conteudo de terceiros.
-4. Auditoria, score ou preparacao nao equivalem a certificacao de seguranca, autoria, legalidade ou compatibilidade.
-5. GitHub, Chromium, navegadores, servicos de rede e Native Messaging possuem termos e politicas proprios.
-6. Native Messaging e opcional e sua ausencia nao deve impedir o carregamento da interface.
-7. Licencas de terceiros prevalecem sobre qualquer texto generico deste documento quando aplicaveis ao respectivo componente.
-8. Nenhum texto generico garante imunidade juridica global. Questao juridica concreta deve ser avaliada por profissional habilitado.
+1. O IZGITH e fornecido como ferramenta de apoio para auditoria, preparacao e organizacao de pacotes Chromium.
+2. O usuario permanece responsavel por possuir os direitos, licencas e autorizacoes necessarios sobre qualquer conteudo manipulado.
+3. O IZGITH nao concede licenca sobre software, marcas, imagens, arquivos ou conteudo de terceiros.
+4. A preparacao/auditoria de um pacote nao constitui certificacao de seguranca, autoria, legalidade ou compatibilidade.
+5. Recursos de rede, GitHub, navegadores e Native Messaging estao sujeitos aos respectivos termos, politicas e limitacoes.
+6. O host nativo e opcional; a ausencia dele nao deve impedir o carregamento da interface.
+7. Sempre que houver conflito, prevalecem as licencas e normas aplicaveis ao componente de terceiros.
+8. Este documento nao substitui aconselhamento juridico. Para distribuicao comercial ou questoes especificas de direito autoral, privacidade e responsabilidade, consulte profissional habilitado na jurisdicao aplicavel.
 
-## Direitos autorais
-O usuario deve copiar, modificar e distribuir conteudo de terceiros somente quando possuir permissao, licenca ou outra base juridica aplicavel. O repositorio nao transforma conteudo de terceiros em propriedade do usuario.
+## Direitos autorais e terceiros
 
-## Brasil e exterior
-O projeto busca operar de acordo com as normas aplicaveis, inclusive regras brasileiras sobre direitos autorais, software, protecao de dados e relacoes de consumo, quando pertinentes, e com as normas da jurisdicao onde for utilizado. Este documento nao substitui contrato ou parecer juridico especifico.
+O usuario deve evitar copiar, distribuir, modificar ou redistribuir obras de terceiros sem base juridica ou licenca aplicavel. O repositorio preserva fontes historicas em `archive/legacy` e identifica componentes externos quando conhecidos.
+
+## Brasil e jurisdicoes internacionais
+
+A aplicacao deve observar, conforme aplicavel, a legislacao brasileira de direitos autorais, software, protecao de dados e defesa do consumidor, alem das regras da jurisdicao em que o software ou conteudo for utilizado. Nenhum texto generico pode garantir imunidade juridica global.

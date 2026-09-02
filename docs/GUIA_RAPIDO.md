@@ -1,32 +1,28 @@
-# Guia Rapido IZGITH 00050
+# GUIA RAPIDO IZGITH
 
-## 1. Abrir a extensao
+## 1. Abrir
 1. Extraia o pacote para uma pasta permanente.
 2. Abra `chrome://extensions`.
-3. Ative **Modo do desenvolvedor**.
-4. Clique em **Carregar sem compactacao** e selecione a pasta `extension` que contem `manifest.json`.
+3. Ative Modo do desenvolvedor.
+4. Use Carregar sem compactacao e selecione `extension` (a pasta que contem `manifest.json`).
 
 ## 2. Identidade & Host
-O IZGITH foi desenhado para abrir sem Native Messaging. Portanto, `Host OFF` nao significa falha do boot.
-
-- Use **Testar host** para consultar o host nativo opcional.
-- Se o Chrome informar `Specified native messaging host not found` ou `forbidden`, verifique se o manifesto do host esta registrado para o ID atual da extensao.
-- O ID pode mudar quando uma extensao e carregada de forma diferente. Sempre registre o ID exibido em `chrome://extensions` para aquela instalacao.
+- O IZGITH funciona sem Native Messaging.
+- Use **Testar host** somente para verificar o host nativo instalado.
+- Se aparecer OFF, isso significa que o host opcional nao esta instalado ou nao esta registrado; nao e falha do boot da extensao.
+- Para instalar o host no Windows, use os instaladores fornecidos no pacote/release e confirme o ID da extensao antes do registro.
 
 ## 3. Ferramentas
-Use auditoria de pasta e preparacao de ZIP/CRX quando o host estiver instalado. Operacoes que dependem do host sao deliberadamente separadas do boot da interface.
+Use as ferramentas de auditoria e preparacao para inspecionar ZIP/CRX. Operacoes que dependem do host exigem que ele esteja instalado.
 
 ## 4. Configuracoes
-Padrao: **Ultra + Controlado — Unificado**. Existem tambem Controlado e Ultra. A opcao **Pausar animacoes** reduz movimento e efeitos visuais.
+O modo padrao e **Ultra + Controlado — Unificado**. Tambem existem os modos individuais Controlado e Ultra. `Pausar animacoes` reduz movimento, brilho e efeitos visuais.
 
 ## 5. Logs
-A fila/log deve permanecer legivel; logs operacionais usam fonte verde e fonte monoespaco.
+Os eventos devem ser apresentados de forma legivel e, quando forem logs operacionais, em fonte verde.
 
 ## 6. Temas
-O catalogo contem 36 presets. A profundidade visual oferece 2D, 3D e 4D como camadas de apresentacao, sem mudar regras de seguranca.
+Existem 36 presets. A profundidade visual suporta 2D, 3D e 4D como camadas de apresentacao; pausar animacoes desliga os efeitos dinamicos.
 
-## 7. Assistentes e integracoes
-Assistentes canonicos: **Júlia**, **Ayella** e **IZART**. Integracoes registradas: **SONPEF**, **CONVGPT**, **KIT_UNICO** e **CHAT_HISTORY**.
-
-## Regra de manutencao
-Use sempre um build completo. Nao misture arquivos de rodadas antigas por copia e cola manual.
+## Rodada de diagnostico
+Se houver erro, primeiro recarregue a extensao em `chrome://extensions`, depois abra Inspecionar visualizacoes e confira o service worker. Nunca copie e cole trechos de arquivos antigos por cima de uma versao nova: use um build completo.
