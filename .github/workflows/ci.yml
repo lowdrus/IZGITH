@@ -29,7 +29,7 @@ jobs:
         run: python -m compileall -q host scripts tools tests
       - name: Criar pacote da extensão
         run: npm run package
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: IZGITH-extension
           path: dist/IZGITH_v*_FULL.zip
