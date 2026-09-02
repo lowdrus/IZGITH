@@ -1,13 +1,27 @@
 {
   "manifest_version": 3,
   "name": "IZGITH",
-  "description": "Hub offline-first para download, auditoria e preparação segura de extensões Chromium.",
-  "version": "6.0.0.39",
-  "version_name": "6.0.0.00039 CLEAN CORE",
+  "description": "Hub offline-first para download, auditoria e preparacao segura de extensoes Chromium.",
+  "version": "6.0.0.40",
+  "version_name": "6.0.0.00040 CLEAN CORE",
   "minimum_chrome_version": "111",
-  "action": {"default_title":"IZGITH","default_popup":"ui/popup.html","default_icon":{"16":"assets/icons/icon16.png","32":"assets/icons/icon32.png","48":"assets/icons/icon48.png","128":"assets/icons/icon128.png"}},
-  "background": {"service_worker":"sw.js"},
-  "icons": {"16":"assets/icons/icon16.png","32":"assets/icons/icon32.png","48":"assets/icons/icon48.png","128":"assets/icons/icon128.png"},
-  "permissions": ["downloads","storage","tabs","nativeMessaging"],
+  "action": {
+    "default_title": "IZGITH",
+    "default_popup": "ui/popup.html",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "32": "assets/icons/icon32.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    }
+  },
+  "background": { "service_worker": "sw.js", "type": "module" },
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "permissions": ["downloads", "storage", "tabs", "nativeMessaging"],
   "host_permissions": ["https://api.github.com/*"]
 }
