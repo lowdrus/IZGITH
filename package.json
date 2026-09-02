@@ -1,6 +1,6 @@
 {
   "name": "izgith",
-  "version": "6.0.0-00046",
+  "version": "6.0.0-00047",
   "private": true,
   "description": "Extensao Manifest V3 para preparacao e auditoria segura de extensoes Chromium",
   "scripts": {
