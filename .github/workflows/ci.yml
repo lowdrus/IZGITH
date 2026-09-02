@@ -4,42 +4,34 @@ on:
     branches: [main, develop, "fix/**", "feature/**", "release/**"]
   pull_request:
     branches: [main, develop]
+  workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  validate:
+  validar-e-empacotar:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
-      - uses: actions/setup-node@v4
-        with: {node-version: "22"}
-      - name: Validate Manifest V3
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          root=Path('extension');m=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
-          assert m['manifest_version']==3 and m['name']=='IZGITH'
-          assert (root/m['action']['default_popup']).is_file()
-          assert (root/m['background']['service_worker']).is_file()
-          for p in m.get('icons',{}).values(): assert (root/p).is_file(),p
-          print('Manifest OK',m['version'])
-          PY
-      - name: JavaScript syntax
-        run: node --check extension/background.js && node --check extension/popup.js && node --check extension/dashboard.js
-      - name: Python syntax
-        run: python -m compileall -q host-python tools tests
-      - name: Unit tests
-        run: python -m unittest discover -s tests -v
-      - name: Shell syntax
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - name: Validar projeto e executar testes
+        run: npm test
+      - name: Validar shell do instalador
         run: sh -n host-python/installers/install_host_unix.sh
-      - name: Verify no private keys/placeholders
-        run: |
-          test -z "$(find . -type f \( -name '*.pem' -o -name '*.key' -o -name '*.p12' -o -name '*.pfx' \) -print -quit)"
-          ! grep -RIl --exclude-dir=.git -E 'Download simulado|placeholder simulado|CRX_HEADER_INVALID' extension host-python
-      - name: Build extension ZIP
-        run: mkdir -p dist && (cd extension && zip -r ../dist/IZGITH-extension-${{ github.sha }}.zip .)
-      - uses: actions/upload-artifact@v4
-        with: {name: izgith-extension, path: "dist/IZGITH-extension-*.zip", if-no-files-found: error}
+      - name: Compilar fontes Python
+        run: python -m compileall -q host-python scripts tools tests
+      - name: Criar pacote da extensão
+        run: npm run package
+      - uses: actions/upload-artifact@v6
+        with:
+          name: IZGITH-extension
+          path: dist/IZGITH-extension-*.zip
+          if-no-files-found: error
+          retention-days: 30

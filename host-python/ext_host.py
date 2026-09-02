@@ -9,10 +9,15 @@ import argparse,json,os,shutil,struct,subprocess,sys,tempfile,zipfile
 from pathlib import Path
 from typing import Any
 HOST_NAME='com.izgith.host'
+MAX_ARCHIVE_FILES=10_000
+MAX_ARCHIVE_BYTES=512*1024*1024
 
 def _safe_extract_archive(archive: zipfile.ZipFile,destination: Path)->Path:
     destination=destination.resolve();destination.mkdir(parents=True,exist_ok=True)
-    for member in archive.infolist():
+    members=archive.infolist()
+    if len(members)>MAX_ARCHIVE_FILES:raise ValueError(f'archive has more than {MAX_ARCHIVE_FILES} files')
+    if sum(member.file_size for member in members)>MAX_ARCHIVE_BYTES:raise ValueError('uncompressed archive is larger than 512 MiB')
+    for member in members:
         target=(destination/member.filename).resolve()
         if target!=destination and destination not in target.parents: raise ValueError(f'unsafe ZIP member: {member.filename}')
         mode=(member.external_attr>>16)&0o170000
@@ -23,6 +28,7 @@ def _safe_extract(zip_path:Path,destination:Path)->Path:
     with zipfile.ZipFile(zip_path) as archive:return _safe_extract_archive(archive,destination)
 
 def _crx_zip_offset(data:bytes)->int:
+    if len(data)<12:raise ValueError('CRX header is incomplete')
     if data[:4]!=b'Cr24': raise ValueError('invalid CRX magic')
     version=int.from_bytes(data[4:8],'little')
     if version==3:
@@ -30,7 +36,7 @@ def _crx_zip_offset(data:bytes)->int:
     elif version==2:
         pub=int.from_bytes(data[8:12],'little');sig=int.from_bytes(data[12:16],'little');offset=16+pub+sig
     else: raise ValueError(f'unsupported CRX version {version}')
-    if data[offset:offset+4]!=b'PK\x03\x04': raise ValueError('CRX ZIP payload not found')
+    if offset<0 or offset+4>len(data) or data[offset:offset+4]!=b'PK\x03\x04': raise ValueError('CRX ZIP payload not found')
     return offset
 
 def _extract_crx(path:Path,destination:Path)->Path:
@@ -87,7 +93,9 @@ def prepare_package(path:str)->dict[str,Any]:
         if source.suffix.lower()=='.zip':_safe_extract(source,destination);kind='zip'
         else:_extract_crx(source,destination);kind='crx'
         manifest=_find_manifest(destination)
-        if not manifest:return {'ok':False,'kind':kind,'path':str(destination),'error':'manifest.json not found after extraction'}
+        if not manifest:
+            shutil.rmtree(destination,ignore_errors=True)
+            return {'ok':False,'kind':kind,'error':'manifest.json not found after extraction'}
         result=analyze_manifest(str(manifest.parent));result.update({'kind':kind,'source':str(source),'path':str(manifest.parent)});return result
     except (OSError,ValueError,zipfile.BadZipFile) as exc:
         shutil.rmtree(destination,ignore_errors=True);return {'ok':False,'error':str(exc)}

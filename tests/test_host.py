@@ -20,4 +20,14 @@ class HostTests(unittest.TestCase):
     def test_invalid_crx(self):
         with tempfile.TemporaryDirectory() as d:
             p=Path(d)/'x.crx';p.write_bytes(b'not-crx');r=ext_host.prepare_package(str(p));self.assertFalse(r['ok'])
+    def test_archive_without_manifest_is_cleaned(self):
+        with tempfile.TemporaryDirectory() as d:
+            z=Path(d)/'empty.zip'
+            with zipfile.ZipFile(z,'w') as a:a.writestr('readme.txt','sem manifesto')
+            r=ext_host.prepare_package(str(z));self.assertFalse(r['ok']);self.assertNotIn('path',r)
+    def test_symlink_is_blocked(self):
+        with tempfile.TemporaryDirectory() as d:
+            z=Path(d)/'link.zip';info=zipfile.ZipInfo('link');info.external_attr=(0o120777 << 16)
+            with zipfile.ZipFile(z,'w') as a:a.writestr(info,'target')
+            r=ext_host.prepare_package(str(z));self.assertFalse(r['ok']);self.assertIn('symlink',r['error'])
 if __name__=='__main__':unittest.main()

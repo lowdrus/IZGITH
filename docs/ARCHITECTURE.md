@@ -6,9 +6,10 @@ IZGITH/
 ├─ host-python/            # Native Messaging + CLI local
 │  └─ installers/          # registro/build do host por SO
 ├─ tools/                  # utilitários de recuperação/exportação
+├─ scripts/                # validação e empacotamento do produto
 ├─ tests/                  # testes do host/core
-├─ docs/                   # especificação, arquitetura e exemplos
-├─ archive/recovery/       # artefatos históricos, fora do build
+├─ docs/                   # especificação, arquitetura e tutorial
+├─ archive/legacy/         # fontes históricas, fora do build
 └─ .github/workflows/      # CI, CodeQL e releases
 ```
 

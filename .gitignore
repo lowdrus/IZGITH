@@ -7,3 +7,16 @@ Thumbs.db
 web-ext-artifacts/
 uikit/modal.html
 .vscode
+__pycache__/
+*.py[cod]
+.pytest_cache/
+dist/
+.env
+*.pem
+*.key
+*.p12
+*.pfx
+conversations.json
+user.json
+message_feedback.json
+shared_conversations.json
