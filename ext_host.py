@@ -2,8 +2,8 @@
 """IZGITH native host.
 
 The host deliberately does not install extensions into a user's main browser profile.
-It can inspect manifests, safely extract ZIP archives, and launch an isolated Chromium
-profile with an unpacked extension for testing.
+It can inspect manifests, safely extract ZIP archives, open native folder pickers, and
+launch an isolated Chromium profile with an unpacked extension for testing.
 """
 from __future__ import annotations
 
@@ -40,6 +40,22 @@ def _find_manifest(root: Path) -> Path | None:
         return direct
     candidates = list(root.glob("*/manifest.json"))
     return candidates[0] if len(candidates) == 1 else None
+
+
+def pick_directory(title: str = "Selecione a pasta da extensão") -> str | None:
+    try:
+        import tkinter as tk
+        from tkinter import filedialog
+    except ImportError as exc:
+        raise RuntimeError("tkinter is required for the native folder picker") from exc
+    root = tk.Tk()
+    root.withdraw()
+    root.attributes("-topmost", True)
+    try:
+        selected = filedialog.askdirectory(title=title, mustexist=True)
+    finally:
+        root.destroy()
+    return selected or None
 
 
 def analyze_manifest(path: str) -> dict[str, Any]:
@@ -79,14 +95,15 @@ def analyze_manifest(path: str) -> dict[str, Any]:
 
 
 def detect_browser() -> str | None:
-    candidates = []
+    candidates: list[Path] = []
     if sys.platform == "win32":
         roots = [os.environ.get("PROGRAMFILES"), os.environ.get("PROGRAMFILES(X86)"), os.environ.get("LOCALAPPDATA")]
         for root in filter(None, roots):
+            base = Path(root)
             candidates.extend([
-                Path(root) / "Google/Chrome/Application/chrome.exe",
-                Path(root) / "Microsoft/Edge/Application/msedge.exe",
-                Path(root) / "BraveSoftware/Brave-Browser/Application/brave.exe",
+                base / "Google/Chrome/Application/chrome.exe",
+                base / "Microsoft/Edge/Application/msedge.exe",
+                base / "BraveSoftware/Brave-Browser/Application/brave.exe",
             ])
     elif sys.platform == "darwin":
         candidates.extend([
@@ -107,19 +124,33 @@ def launch_sandbox(extension_path: str, browser: str | None = None) -> dict[str,
     manifest = _find_manifest(extension) if extension.is_dir() else None
     if not manifest:
         return {"ok": False, "error": "sandbox requires an unpacked directory containing manifest.json"}
+    analysis = analyze_manifest(str(manifest.parent))
     browser_path = browser or detect_browser()
     if not browser_path:
-        return {"ok": False, "error": "no supported Chromium browser found"}
+        return {"ok": False, "error": "no supported Chromium browser found", "analysis": analysis}
     profile = Path(tempfile.mkdtemp(prefix="izgith-sandbox-"))
     args = [browser_path, f"--user-data-dir={profile}", f"--load-extension={manifest.parent}", "--no-first-run", "about:blank"]
     subprocess.Popen(args, close_fds=(sys.platform != "win32"))
-    return {"ok": True, "profile": str(profile), "browser": browser_path, "extension": str(manifest.parent)}
+    return {"ok": True, "profile": str(profile), "browser": browser_path, "extension": str(manifest.parent), "analysis": analysis}
 
 
 def handle(message: dict[str, Any]) -> dict[str, Any]:
     command = message.get("command")
     if command == "ping":
         return {"ok": True, "host": HOST_NAME, "python": sys.version.split()[0]}
+    if command == "pick_directory":
+        selected = pick_directory(str(message.get("title") or "Selecione a pasta da extensão"))
+        return {"ok": bool(selected), "path": selected, "cancelled": not bool(selected)}
+    if command == "pick_and_analyze":
+        selected = pick_directory("Selecione a pasta da extensão para auditoria")
+        if not selected:
+            return {"ok": False, "cancelled": True}
+        return analyze_manifest(selected)
+    if command == "pick_and_sandbox":
+        selected = pick_directory("Selecione a pasta da extensão para abrir no sandbox")
+        if not selected:
+            return {"ok": False, "cancelled": True}
+        return launch_sandbox(selected, message.get("browser"))
     if command == "analyze_manifest":
         return analyze_manifest(str(message.get("path", "")))
     if command == "extract_zip":
@@ -160,7 +191,7 @@ def native_loop() -> None:
             break
         try:
             write_message(handle(message))
-        except Exception as exc:  # keep protocol alive; never print to stdout
+        except Exception as exc:
             write_message({"ok": False, "error": f"host error: {exc}"})
 
 
