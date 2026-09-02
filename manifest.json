@@ -1,1 +1,32 @@
-{"name":"IZGITH","version":"4.3.0"}
+{
+  "manifest_version": 3,
+  "name": "IZGITH",
+  "description": "Hub local para download, auditoria e preparação segura de extensões Chromium.",
+  "version": "4.3.1",
+  "minimum_chrome_version": "109",
+  "action": {
+    "default_title": "IZGITH",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "permissions": [
+    "downloads",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://api.github.com/*"
+  ]
+}
