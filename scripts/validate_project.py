@@ -35,17 +35,11 @@ def main():
         check('service worker nao vazio', worker.stat().st_size > 0)
 
     js = list(EXT.rglob('*.js'))
-    node = None
-    try:
-        node = subprocess.run(['node', '--version'], capture_output=True, text=True, timeout=10)
-    except (OSError, subprocess.SubprocessError):
-        node = None
-    if js and node and node.returncode == 0:
-        results = [subprocess.run(['node', '--check', str(p)], capture_output=True).returncode == 0 for p in js]
-        check('JavaScript syntax', all(results))
+    if js:
+        node_ok = all(subprocess.run(['node', '--check', str(p)], capture_output=True).returncode == 0 for p in js)
+        check('JavaScript syntax', node_ok)
     else:
-        check('JavaScript encontrado', bool(js))
-        print('Node.js ausente: syntax-check do JS foi omitido.')
+        check('JavaScript encontrado', False)
 
     html = list(EXT.rglob('*.html'))
     check('HTML', bool(html) and all('<html' in p.read_text(encoding='utf-8').lower() for p in html))
@@ -60,11 +54,8 @@ def main():
     check('referências de arquivos', all(x and (EXT / x).is_file() for x in refs))
 
     themes_path = EXT / 'themes/catalog.json'
-    if themes_path.is_file():
-        themes = json.loads(themes_path.read_text(encoding='utf-8'))
-        check('36 temas', themes.get('total') == 36 and sum(map(len, themes.get('families', {}).values())) == 36)
-    else:
-        check('catalogo de temas', False)
+    themes = json.loads(themes_path.read_text(encoding='utf-8'))
+    check('36 temas', themes.get('total') == 36 and sum(map(len, themes.get('families', {}).values())) == 36)
 
     dash = (EXT / 'ui/dashboard.html').read_text(encoding='utf-8')
     check('EULA', 'EULA' in dash or (ROOT / 'docs/EULA.md').is_file())
@@ -75,7 +66,9 @@ def main():
 
     assistants_path = EXT / 'scripts/assistants.js'
     assistants = assistants_path.read_text(encoding='utf-8') if assistants_path.is_file() else ''
-    check('IA/assistentes', all(x in assistants for x in ('Júlia', 'Ayelle', 'Ayella', 'IZART')))
+    required = ('Júlia', 'Ayella', 'IZART')
+    forbidden = ('Ayelle', 'alias Ayella', 'Alias: Ayella')
+    check('IA/assistentes', all(x in assistants for x in required) and not any(x in assistants for x in forbidden))
 
     package = json.loads((ROOT / 'package.json').read_text(encoding='utf-8'))
     manifest_version = str(m.get('version', ''))
