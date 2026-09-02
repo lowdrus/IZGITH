@@ -1,0 +1,51 @@
+{
+  "version": "2019.7.18",
+  "name": "Privacy Possum",
+  "author": "cowlicks@riseup.net",
+  "manifest_version": 2,
+  "applications": {
+    "gecko": {
+      "id": "woop-NoopscooPsnSXQ@jetpack"
+    }
+  },
+  "incognito": "spanning",
+  "permissions": [
+    "tabs",
+    "http://*/*",
+    "https://*/*",
+    "webRequest",
+    "webRequestBlocking",
+    "webNavigation",
+    "storage"
+  ],
+  "icons": {
+    "48": "media/icon48.png",
+    "96": "media/icon96.png",
+    "256": "media/icon256.png"
+  },
+  "browser_action": {
+     "default_icon": {
+       "48": "media/icon48.png",
+       "64": "media/icon64.png",
+       "96": "media/icon96.png",
+       "256": "media/icon256.png"
+     },
+     "default_title": "Privacy Possum",
+     "default_popup": "skin/popup.html"
+  },
+  "background": {
+    "page": "skin/background.html"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "js/contentscripts/twitter.js"
+      ],
+      "matches": [
+        "*://twitter.com/*",
+        "*://tweetdeck.twitter.com/*"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

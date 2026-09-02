@@ -1,0 +1,76 @@
+body {
+  margin-top: 2px;
+  background-color: white;
+  font-family: Cantarell, Arial, sans-serif;
+  width: 300px;
+}
+
+header {
+  border-bottom: 1px solid rgb(238, 238, 238);
+  margin-bottom: 8px;
+}
+
+footer {
+  margin-top: 8px;
+  border-top: 1px solid rgb(238, 238, 238);
+  padding-top: 5px;
+}
+
+.grey {
+  color: rgb(76, 76, 76);
+}
+
+code {
+  background-color: rgb(238, 238, 238);
+  padding-left: 3;
+  padding-right: 3;
+}
+
+#title-bar {
+  height: 45;
+  display: flex;
+  align-items: center;
+  justify-content: space-between
+}
+
+#title-bar img {
+  height: 35;
+}
+
+#branding {
+  display: flex;
+  align-items: center;
+}
+
+#title {
+  font-size: 20;
+  padding-left: 5;
+}
+
+#on-off {
+  display: flex;
+  align-items: center;
+}
+
+#on-off-text {
+  font-size: 10;
+  padding-right: 5;
+}
+
+#actions ul {
+  padding: 0;
+}
+
+.action {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.action-icon {
+  padding-left: 5;
+  padding-right: 5;
+  vertical-align: middle;
+  height: 20px;
+  width: 20px;
+}
