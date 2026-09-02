@@ -2,7 +2,7 @@
 
 Extensao Chrome Manifest V3 para baixar, preparar e auditar pacotes de extensoes Chromium com seguranca. O IZGITH reune em um unico produto o popup, a fila, o painel de controle, o monitor de releases publicas do GitHub e um host local opcional em Python.
 
-## Estado atual - 6.0.0.00049
+## Estado atual - 6.0.0.00054
 
 A linha atual preserva a referencia visual `IZGITH_v6.0.0.00034_Full_Build` e usa **Ultra + Controlado unificados** como modo padrao. O usuario ainda pode selecionar `Controlado` ou `Ultra` individualmente em Configuracoes.
 
@@ -44,7 +44,7 @@ O popup funciona sem programas adicionais. Para auditoria local, CRX/ZIP e labor
 
 ## Verificacao Windows
 
-Na raiz do repositorio, o par `build/IZGITH_BUILD_00049.bat` + `build/IZGITH_BUILD_00049.ps1` verifica a estrutura do pacote, Manifest V3, service worker, UI, quatro icones, catalogo de 36 temas e registro dos assistentes. O `.ps1` foi escrito sem `?.` e sem usar `$Host` como variavel, evitando os erros recorrentes observados em Windows PowerShell antigo.
+Na raiz do repositorio, o par `build/IZGITH_BUILD_00054.bat` + `build/IZGITH_BUILD_00054.ps1` verifica a estrutura do pacote, Manifest V3, service worker, UI, quatro icones, catalogo de 36 temas e registro dos assistentes. O `.ps1` foi escrito sem `?.` e sem usar `$Host` como variavel, evitando os erros recorrentes observados em Windows PowerShell antigo.
 
 ## Desenvolvimento
 
