@@ -20,39 +20,35 @@
 
 */
 
-import { proxyApplyFn } from './proxy-apply.js';
+import { ArglistParser } from './shared.js';
 import { registerScriptlet } from './base.js';
-import { safeSelf } from './safe-self.js';
 
 /******************************************************************************/
 
-function noEvalIf(
-    needle = ''
-) {
-    if ( typeof needle !== 'string' ) { return; }
-    const safe = safeSelf();
-    const logPrefix = safe.makeLogPrefix('noeval-if', needle);
-    const reNeedle = safe.patternToRegex(needle);
-    proxyApplyFn('eval', function(context) {
-        const { callArgs } = context;
-        const a = String(callArgs[0]);
-        if ( needle !== '' && reNeedle.test(a) ) {
-            safe.uboLog(logPrefix, 'Prevented:\n', a);
-            return;
-        }
-        if ( needle === '' || safe.logLevel > 1 ) {
-            safe.uboLog(logPrefix, 'Not prevented:\n', a);
-        }
-        return context.reflect();
-    });
+export function parseReplaceFn(s) {
+    if ( s.charCodeAt(0) !== 0x2F /* / */ ) { return; }
+    const parser = new ArglistParser('/');
+    parser.nextArg(s, 1);
+    let pattern = s.slice(parser.argBeg, parser.argEnd);
+    if ( parser.transform ) {
+        pattern = parser.normalizeArg(pattern);
+    }
+    if ( pattern === '' ) { return; }
+    parser.nextArg(s, parser.separatorEnd);
+    let replacement = s.slice(parser.argBeg, parser.argEnd);
+    if ( parser.separatorEnd === parser.separatorBeg ) { return; }
+    if ( parser.transform ) {
+        replacement = parser.normalizeArg(replacement);
+    }
+    const flags = s.slice(parser.separatorEnd);
+    try {
+        return { re: new RegExp(pattern, flags), replacement };
+    } catch {
+    }
 }
-registerScriptlet(noEvalIf, {
-    name: 'noeval-if.js',
-    aliases: [
-        'prevent-eval-if.js',
-    ],
+registerScriptlet(parseReplaceFn, {
+    name: 'parse-replace.fn',
     dependencies: [
-        proxyApplyFn,
-        safeSelf,
+        ArglistParser,
     ],
 });

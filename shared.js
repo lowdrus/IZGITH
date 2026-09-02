@@ -20,39 +20,21 @@
 
 */
 
-import { proxyApplyFn } from './proxy-apply.js';
+// Code imported from main code base and exposed as injectable scriptlets
+import { ArglistParser as __ArglistParser__ } from '../arglist-parser.js';
+import { JSONPath as __JSONPath__ } from '../jsonpath.js';
 import { registerScriptlet } from './base.js';
-import { safeSelf } from './safe-self.js';
 
 /******************************************************************************/
 
-function noEvalIf(
-    needle = ''
-) {
-    if ( typeof needle !== 'string' ) { return; }
-    const safe = safeSelf();
-    const logPrefix = safe.makeLogPrefix('noeval-if', needle);
-    const reNeedle = safe.patternToRegex(needle);
-    proxyApplyFn('eval', function(context) {
-        const { callArgs } = context;
-        const a = String(callArgs[0]);
-        if ( needle !== '' && reNeedle.test(a) ) {
-            safe.uboLog(logPrefix, 'Prevented:\n', a);
-            return;
-        }
-        if ( needle === '' || safe.logLevel > 1 ) {
-            safe.uboLog(logPrefix, 'Not prevented:\n', a);
-        }
-        return context.reflect();
-    });
-}
-registerScriptlet(noEvalIf, {
-    name: 'noeval-if.js',
-    aliases: [
-        'prevent-eval-if.js',
-    ],
-    dependencies: [
-        proxyApplyFn,
-        safeSelf,
-    ],
+export const ArglistParser = __ArglistParser__;
+
+registerScriptlet(ArglistParser, {
+    name: 'arglist-parser.fn',
+});
+
+export const JSONPath = __JSONPath__;
+
+registerScriptlet(JSONPath, {
+    name: 'jsonpath.fn',
 });
