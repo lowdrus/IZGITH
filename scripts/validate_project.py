@@ -102,9 +102,10 @@ def main():
     match = re.fullmatch(r'(\d+\.\d+\.\d+)\.(\d+)', manifest_version)
     expected_package = f'{match.group(1)}-{int(match.group(2)):05d}' if match else ''
     check('versões sincronizadas', bool(match) and package_version == expected_package)
-    expected_version_name = f'{manifest_version} ' if manifest_version else ''
+
     registry_version = registry.get('version', '') if isinstance(registry, dict) else ''
-    check('versão registry sincronizada', registry_version == f'6.0.0.000{int(match.group(2)):02d}' if match else False)
+    expected_registry = f'6.0.0.{int(match.group(2)):05d}' if match else ''
+    check('versão registry sincronizada', registry_version == expected_registry)
 
     print('BUILD PASS')
     return 0
