@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import json, re, subprocess, sys
+import json, re, subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,6 +39,9 @@ def main():
     if worker.is_file():
         check('service worker nao vazio', worker.stat().st_size > 0)
 
+    perms = m.get('permissions', []) if isinstance(m, dict) else []
+    check('Native Messaging opcional', 'nativeMessaging' not in perms)
+
     js = list(EXT.rglob('*.js'))
     try:
         node = subprocess.run(['node', '--version'], capture_output=True, text=True, timeout=10)
@@ -75,13 +78,14 @@ def main():
     dash = dash_path.read_text(encoding='utf-8') if dash_path.is_file() else ''
     check('EULA', 'EULA' in dash or (ROOT / 'docs/EULA.md').is_file())
     check('Guia Rápido', 'Guia Rápido' in dash or (ROOT / 'docs/GUIA_RAPIDO.md').is_file())
+    check('ordem fixa da UI', all(x in dash for x in ('Identidade', 'Ferramentas', 'Configurações', 'Logs', 'Temas')))
 
     for name in ('SONPEF', 'CONVGPT', 'KIT_UNICO'):
         check(name, (ROOT / f'integrations/{name}/integration.json').is_file())
 
     convgpt = EXT / 'integrations/convgpt.js'
     convgpt_text = convgpt.read_text(encoding='utf-8') if convgpt.is_file() else ''
-    for token in ("convgpt.v2", "pdf", "doc", "txt", "md", "json", "xls", "Baixar todos os formatos"):
+    for token in ('convgpt.v2', 'pdf', 'doc', 'txt', 'md', 'json', 'xls', 'Baixar todos os formatos'):
         check(f'CONVGPT {token}', token in convgpt_text)
 
     assistants_path = EXT / 'scripts/assistants.js'
@@ -89,6 +93,7 @@ def main():
     canonical = ('Júlia', 'Ayella', 'IZART')
     forbidden = ('Ayelle', 'alias Ayella', 'Alias: Ayella')
     check('IA/assistentes', all(x in assistants for x in canonical) and not any(x in assistants for x in forbidden))
+    check('assistentes visíveis no dashboard', all(x in dash for x in canonical) and 'Assistentes' in dash)
 
     worker_text = worker.read_text(encoding='utf-8') if worker.is_file() else ''
     check('service worker sem alias proibido', not any(x in worker_text for x in forbidden))
