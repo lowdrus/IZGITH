@@ -43,8 +43,8 @@ O pacote é criado em `dist/`. Nenhuma dependência npm é necessária.
 
 ## Estrutura
 
-- `extension/`: única extensão distribuível do IZGITH.
-- `host-python/`: host Native Messaging e instaladores.
+- `extension/` (Manifest V3 v6 CLEAN CORE): única extensão distribuível do IZGITH.
+- `host/`: host Native Messaging e instaladores.
 - `scripts/`: validação e empacotamento.
 - `tests/`: testes unitários e de integração estática.
 - `docs/`: tutorial, arquitetura e especificação.

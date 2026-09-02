@@ -81,7 +81,7 @@ jobs:
         run: |
           npm test
           npm run package
-          python -m compileall -q host-python scripts tools tests
+          python -m compileall -q host scripts tools tests
           git diff --check
 
       - name: Fazer pull, commit e push

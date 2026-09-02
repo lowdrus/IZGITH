@@ -40,13 +40,15 @@ const THEMES = [
   ['glass-mono', '#0e1114', '#2a303699', '#dbe7f2', '#74889c']
 ];
 const TITLES = {
-  overview: 'Visão geral',
-  install: 'Preparar',
-  queue: 'Fila',
+  overview: 'Identidade & Host',
+  install: 'Ferramentas',
+  queue: 'Logs',
   github: 'GitHub Monitor',
   security: 'Secure Lab',
   themes: 'Temas',
-  settings: 'Configurações'
+  settings: 'Configurações',
+  eula: 'EULA',
+  guide: 'Guia Rápido'
 };
 
 function openTab(id) {
@@ -234,4 +236,5 @@ document.addEventListener('pointerleave', () => {
   runHost({
     command: 'ping'
   }, $('hostResult'));
+  $('splash').classList.add('hidden');
 })();

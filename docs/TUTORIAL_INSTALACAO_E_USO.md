@@ -43,7 +43,7 @@ Depois de atualizar os arquivos, volte a `chrome://extensions` e clique no botã
 
 O host habilita seleção de pastas pelo sistema, auditoria, preparação de ZIP/CRX e Secure Lab. Instale Python 3.11 ou superior em `python.org` e marque **Add Python to PATH**.
 
-1. Baixe `IZGITH-host-source` em **Releases** e extraia para `C:\IZGITH\host-python`.
+1. Baixe `IZGITH-host-source` em **Releases** e extraia para `C:\IZGITH\host`.
 2. Em `chrome://extensions`, copie o ID exibido no cartão IZGITH. Ele tem 32 letras.
 3. Abra o PowerShell dentro da pasta do host.
 4. Execute:
@@ -59,7 +59,7 @@ Se usar o instalador `.bat`, execute-o somente a partir do pacote oficial e info
 
 ## 5. Linux e macOS
 
-Na pasta `host-python`, execute:
+Na pasta `host`, execute:
 
 ```bash
 python3 install_host.py --extension-id ID_DA_EXTENSAO --browser chrome

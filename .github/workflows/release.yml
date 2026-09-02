@@ -30,8 +30,8 @@ jobs:
       - name: Empacotar host local
         run: |
           mkdir -p dist/host-source
-          cp host-python/ext_host.py host-python/install_host.py dist/host-source/
-          cp -r host-python/installers dist/host-source/
+          cp host/host.py host/install_host.py host/host.ps1 dist/host-source/
+          cp -r host/installers dist/host-source/
           (cd dist/host-source && zip -r ../IZGITH-host-source-${GITHUB_REF_NAME}.zip .)
           sha256sum dist/*.zip > dist/SHA256SUMS.txt
       - name: Publicar release no GitHub

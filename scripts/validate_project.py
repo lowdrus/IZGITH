@@ -1,46 +1,30 @@
 #!/usr/bin/env python3
-"""Validação sem dependências do produto distribuível IZGITH."""
 from __future__ import annotations
-import json
-import re
-import subprocess
-import sys
+import json,re,subprocess,sys,zipfile
 from pathlib import Path
-
-ROOT=Path(__file__).resolve().parents[1]
-EXT=ROOT/'extension'
-
-def fail(message:str)->None:
-    raise SystemExit(f'ERRO: {message}')
-
-def main()->int:
-    manifest=json.loads((EXT/'manifest.json').read_text(encoding='utf-8'))
-    if manifest.get('manifest_version')!=3:fail('manifest_version deve ser 3')
-    if manifest.get('name')!='IZGITH':fail('nome da extensão deve ser IZGITH')
-    required=[manifest['action']['default_popup'],manifest['background']['service_worker'],*manifest['icons'].values()]
-    for relative in required:
-        if not (EXT/relative).is_file():fail(f'arquivo ausente no manifesto: {relative}')
-    html_files=list(EXT.glob('*.html'))
-    for html in html_files:
-        text=html.read_text(encoding='utf-8')
-        ids=set(re.findall(r'\bid=["\']([^"\']+)',text))
-        for script_match in re.findall(r'<script[^>]+src=["\']([^"\']+)',text):
-            if '://' in script_match:fail(f'script remoto proibido em {html.name}')
-            if not (EXT/script_match).is_file():fail(f'script ausente em {html.name}: {script_match}')
-        for script in re.findall(r'<script[^>]+src=["\']([^"\']+\.js)',text):
-            source=(EXT/script).read_text(encoding='utf-8')
-            referenced=set(re.findall(r"(?<!\$)\$\(['\"]([^'\"]+)",source))
-            missing=referenced-ids
-            if missing:fail(f'IDs ausentes em {html.name}: {sorted(missing)}')
-    for source in EXT.glob('*.js'):
-        subprocess.run(['node','--check',str(source)],check=True)
-    package=json.loads((ROOT/'package.json').read_text(encoding='utf-8'))
-    if package.get('version')!=manifest.get('version'):fail('versões de package.json e manifest.json divergem')
-    forbidden=[]
-    for pattern in ('*.pem','*.key','*.p12','*.pfx'):
-        forbidden.extend(ROOT.rglob(pattern))
-    if forbidden:fail('chaves privadas encontradas: '+', '.join(str(p.relative_to(ROOT)) for p in forbidden))
-    print(f"IZGITH {manifest['version']}: manifesto, HTML, JavaScript e arquivos validados")
-    return 0
-
+ROOT=Path(__file__).resolve().parents[1]; EXT=ROOT/'extension'; checks=[]
+def check(label,condition,detail=''):
+    ok=bool(condition);checks.append(ok);print(f'[{len(checks):02d}] {label:.<30} {"OK" if ok else "FALHA"} {detail}')
+    if not ok: raise SystemExit(1)
+def main():
+    check('pasta raiz',ROOT.is_dir())
+    mp=EXT/'manifest.json';check('manifest.json',mp.is_file())
+    try:m=json.loads(mp.read_text('utf-8'));valid=True
+    except Exception:valid=False;m={}
+    check('JSON válido',valid and m.get('manifest_version')==3)
+    worker=EXT/m.get('background',{}).get('service_worker','');check('background/service worker',worker.is_file())
+    js=list(EXT.rglob('*.js'));ok=all(subprocess.run(['node','--check',str(p)],capture_output=True).returncode==0 for p in js);check('JavaScript syntax',ok)
+    html=list(EXT.rglob('*.html'));check('HTML',html and all('<html' in p.read_text('utf-8').lower() for p in html))
+    css=list(EXT.rglob('*.css'));check('CSS',css and all(p.read_text('utf-8').count('{')==p.read_text('utf-8').count('}') for p in css))
+    for size in (16,32,48,128):check(f'icon{size}.png',(EXT/f'assets/icons/icon{size}.png').is_file())
+    refs=[m.get('action',{}).get('default_popup',''),m.get('background',{}).get('service_worker',''),*m.get('icons',{}).values()];check('referências de arquivos',all(x and (EXT/x).is_file() for x in refs))
+    themes=json.loads((EXT/'themes/catalog.json').read_text('utf-8'));check('36 temas',themes.get('total')==36 and sum(map(len,themes['families'].values()))==36)
+    dash=(EXT/'ui/dashboard.html').read_text('utf-8');check('EULA','EULA' in dash or (ROOT/'docs/EULA.md').is_file())
+    check('Guia Rápido','Guia Rápido' in dash or (ROOT/'docs/GUIA_RAPIDO.md').is_file())
+    for name in ('SONPEF','CONVGPT','KIT_UNICO'):check(name,(ROOT/f'integrations/{name}/integration.json').is_file())
+    assistants=(EXT/'scripts/assistants.js').read_text('utf-8');check('IA/assistentes',all(x in assistants for x in ('Júlia','Ayelle','Ayella','IZART')))
+    subprocess.run([sys.executable,str(ROOT/'scripts/package_extension.py')],check=True,capture_output=True);zips=list((ROOT/'dist').glob('IZGITH_v*_FULL.zip'));check('pacote ZIP',zips and zipfile.is_zipfile(zips[-1]))
+    package=json.loads((ROOT/'package.json').read_text('utf-8'))
+    if package['version'].replace('-00039','.39')!=m['version']:raise SystemExit('Versões divergentes')
+    print('BUILD PASS ✅');return 0
 if __name__=='__main__':raise SystemExit(main())

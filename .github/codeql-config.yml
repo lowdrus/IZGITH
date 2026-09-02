@@ -1,7 +1,7 @@
 name: IZGITH CodeQL
 paths:
   - extension
-  - host-python
+  - host
   - scripts
   - tools
 paths-ignore:

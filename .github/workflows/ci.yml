@@ -24,14 +24,14 @@ jobs:
       - name: Validar projeto e executar testes
         run: npm test
       - name: Validar shell do instalador
-        run: sh -n host-python/installers/install_host_unix.sh
+        run: sh -n host/installers/install_host_unix.sh
       - name: Compilar fontes Python
-        run: python -m compileall -q host-python scripts tools tests
+        run: python -m compileall -q host scripts tools tests
       - name: Criar pacote da extensão
         run: npm run package
       - uses: actions/upload-artifact@v6
         with:
           name: IZGITH-extension
-          path: dist/IZGITH-extension-*.zip
+          path: dist/IZGITH_v*_FULL.zip
           if-no-files-found: error
           retention-days: 30

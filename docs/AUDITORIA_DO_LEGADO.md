@@ -7,7 +7,7 @@ A raiz reunia várias bases independentes: componentes de bloqueio/privacidade, 
 ## O que foi feito
 
 - A única extensão distribuível passou a ser `extension/`.
-- O host local foi consolidado em `host-python/`.
+- O host local foi consolidado em `host/`.
 - 616 arquivos históricos úteis foram movidos para `archive/legacy/root/`.
 - O arquivo histórico contém, entre outros, 230 JavaScripts, 71 TypeScripts, 43 folhas CSS, 33 fontes Python, filtros, recursos WASM e imagens.
 - Exportações pessoais, `.env`, chaves/placeholders, executáveis, PDFs quebrados e pacotes ZIP/RAR duplicados ou inválidos foram removidos do estado atual.

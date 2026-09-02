@@ -2,11 +2,12 @@
   "manifest_version": 3,
   "name": "IZGITH",
   "description": "Hub offline-first para download, auditoria e preparação segura de extensões Chromium.",
-  "version": "4.4.0",
+  "version": "6.0.0.39",
+  "version_name": "6.0.0.00039 CLEAN CORE",
   "minimum_chrome_version": "111",
-  "action": {"default_title":"IZGITH","default_popup":"popup.html","default_icon":{"16":"assets/icon16.png","48":"assets/icon48.png","128":"assets/icon128.png"}},
-  "background": {"service_worker":"background.js"},
-  "icons": {"16":"assets/icon16.png","48":"assets/icon48.png","128":"assets/icon128.png"},
+  "action": {"default_title":"IZGITH","default_popup":"ui/popup.html","default_icon":{"16":"assets/icons/icon16.png","32":"assets/icons/icon32.png","48":"assets/icons/icon48.png","128":"assets/icons/icon128.png"}},
+  "background": {"service_worker":"sw.js"},
+  "icons": {"16":"assets/icons/icon16.png","32":"assets/icons/icon32.png","48":"assets/icons/icon48.png","128":"assets/icons/icon128.png"},
   "permissions": ["downloads","storage","tabs","nativeMessaging"],
   "host_permissions": ["https://api.github.com/*"]
 }

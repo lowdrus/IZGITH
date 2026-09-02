@@ -83,7 +83,7 @@ dz.addEventListener('keydown', e => {
   if (e.key === 'Enter' || e.key === ' ') $('packages').click();
 });
 $('openDashboard').addEventListener('click', () => chrome.tabs.create({
-  url: chrome.runtime.getURL('dashboard.html')
+  url: chrome.runtime.getURL('ui/dashboard.html')
 }));
 $('btnGuide').addEventListener('click', async () => {
   await chrome.storage.local.set({
@@ -98,7 +98,7 @@ $('btnGuide').addEventListener('click', async () => {
     }))
   });
   chrome.tabs.create({
-    url: chrome.runtime.getURL('dashboard.html#install')
+    url: chrome.runtime.getURL('ui/dashboard.html#install')
   });
 });
 renderQueue();

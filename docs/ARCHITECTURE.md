@@ -3,7 +3,7 @@
 ```text
 IZGITH/
 ├─ extension/              # Manifest V3, popup, dashboard, assets
-├─ host-python/            # Native Messaging + CLI local
+├─ host/            # Native Messaging + CLI local
 │  └─ installers/          # registro/build do host por SO
 ├─ tools/                  # utilitários de recuperação/exportação
 ├─ scripts/                # validação e empacotamento do produto

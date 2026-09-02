@@ -1,8 +1,8 @@
 import json,tempfile,unittest,zipfile
 from pathlib import Path
 import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'host-python'))
-import ext_host
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'host'))
+import host as ext_host
 class HostTests(unittest.TestCase):
     def test_manifest_score(self):
         with tempfile.TemporaryDirectory() as d:
