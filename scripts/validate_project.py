@@ -66,7 +66,8 @@ def main():
     else:
         check('catalogo de temas', False)
 
-    dash = (EXT / 'ui/dashboard.html').read_text(encoding='utf-8')
+    dash_path = EXT / 'ui/dashboard.html'
+    dash = dash_path.read_text(encoding='utf-8') if dash_path.is_file() else ''
     check('EULA', 'EULA' in dash or (ROOT / 'docs/EULA.md').is_file())
     check('Guia Rápido', 'Guia Rápido' in dash or (ROOT / 'docs/GUIA_RAPIDO.md').is_file())
 
@@ -75,13 +76,15 @@ def main():
 
     assistants_path = EXT / 'scripts/assistants.js'
     assistants = assistants_path.read_text(encoding='utf-8') if assistants_path.is_file() else ''
-    check('IA/assistentes', all(x in assistants for x in ('Júlia', 'Ayelle', 'Ayella', 'IZART')))
+    canonical = ('Júlia', 'Ayella', 'IZART')
+    check('IA/assistentes', all(x in assistants for x in canonical) and 'Ayelle' not in assistants and 'alias Ayella' not in assistants)
 
     package = json.loads((ROOT / 'package.json').read_text(encoding='utf-8'))
     manifest_version = str(m.get('version', ''))
     package_version = str(package.get('version', ''))
     match = re.fullmatch(r'(\d+\.\d+\.\d+)\.(\d+)', manifest_version)
-    check('versões sincronizadas', bool(match) and package_version == f'{match.group(1)}-{int(match.group(2)):05d}')
+    expected_package = f'{match.group(1)}-{int(match.group(2)):05d}' if match else ''
+    check('versões sincronizadas', bool(match) and package_version == expected_package)
 
     print('BUILD PASS')
     return 0
