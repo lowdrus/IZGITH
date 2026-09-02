@@ -1,24 +1,29 @@
-### For code reviewers
+<https://pgl.yoyo.org/as/index.php>:
 
-All `wasm` files in that directory where created by compiling the
-corresponding `wat` file using the command (using `hntrie.wat`/`hntrie.wasm`
-as example):
+Site does encourage use of the list for noncommercial uses only, as per 
+https://pgl.yoyo.org/ ("everything licensed under the McRae General Public 
+License (version 4.r53) ")
 
-    wat2wasm hntrie.wat -o hntrie.wasm
+Licence can be found at https://pgl.yoyo.org/license/, and is copied below 
+for brevity:
 
-Assuming:
 
-- The command is executed from within the present directory.
+    Preamble
+    --------
+    Your GRAN.
 
-### `wat2wasm` tool
 
-The `wat2wasm` tool can be downloaded from an official WebAssembly project:
-<https://github.com/WebAssembly/wabt/releases/tag/1.0.29>
+    MCRAE GENERAL PUBLIC LICENSE (version 4.r53)
+    --------------------------------------------
+    This license applies to any work containing a notice placed by the
+    copyright holder (that would be ME) saying it is uses the McRae
+    General Public License. "The work" refers to any such work.
 
-### `wat2wasm` tool online
+    This license stipulates that it is strictly forbidden to redistribute
+    or use the work in any manner that could possibly be construed as
+    making anybody any money, or I'll sue you. No! You will NOT do that!
+    Okee? And if you don't agree with these terms, you can print out the
+    source to the work and stick it up your ARSE.
 
-You can also use the following online `wat2wasm` tool:
-<https://webassembly.github.io/wabt/demo/wat2wasm/>.
-
-Just paste the whole content of the `wat` file to compile into the WAT pane.
-Click "Download" button to retrieve the resulting `wasm` file.
+    Aye, but otherwise feel free to take "the work" and do what you like.
+    If you're TOO BLOODY LAZY to do it yourself, I cannae help it. OK?
