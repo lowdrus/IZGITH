@@ -1,1 +1,1 @@
-{"id":"convgpt","name":"CONVGPT","status":"adapter-ready","entry":"../../extension/scripts/chat_history_bridge.js","privacy":"local-only"}
+{"id":"convgpt","name":"CONVGPT","status":"functional","entry":"../../extension/integrations/convgpt.js","output":["markdown","json"],"privacy":"local-only","scope":"selected-chatgpt-conversation"}

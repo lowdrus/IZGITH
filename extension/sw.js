@@ -1,4 +1,4 @@
-/* IZGITH 6.0.0.00051 - MV3 service worker. Native Messaging is optional. */
+/* IZGITH 6.0.0.00052 - MV3 service worker. Native Messaging is optional. */
 const DEFAULTS = { theme: 'cyber-neon', autoMode: 'confirm', operationMode: 'unified', performanceMode: false, githubRepos: [], history: [] };
 const NATIVE_HOST = 'com.izgith.host';
 const NATIVE_TIMEOUT_MS = 5000;

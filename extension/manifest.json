@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "IZGITH",
   "description": "Hub offline-first para download, auditoria e preparacao segura de extensoes Chromium.",
-  "version": "6.0.0.51",
-  "version_name": "6.0.0.00051 FUNCTIONAL INTEGRATION",
+  "version": "6.0.0.52",
+  "version_name": "6.0.0.00052 CONVGPT EXPORT",
   "minimum_chrome_version": "111",
   "action": {
     "default_title": "IZGITH",
@@ -23,5 +23,11 @@
     "128": "assets/icons/icon128.png"
   },
   "permissions": ["downloads", "storage", "tabs", "nativeMessaging"],
-  "host_permissions": ["https://api.github.com/*"]
+  "host_permissions": ["https://api.github.com/*", "https://chatgpt.com/*"],
+  "content_scripts": [{
+    "matches": ["https://chatgpt.com/c/*", "https://chatgpt.com/g/*", "https://chatgpt.com/gg/*"],
+    "js": ["integrations/convgpt.js"],
+    "css": ["integrations/convgpt.css"],
+    "run_at": "document_idle"
+  }]
 }
