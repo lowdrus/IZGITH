@@ -1,4 +1,4 @@
-/* IZGITH 6.0.0.00044 - classic MV3 service worker. */
+/* IZGITH 6.0.0.00044 - MV3 service worker. */
 const DEFAULTS = {
   theme: 'cyber-neon',
   autoMode: 'confirm',
@@ -50,7 +50,7 @@ function nativeHostCheck(sendResponse) {
   });
 
   port.onDisconnect.addListener(function() {
-    /* Chrome only exposes lastError while this callback is running. */
+    /* lastError is consumed synchronously so Chrome does not emit an unchecked runtime.lastError. */
     const lastError = chrome.runtime.lastError;
     finish({
       ok: false,
@@ -92,7 +92,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (message.type === 'GET_INTEGRATION_STATUS') {
     sendResponse({
       ok: true,
-      nativeMessaging: { host: NATIVE_HOST, bootRequired: true },
+      nativeMessaging: { host: NATIVE_HOST, bootRequired: false },
       integrations: ['SONPEF', 'CONVGPT', 'KIT_UNICO', 'CHAT_HISTORY'],
       assistants: ['Júlia', 'Ayelle', 'IZART']
     });
