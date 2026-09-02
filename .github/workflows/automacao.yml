@@ -1,0 +1,40 @@
+name: Automacao de Leitura e Escrita (Push/Pull)
+
+on:
+  workflow_dispatch: # Cria o botão para rodar manualmente pelo painel do GitHub
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write # Dá permissão oficial para ler e ESCREVER (fazer push) no repositório
+
+jobs:
+  executar-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Baixa o código atual do seu repositório
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      # 2. Configura o robô do Git com seu nome
+      - name: Configurar Git do Bot
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      # 3. Bloco onde os arquivos novos ou atualizados serão processados
+      - name: Executar alterações no código
+        run: |
+          echo "Adicionando log automático de sincronização"
+          echo "Sincronizado em: $(date)" >> logs_automacao.txt
+
+      # 4. Faz o Pull automático para evitar conflitos e depois o Push definitivo
+      - name: Atualizar Repositório (Pull e Push)
+        run: |
+          git add .
+          # Só faz o commit se houver arquivos alterados de fato
+          git diff-index --quiet HEAD || git commit -m "Automação: Atualização de arquivos do repositório"
+          git pull --rebase origin main
+          git push origin main
