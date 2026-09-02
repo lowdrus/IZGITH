@@ -64,8 +64,11 @@ def main():
     for name in ('SONPEF', 'CONVGPT', 'KIT_UNICO'):
         check(name, (ROOT / f'integrations/{name}/integration.json').is_file())
 
-    assistants = (EXT / 'scripts/assistants.js').read_text(encoding='utf-8')
-    check('IA/assistentes', all(x in assistants for x in ('Júlia', 'Ayelle', 'Ayella', 'IZART')))
+    assistants_path = EXT / 'scripts/assistants.js'
+    assistants = assistants_path.read_text(encoding='utf-8') if assistants_path.is_file() else ''
+    required = ('Júlia', 'Ayella', 'IZART')
+    forbidden = ('Ayelle', 'alias Ayella', 'Alias: Ayella')
+    check('IA/assistentes', all(x in assistants for x in required) and not any(x in assistants for x in forbidden))
 
     subprocess.run([sys.executable, str(ROOT / 'scripts/package_extension.py')], check=True, capture_output=True)
     zips = list((ROOT / 'dist').glob('IZGITH_v*_FULL.zip'))
@@ -74,7 +77,8 @@ def main():
     package = json.loads((ROOT / 'package.json').read_text(encoding='utf-8'))
     manifest_version = str(m.get('version', ''))
     package_version = str(package.get('version', ''))
-    check('versões sincronizadas', manifest_version == package_version.replace('-00040', '.40'))
+    match = re.fullmatch(r'(\d+\.\d+\.\d+)\.(\d+)', manifest_version)
+    check('versões sincronizadas', bool(match) and package_version == f'{match.group(1)}-{int(match.group(2)):05d}')
 
     print('BUILD PASS')
     return 0
