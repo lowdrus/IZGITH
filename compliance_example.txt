@@ -2,10 +2,8 @@ Compliance Report — IZG PRO (Exemplo)
 =======================================
 Extensão: webextensions-examples-main.zip
 Score: 92/100
-
 Permissions:
 - storage
 - tabs
-
 Notes:
 - Permissão 'tabs' (risco 15)

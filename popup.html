@@ -1,1 +1,17 @@
-<html><body><h1>IZG PRO v3.3</h1></body></html>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>IZG PRO v3.3.1</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<header class="hdr"><div class="logo">IZG</div><div class="ttl">installzipgithub <span class="by">by sorate</span> <span class="pro">PRO</span> <span class="ver">v3.3.1</span></div></header>
+<section class="card"><div class="row"><input id="url" type="url" placeholder="Cole um link (.zip, .crx, .tar...)"><button id="btnDownload" class="btn primary glow">⬇️ Download</button></div></section>
+<section class="card grid"><div class="cell"><label class="lbl">Procurar arquivo/pasta</label><button id="btnPickAny" class="btn">🗂️ Procurar</button><div id="picked" class="picked">Nada selecionado</div></div>
+<div class="cell"><label class="lbl">Instalar extensão</label><button id="btnInstall" class="btn success big glow" disabled>⚡ Instalar</button></div></section>
+<section class="card drop"><div id="dropzone" class="dropzone">Arraste &amp; solte aqui um .zip / .crx / pasta</div></section>
+<section class="card"><div class="scorewrap"><div class="score">Score: <span id="scoreText">—</span></div><div id="checks">Compliance: selecione um pacote</div></div></section>
+<pre id="log" class="log">Pronto.</pre>
+<script src="popup.js"></script>
+</body></html>

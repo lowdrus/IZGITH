@@ -1,14 +1,1 @@
-{
-  "manifest_version": 3,
-  "name": "installzipgithub by sorate \u2014 PRO",
-  "version": "3.3.0",
-  "description": "Instalador premium de extens\u00f5es: Download, Procurar, Instalar, Compliance Score.",
-  "action": {
-    "default_title": "IZG PRO",
-    "default_popup": "popup.html"
-  },
-  "permissions": [
-    "storage",
-    "downloads"
-  ]
-}
+{"name":"IZGITH","version":"4.3.0"}

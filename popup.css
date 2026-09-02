@@ -1,0 +1,14 @@
+body{background:#0b0f14;color:#eaf2ff;font-family:Inter,system-ui,Arial;width:460px;padding:10px;margin:0}
+.hdr{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.logo{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#6aa6ff,#b17cff);display:flex;align-items:center;justify-content:center;font-weight:bold}
+.ttl{font-weight:900}.by{color:#7cf0cf}.pro{margin-left:8px;background:linear-gradient(135deg,#b17cff,#6ff7c5);padding:2px 6px;border-radius:6px;color:#000}.ver{margin-left:8px;color:#9db1c9}
+.card{background:#121826;border:1px solid #1f2a3f;border-radius:12px;padding:10px;margin-bottom:10px}
+.row{display:flex;gap:8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input[type=url]{flex:1;padding:8px;border-radius:10px;border:1px solid #2a3442;background:#0a111a;color:#eaf2ff}
+.btn{padding:8px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:bold;background:#243044;color:#fff}
+.btn.primary{background:linear-gradient(135deg,#6aa6ff,#b17cff)}
+.btn.success{background:linear-gradient(135deg,#32d26b,#6fffac);color:#000}
+.big{width:100%}.glow{box-shadow:0 0 8px rgba(106,166,255,.4)}
+.dropzone{border:2px dashed #2a354a;border-radius:10px;padding:16px;text-align:center;color:#9bb3cd}
+.scorewrap{display:flex;gap:10px;align-items:center}.log{background:#000;color:#76ff7b;padding:8px;border-radius:10px;max-height:150px;overflow:auto}

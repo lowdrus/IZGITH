@@ -1,0 +1,1 @@
+console.log('installzipgithub PRO loaded');
