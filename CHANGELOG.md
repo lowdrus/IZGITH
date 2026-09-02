@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 6.0.0.00045 - ULTRA + CONTROLLED UNIFIED
+
+- Consolidado o modo operacional padrão como `unified`, combinando automação Ultra com salvaguardas Controladas.
+- Preservada a referência visual/UI da série `IZGITH_v6.0.0.00034_Full_Build`.
+- Mantida a ordem de navegação: Identidade & Host, Ferramentas, Configurações, Logs, Temas.
+- Mantidos EULA e Guia Rápido como abas informativas no rodapé.
+- Service worker endurecido para centralizar Native Messaging e consumir `chrome.runtime.lastError` no ponto correto.
+- Dashboard deixou de chamar Native Messaging diretamente e passou a usar o roteamento do service worker.
+- Adicionado `SET_MODE` para persistência explícita de `unified`, `controlled` e `ultra`.
+- Adicionado par Windows `IZGITH_BUILD_00045.bat` + `IZGITH_BUILD_00045.ps1` para verificação sem sintaxe incompatível com Windows PowerShell antigo.
+- Mantidos os 36 temas, SONPEF, CONVGPT, KIT_UNICO, CHAT_HISTORY e os assistentes Júlia, Ayelle e IZART.
+- Native Messaging continua opcional para o boot; sem o host instalado, a extensão deve informar o estado em vez de congelar.
+
 ## 6.0.0.00044 - RECOVERY + INTEGRATION HARDENING
 
 - Sincronizada a versão do pacote, popup e documentação para 00044.
