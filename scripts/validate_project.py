@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import json, re, subprocess, sys, zipfile
+import json, re, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -84,6 +84,10 @@ def main():
     canonical = ('Júlia', 'Ayella', 'IZART')
     forbidden = ('Ayelle', 'alias Ayella', 'Alias: Ayella')
     check('IA/assistentes', all(x in assistants for x in canonical) and not any(x in assistants for x in forbidden))
+
+    # Keep the service worker under the same naming contract as the assistant registry.
+    worker_text = worker.read_text(encoding='utf-8') if worker.is_file() else ''
+    check('service worker sem alias proibido', not any(x in worker_text for x in forbidden))
 
     registry_path = ROOT / 'integrations/assistant_registry.json'
     registry = read_json(registry_path) if registry_path.is_file() else None
