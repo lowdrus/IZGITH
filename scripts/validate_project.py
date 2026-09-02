@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXT = ROOT / 'extension'
 checks = []
 
+
 def check(label, condition, detail=''):
     ok = bool(condition)
     checks.append(ok)
@@ -14,20 +15,24 @@ def check(label, condition, detail=''):
     if not ok:
         raise SystemExit(1)
 
+
+def read_json(path: Path):
+    try:
+        return json.loads(path.read_text(encoding='utf-8'))
+    except Exception as exc:
+        print(f'JSON parse {path}: {exc}')
+        return None
+
+
 def main():
     check('pasta raiz', ROOT.is_dir())
     mp = EXT / 'manifest.json'
     check('manifest.json', mp.is_file())
-    try:
-        m = json.loads(mp.read_text(encoding='utf-8'))
-        valid = True
-    except Exception as exc:
-        valid = False
-        m = {}
-        print('manifest parse:', exc)
-    check('JSON Manifest V3 válido', valid and m.get('manifest_version') == 3)
+    m = read_json(mp) if mp.is_file() else None
+    valid = isinstance(m, dict) and m.get('manifest_version') == 3
+    check('JSON Manifest V3 válido', valid)
 
-    worker_rel = m.get('background', {}).get('service_worker')
+    worker_rel = m.get('background', {}).get('service_worker') if isinstance(m, dict) else None
     check('background/service worker declarado', isinstance(worker_rel, str) and bool(worker_rel))
     worker = EXT / worker_rel if isinstance(worker_rel, str) else EXT / '__missing__'
     check('background/service worker existe', worker.is_file())
@@ -35,7 +40,6 @@ def main():
         check('service worker nao vazio', worker.stat().st_size > 0)
 
     js = list(EXT.rglob('*.js'))
-    node = None
     try:
         node = subprocess.run(['node', '--version'], capture_output=True, text=True, timeout=10)
     except (OSError, subprocess.SubprocessError):
@@ -61,8 +65,9 @@ def main():
 
     themes_path = EXT / 'themes/catalog.json'
     if themes_path.is_file():
-        themes = json.loads(themes_path.read_text(encoding='utf-8'))
-        check('36 temas', themes.get('total') == 36 and sum(map(len, themes.get('families', {}).values())) == 36)
+        themes = read_json(themes_path) or {}
+        families = themes.get('families', {})
+        check('36 temas', themes.get('total') == 36 and sum(map(len, families.values())) == 36)
     else:
         check('catalogo de temas', False)
 
@@ -77,17 +82,33 @@ def main():
     assistants_path = EXT / 'scripts/assistants.js'
     assistants = assistants_path.read_text(encoding='utf-8') if assistants_path.is_file() else ''
     canonical = ('Júlia', 'Ayella', 'IZART')
-    check('IA/assistentes', all(x in assistants for x in canonical) and 'Ayelle' not in assistants and 'alias Ayella' not in assistants)
+    forbidden = ('Ayelle', 'alias Ayella', 'Alias: Ayella')
+    check('IA/assistentes', all(x in assistants for x in canonical) and not any(x in assistants for x in forbidden))
 
-    package = json.loads((ROOT / 'package.json').read_text(encoding='utf-8'))
-    manifest_version = str(m.get('version', ''))
+    registry_path = ROOT / 'integrations/assistant_registry.json'
+    registry = read_json(registry_path) if registry_path.is_file() else None
+    registry_names = []
+    if isinstance(registry, dict):
+        registry_names = [item.get('name') for item in registry.get('canonical_assistants', []) if isinstance(item, dict)]
+    registry_policy = registry.get('naming_policy', {}) if isinstance(registry, dict) else {}
+    check('registry IA canônico', registry_names == ['Júlia', 'Ayella', 'IZART'] and registry_policy.get('ayella_is_alias') is False)
+    check('registry sem aliases proibidos', not any(x in registry_names for x in ('Ayelle', 'alias Ayella', 'Alias: Ayella')))
+
+    package_path = ROOT / 'package.json'
+    package = read_json(package_path) if package_path.is_file() else None
+    package = package or {}
+    manifest_version = str(m.get('version', '')) if isinstance(m, dict) else ''
     package_version = str(package.get('version', ''))
     match = re.fullmatch(r'(\d+\.\d+\.\d+)\.(\d+)', manifest_version)
     expected_package = f'{match.group(1)}-{int(match.group(2)):05d}' if match else ''
     check('versões sincronizadas', bool(match) and package_version == expected_package)
+    expected_version_name = f'{manifest_version} ' if manifest_version else ''
+    registry_version = registry.get('version', '') if isinstance(registry, dict) else ''
+    check('versão registry sincronizada', registry_version == f'6.0.0.000{int(match.group(2)):02d}' if match else False)
 
     print('BUILD PASS')
     return 0
+
 
 if __name__ == '__main__':
     raise SystemExit(main())
