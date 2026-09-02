@@ -1,117 +1,19 @@
 <!doctype html>
 <html lang="pt-BR" data-theme="cyber-neon">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>IZGITH Dashboard</title>
-  <link rel="stylesheet" href="dashboard.css">
-</head>
-
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IZGITH Dashboard</title><link rel="stylesheet" href="dashboard.css"></head>
 <body>
-  <div class="splash" id="splash">Carregando IZGITH...</div>
-  <div class="fx-grid"></div>
-  <div class="cursor-glow" id="cursorGlow"></div>
-  <aside class="sidebar">
-    <div class="brand"><img src="../assets/icons/icon48.png" alt="">
-      <div><b>IZGITH</b><small>CLEAN CORE · 6.0.0.00039</small></div>
-    </div>
-    <nav><button class="nav active" data-tab="overview">🆔 Identidade &amp; Host</button><button class="nav" data-tab="install">🧰 Ferramentas</button><button class="nav" data-tab="settings">⚙️ Configurações</button><button class="nav" data-tab="queue">📜 Logs</button><button class="nav" data-tab="themes">🎨 Temas</button></nav>
-    <footer><button class="nav" data-tab="eula">📜 EULA</button><button class="nav" data-tab="guide">📚 Guia Rápido</button></footer>
-  </aside>
-  <main class="workspace">
-    <header class="topbar">
-      <div>
-        <h1 id="pageTitle">Visão geral</h1>
-        <p>Offline-first · rede somente quando solicitada.</p>
-      </div>
-      <div class="health"><i></i><span id="healthText">Core ativo</span></div>
-    </header>
-    <section class="tab active" id="overview">
-      <div class="hero tilt">
-        <div><span class="eyebrow">IZGITH PLATFORM</span>
-          <h2>Gerencie pacotes com transparência e controle.</h2>
-          <p>Download, fila, auditoria, 36 temas, GitHub Monitor e laboratório isolado.</p>
-        </div>
-        <div class="orbital"><span>IZG</span></div>
-      </div>
-      <div class="stats">
-        <article><span>Fila</span><b id="statQueue">0</b><small>pacotes</small></article>
-        <article><span>Modo</span><b id="statMode">Confirmar</b><small>automação</small></article>
-        <article><span>Temas</span><b>36</b><small>presets</small></article>
-        <article><span>Host</span><b id="statHost">—</b><small>Native Messaging</small></article>
-      </div>
-    </section>
-    <section class="tab" id="install">
-      <div class="panel">
-        <h2>Preparação segura</h2>
-        <p>Use o host local para escolher pasta/.zip/.crx, detectar o manifest e preparar um diretório unpacked. A ativação no perfil principal continua em <code>chrome://extensions</code>.</p>
-        <div class="input-row"><button id="hostPing" class="btn ghost">Testar host</button><button id="pickFolder" class="btn">Escolher pasta + auditar</button><button id="pickPackage" class="btn">Escolher ZIP/CRX + preparar</button></div>
-        <div id="hostResult" class="result muted">Host ainda não consultado.</div>
-        <div class="steps">
-          <div><b>1</b><span>Prepare o pacote e confira score/findings.</span></div>
-          <div><b>2</b><span>Se confiável, copie o caminho unpacked exibido.</span></div>
-          <div><b>3</b><span>Abra <code>chrome://extensions</code> e use “Carregar sem compactação”.</span></div>
-        </div><button id="copyExtensionsUrl" class="btn">Copiar chrome://extensions</button>
-      </div>
-    </section>
-    <section class="tab" id="queue">
-      <div class="panel">
-        <div class="section-head">
-          <h2>Fila</h2><button id="clearQueue" class="btn ghost">Limpar</button>
-        </div>
-        <div id="dashboardQueue" class="list muted">Fila vazia.</div>
-      </div>
-    </section>
-    <section class="tab" id="github">
-      <div class="panel">
-        <h2>GitHub Monitor</h2>
-        <p>Consulta a release pública mais recente sem token.</p>
-        <div class="input-row"><input id="repoInput" placeholder="owner/repository"><button id="checkRepo" class="btn">Verificar</button></div>
-        <div id="repoResult" class="result muted">Nenhuma consulta realizada.</div>
-      </div>
-    </section>
-    <section class="tab" id="security">
-      <div class="panel">
-        <h2>Secure Lab</h2>
-        <div class="security-grid">
-          <article><b>Compliance</b>
-            <p>Análise local de manifest com score explicável.</p><span class="badge">ativo</span>
-          </article>
-          <article><b>Sandbox</b>
-            <p>Abre a extensão unpacked em perfil Chromium temporário e isolado.</p><button id="sandboxPick" class="btn">Escolher pasta e abrir</button>
-          </article>
-          <article><b>Quarentena</b>
-            <p>Pacotes preparados ficam fora do perfil principal até ação explícita.</p><span class="badge">por padrão</span>
-          </article>
-        </div>
-        <div id="sandboxResult" class="result muted">Nenhum laboratório iniciado.</div>
-      </div>
-    </section>
-    <section class="tab" id="themes">
-      <div class="panel">
-        <div class="section-head">
-          <div>
-            <h2>36 temas</h2>
-            <p>Cyber, Premium, Matrix e Glass; 3D reduzível.</p>
-          </div><button id="randomTheme" class="btn ghost">Aleatório</button>
-        </div>
-        <div id="themeGrid" class="theme-grid"></div>
-      </div>
-    </section>
-    <section class="tab" id="eula"><div class="panel"><h2>EULA</h2><p>Conteúdo exclusivamente informativo. Não é necessário aceitar ou recusar para usar o IZGITH.</p></div></section>
-    <section class="tab" id="guide"><div class="panel"><h2>Guia Rápido</h2><p>Teste o host, escolha um pacote, confira a auditoria e carregue a pasta preparada em <code>chrome://extensions</code>.</p></div></section>
-    <section class="tab" id="settings">
-      <div class="panel">
-        <h2>Configurações</h2><label class="setting"><span><b>Modo automático</b><small>Automatiza preparação; nunca força instalação silenciosa.</small></span><select id="autoMode">
-            <option value="manual">Manual</option>
-            <option value="confirm">Auto com confirmação</option>
-            <option value="auto">Auto preparar</option>
-          </select></label><label class="setting"><span><b>Modo performance</b><small>Reduz animações e 3D.</small></span><input id="performanceMode" type="checkbox"></label>
-      </div>
-    </section>
-  </main>
-  <script src="dashboard.js"></script>
-</body>
-
-</html>
+<div class="splash" id="splash">Carregando IZGITH...</div><div class="fx-grid"></div><div class="cursor-glow" id="cursorGlow"></div>
+<aside class="sidebar"><div class="brand"><img src="../assets/icons/icon48.png" alt=""><div><b>IZGITH</b><small>UI BASE · 6.0.0.00042</small></div></div>
+<nav><button class="nav active" data-tab="overview">🆔 Identidade &amp; Host</button><button class="nav" data-tab="install">🧰 Ferramentas</button><button class="nav" data-tab="settings">⚙️ Configurações</button><button class="nav" data-tab="queue">📜 Logs</button><button class="nav" data-tab="themes">🎨 Temas</button></nav>
+<footer><button class="nav" data-tab="eula">📜 EULA</button><button class="nav" data-tab="guide">📚 Guia Rápido</button></footer></aside>
+<main class="workspace"><header class="topbar"><div><h1 id="pageTitle">Identidade &amp; Host</h1><p>Ultra + Controlado unificados · Native Messaging opcional.</p></div><div class="health"><i></i><span id="healthText">Core ativo</span></div></header>
+<section class="tab active" id="overview"><div class="hero tilt"><div><span class="eyebrow">IZGITH PLATFORM</span><h2>Controle sem sacrificar automação.</h2><p>O modo unificado combina automação com salvaguardas locais.</p></div><div class="orbital"><span>IZG</span></div></div><div class="stats"><article><span>Fila</span><b id="statQueue">0</b><small>pacotes</small></article><article><span>Modo</span><b id="statMode">Unificado</b><small>operação</small></article><article><span>Temas</span><b>36</b><small>presets</small></article><article><span>Host</span><b id="statHost">—</b><small>opcional</small></article></div><div class="panel"><h2>Assistentes internos</h2><p>Júlia · Ayelle (alias histórico Ayella) · IZART. O código histórico só é promovido quando efetivamente recuperado e validado.</p></div></section>
+<section class="tab" id="install"><div class="panel"><h2>Preparação segura</h2><p>Escolha pasta ou pacote e faça a auditoria. O IZGITH não depende do host para abrir a interface.</p><div class="input-row"><button id="hostPing" class="btn ghost">Testar host</button><button id="pickFolder" class="btn">Escolher pasta + auditar</button><button id="pickPackage" class="btn">Escolher ZIP/CRX + preparar</button></div><div id="hostResult" class="result muted">Host não consultado. Clique em “Testar host” quando quiser.</div><div class="steps"><div><b>1</b><span>Prepare e confira score/findings.</span></div><div><b>2</b><span>Confira o caminho unpacked.</span></div><div><b>3</b><span>Use <code>chrome://extensions</code> para ativação explícita.</span></div></div><button id="copyExtensionsUrl" class="btn">Copiar chrome://extensions</button></div></section>
+<section class="tab" id="queue"><div class="panel"><div class="section-head"><h2>Fila / Logs</h2><button id="clearQueue" class="btn ghost">Limpar</button></div><div id="dashboardQueue" class="list muted">Fila vazia.</div></div></section>
+<section class="tab" id="github"><div class="panel"><h2>GitHub Monitor</h2><p>Consulta release pública sem token.</p><div class="input-row"><input id="repoInput" placeholder="owner/repository"><button id="checkRepo" class="btn">Verificar</button></div><div id="repoResult" class="result muted">Nenhuma consulta.</div></div></section>
+<section class="tab" id="security"><div class="panel"><h2>Secure Lab</h2><div class="security-grid"><article><b>Compliance</b><p>Análise local de manifest com score.</p><span class="badge">ativo</span></article><article><b>Sandbox</b><p>Perfil Chromium temporário e isolado.</p><button id="sandboxPick" class="btn">Escolher pasta e abrir</button></article><article><b>Quarentena</b><p>Pacotes preparados ficam fora do perfil principal.</p><span class="badge">padrão</span></article></div><div id="sandboxResult" class="result muted">Nenhum laboratório iniciado.</div></div></section>
+<section class="tab" id="themes"><div class="panel"><div class="section-head"><div><h2>36 temas</h2><p>Cyber, Premium, Matrix e Glass; efeitos 3D reduzíveis.</p></div><button id="randomTheme" class="btn ghost">Aleatório</button></div><div id="themeGrid" class="theme-grid"></div></div></section>
+<section class="tab" id="eula"><div class="panel"><h2>EULA</h2><p>Conteúdo exclusivamente informativo. Não é necessário aceitar ou recusar para usar o IZGITH.</p></div></section>
+<section class="tab" id="guide"><div class="panel"><h2>Guia Rápido</h2><p><b>Identidade &amp; Host:</b> carregue a extensão; “Testar host” é opcional e só consulta o host instalado. A ausência dele não impede o boot.</p><p><b>Ferramentas:</b> selecione e audite. <b>Configurações:</b> escolha Unificado, Controlado ou Ultra. <b>Logs:</b> acompanhe operações. <b>Temas:</b> escolha um dos 36.</p></div></section>
+<section class="tab" id="settings"><div class="panel"><h2>Configurações</h2><label class="setting"><span><b>Modo operacional</b><small>Unificado combina automação Ultra com salvaguardas Controladas.</small></span><select id="operationMode"><option value="unified">Ultra + Controlado — Unificado</option><option value="controlled">Controlado</option><option value="ultra">Ultra</option></select></label><label class="setting"><span><b>Modo automático</b><small>Define o nível de confirmação.</small></span><select id="autoMode"><option value="manual">Manual</option><option value="confirm">Auto com confirmação</option><option value="auto">Auto preparar</option></select></label><label class="setting"><span><b>Pausar animações</b><small>Desliga movimento, brilho e efeitos 3D.</small></span><input id="performanceMode" type="checkbox"></label></div></section>
+</main><script src="dashboard.js"></script></body></html>
