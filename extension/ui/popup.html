@@ -11,13 +11,13 @@
   <main class="shell">
     <header class="hdr">
       <img src="../assets/icons/icon48.png" alt="IZGITH" class="brand-icon">
-      <div><strong>IZGITH</strong><span>v6.0.0.00043 · FUNCTIONAL INTEGRATION</span></div>
+      <div><strong>IZGITH</strong><span>v6.0.0.00044 · ULTRA + CONTROLLED</span></div>
       <button id="openDashboard" class="icon-btn" title="Abrir dashboard">↗</button>
     </header>
     <section class="card">
       <label for="url">Download por link</label>
       <div class="row"><input id="url" type="url" placeholder="https://exemplo.com/arquivo.zip" autocomplete="off"><button id="btnDownload" class="btn primary">Baixar</button></div>
-      <small>O Chrome usa a API oficial de downloads e o usuário escolhe o destino quando a configuração do navegador exigir.</small>
+      <small>O Chrome usa a API oficial de downloads e respeita as confirmações/destino configurados no navegador.</small>
     </section>
     <section class="card">
       <div class="card-head"><span>Fila rápida</span><span id="count" class="pill">0</span></div>
@@ -31,7 +31,7 @@
       <div id="status" class="status neutral">Pronto</div>
     </section>
     <button id="btnGuide" class="btn success wide">Abrir preparação segura</button>
-    <p class="legal">O IZGITH não instala silenciosamente extensões no perfil principal. Recursos que dependem do Native Messaging são opcionais e informam claramente quando o host não está disponível.</p>
+    <p class="legal">Native Messaging é opcional para o carregamento da interface. Quando o host não estiver instalado, o IZGITH informa o estado em vez de bloquear o boot.</p>
   </main>
   <script src="popup.js"></script>
 </body>
