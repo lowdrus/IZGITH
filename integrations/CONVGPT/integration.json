@@ -1,1 +1,10 @@
-{"id":"convgpt","name":"CONVGPT","status":"functional","entry":"../../extension/integrations/convgpt.js","output":["markdown","json"],"privacy":"local-only","scope":"selected-chatgpt-conversation"}
+{
+  "id":"convgpt",
+  "name":"CONVGPT",
+  "status":"functional",
+  "entry":"../../extension/integrations/convgpt.js",
+  "output":["pdf","doc","txt","markdown","json","xls"],
+  "privacy":"local-only",
+  "scope":"selected-chatgpt-conversation",
+  "schema":"izgith.convgpt.v2"
+}
