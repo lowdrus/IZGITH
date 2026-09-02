@@ -1,0 +1,44 @@
+name: Automação Total de Código (ChatGPT -> Repositório)
+
+on:
+  repository_dispatch:
+    types: [atualizar_codigo] # O ChatGPT dispara este evento de qualquer lugar externamente
+
+permissions:
+  contents: write # Permissão total de escrita para modificar todas as pastas
+
+jobs:
+  upload-automatico:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Baixa todo o repositório IZGITH
+      - name: Checkout Completo do Repositório
+        uses: actions/checkout@v4
+
+      # 2. Configura a identidade do Git
+      - name: Configurar Git do Bot
+        run: |
+          git config --global user.name "chatgpt-automation[bot]"
+          git config --global user.email "chatgpt-automation[bot]@users.noreply.github.com"
+
+      # 3. Cria ou atualiza dinamicamente os arquivos enviados pelo ChatGPT em suas respectivas pastas
+      - name: Processar e Organizar Arquivos nas Pastas Corretas
+        env:
+          CAMINHO_ARQUIVO: ${{ github.event.client_payload.path }}
+          CONTEUDO_ARQUIVO: ${{ github.event.client_payload.content }}
+        run: |
+          # Garante que a pasta de destino exista (ex: extension/, host-python/, scripts/)
+          mkdir -p "$(dirname "$CAMINHO_ARQUIVO")"
+          
+          # Escreve o conteúdo fornecido pela IA diretamente no arquivo correto
+          echo "$CONTEUDO_ARQUIVO" > "$CAMINHO_ARQUIVO"
+          echo "Arquivo $CAMINHO_ARQUIVO criado/atualizado com sucesso!"
+
+      # 4. Envia as modificações de volta para a branch main automaticamente
+      - name: Commit e Push Automático das Alterações
+        run: |
+          git add .
+          git diff-index --quiet HEAD || git commit -m "🤖 ChatGPT: Atualização automática do arquivo em ${{ github.event.client_payload.path }}"
+          git pull --rebase origin main
+          git push origin main
