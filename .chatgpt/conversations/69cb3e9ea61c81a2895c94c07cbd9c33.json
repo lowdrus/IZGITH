@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "conversation_url": "https://chatgpt.com/gg/69cb3e9ea61c81a2895c94c07cbd9c33",
+  "repository": "lowdrus/IZGITH",
+  "branch": "main",
+  "dispatch_event": "gitpush_true",
+  "workflow": ".github/workflows/gitpush-true.yml",
+  "authentication": "github-app-or-repository-token",
+  "permissions_required": ["contents:write"],
+  "secrets_stored_in_repository": false,
+  "status": "registered"
+}
