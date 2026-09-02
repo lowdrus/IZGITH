@@ -1,0 +1,24 @@
+{
+  "project": "IZGITH",
+  "version": "6.0.0.00039-recovered",
+  "base": "v6.0.0.00039 CLEAN CORE",
+  "recovery_date": "2026-09-02",
+  "modes": {
+    "controlled": {
+      "id": "controlled",
+      "confirmation_before_local_sensitive_actions": true
+    },
+    "ultra": {
+      "id": "ultra",
+      "confirmation_before_local_sensitive_actions": false
+    },
+    "unified": true
+  },
+  "ui_reference": "IZGITH_v6.0.0.00034_Full_Build",
+  "navigation_order": ["Identidade & Host", "Ferramentas", "Configurações", "Logs", "Temas"],
+  "themes": 36,
+  "integrations": ["KIT_UNICO", "CONVGPT", "SONPEF"],
+  "historical_archive": "archive/legacy/root",
+  "historical_archive_file_count": 616,
+  "principle": "Use recovered repository sources; do not fabricate unavailable historical attachments."
+}
