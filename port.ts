@@ -1,57 +1,93 @@
 "use strict";
 // License: MIT
 
-import { EventEmitter } from "../../lib/events";
+import { donate, openPrefs } from "../windowutils";
+import { API } from "../api";
 // eslint-disable-next-line no-unused-vars
-import { runtime, RawPort } from "../../lib/browser";
-import { WindowState } from "../windowstate";
+import { BaseDownload } from "./basedownload";
+// eslint-disable-next-line no-unused-vars
+import { Manager } from "./man";
+// eslint-disable-next-line no-unused-vars
+import { Port } from "../bus";
+// eslint-disable-next-line no-unused-vars
+import { BaseItem } from "../item";
 
-const PORT = new class Port extends EventEmitter {
-  port: RawPort | null;
+type SID = {sid: number};
+type SIDS = {
+  sids: number[];
+  forced?: boolean;
+};
 
-  constructor() {
-    super();
-    this.port = runtime.connect(null, { name: "manager" });
-    if (!this.port) {
-      throw new Error("Could not connect");
-    }
-    new WindowState(this.port);
-    addEventListener("beforeunload", () => {
-      if (this.port) {
-        this.port.postMessage({
-          msg: "unload",
-          left: window.screenX,
-          top: window.screenY
-        });
-      }
+export class ManagerPort {
+  private manager: Manager;
+
+  private port: Port;
+
+  constructor(manager: any, port: any) {
+    this.manager = manager;
+    this.port = port;
+
+    this.onDirty = this.onDirty.bind(this);
+    this.onRemoved = this.onRemoved.bind(this);
+    this.onMsgRemoveSids = this.onMsgRemoveSids.bind(this);
+
+    this.manager.on("inited", () => this.sendAll());
+    this.manager.on("dirty", this.onDirty);
+    this.manager.on("removed", this.onRemoved);
+    this.manager.on("active", (active: any) => {
+      this.port.post("active", active);
     });
 
-    this.port.onMessage.addListener((msg: any) => {
-      if (typeof msg === "string") {
-        this.emit(msg);
-        return;
-      }
-      const {msg: message = null} = msg;
-      if (message) {
-        this.emit(message, msg.data);
-      }
+    port.on("donate", () => {
+      donate();
     });
+    port.on("prefs", () => {
+      openPrefs();
+    });
+    port.on("import", ({items}: {items: BaseItem[]}) => {
+      API.regular(items, []);
+    });
+    port.on("all", () => this.sendAll());
+    port.on("removeSids", this.onMsgRemoveSids);
+    port.on("showSingle", async () => {
+      await API.singleRegular(null);
+    });
+    port.on("toggle-active", () => {
+      this.manager.toggleActive();
+    });
+    port.on("sorted", ({sids}: SIDS) => this.manager.sorted(sids));
+    port.on("resume",
+      ({sids, forced}: SIDS) => this.manager.resumeDownloads(sids, forced));
+    port.on("pause", ({sids}: SIDS) => this.manager.pauseDownloads(sids));
+    port.on("cancel", ({sids}: SIDS) => this.manager.cancelDownloads(sids));
+    port.on("missing", ({sid}: SID) => this.manager.setMissing(sid));
+
+    this.port.on("disconnect", () => {
+      this.manager.off("dirty", this.onDirty);
+      this.manager.off("removed", this.onRemoved);
+
+      port.off("removeSids", this.onMsgRemoveSids);
+      delete this.manager;
+      delete this.port;
+    });
+
+    this.port.post("active", this.manager.active);
+    this.sendAll();
   }
 
-  post(msg: string, data?: any) {
-    if (!this.port) {
-      return;
-    }
-    this.port.postMessage(Object.assign({msg}, data));
+  onDirty(items: BaseDownload[]) {
+    this.port.post("dirty", items.map(item => item.toMsg()));
   }
 
-  disconnect() {
-    if (!this.port) {
-      return;
-    }
-    this.port.disconnect();
-    this.port = null;
+  onRemoved(sids: number[]) {
+    this.port.post("removed", sids);
   }
-}();
 
-export default PORT;
+  onMsgRemoveSids({sids}: SIDS) {
+    this.manager.removeBySids(sids);
+  }
+
+  sendAll() {
+    this.port.post("all", this.manager.getMsgItems());
+  }
+}
