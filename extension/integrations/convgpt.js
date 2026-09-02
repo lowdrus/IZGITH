@@ -25,6 +25,7 @@
   }
 
   async function collectCurrentConversation() {
+    const previousY = window.scrollY;
     let last = -1, stable = 0;
     for (let i = 0; i < 24; i++) {
       const count = document.querySelectorAll('[data-message-author-role]').length;
@@ -36,7 +37,9 @@
       await sleep(180);
       if (stable >= 2) break;
     }
-    return collect();
+    const data = collect();
+    window.scrollTo(0, previousY);
+    return data;
   }
 
   function markdown(data) {
@@ -69,17 +72,17 @@
     }
     const pages = [];
     for (let i=0;i<lines.length;i+=52) pages.push(lines.slice(i,i+52));
-    const objects = [];
-    const kids = [];
-    objects.push('<< /Type /Catalog /Pages 2 0 R >>');
-    objects.push('<< /Type /Pages /Kids [' + pages.map((_,i)=>`${6+i*2} 0 R`).join(' ') + `] /Count ${pages.length} >>`);
-    objects.push('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+    const objects = [
+      '<< /Type /Catalog /Pages 2 0 R >>',
+      '<< /Type /Pages /Kids [' + pages.map((_,i)=>`${4+i*2} 0 R`).join(' ') + `] /Count ${pages.length} >>`,
+      '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>'
+    ];
     for (let i=0;i<pages.length;i++) {
-      const content = ['BT','/F1 9 Tf','12 TL','50 750 Td',...pages[i].map((line,n)=>`(${escape(line)}) Tj ${n===pages[i].length-1?'':'T*'}`),'ET'].join('\n');
+      const pageObj = 4 + i*2;
       const contentObj = 5 + i*2;
-      const pageObj = 6 + i*2;
-      objects[contentObj-1] = `<< /Length ${content.length} >>\nstream\n${content}\nendstream`;
+      const content = ['BT','/F1 9 Tf','12 TL','50 750 Td',...pages[i].map((line,n)=>`(${escape(line)}) Tj ${n===pages[i].length-1?'':'T*'}`),'ET'].join('\n');
       objects[pageObj-1] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents ${contentObj} 0 R >>`;
+      objects[contentObj-1] = `<< /Length ${content.length} >>\nstream\n${content}\nendstream`;
     }
     let pdf = '%PDF-1.4\n%\xFF\xFF\n';
     const offsets = [0];
@@ -98,7 +101,7 @@
   }
 
   function download(name, content, type) {
-    const blob = content instanceof Uint8Array ? new Blob([content], {type}) : new Blob([content], {type});
+    const blob = new Blob([content], {type});
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a'); link.href = url; link.download = name; link.click();
     setTimeout(() => URL.revokeObjectURL(url), 2000);
