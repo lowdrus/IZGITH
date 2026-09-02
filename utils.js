@@ -1,122 +1,132 @@
-'use strict';
+/*******************************************************************************
 
-const sw = require('selenium-webdriver'),
-  {createServer} = require('http'),
-  path = require('path'),
-  vhost = require('vhost'),
-  express = require('express');
+    uBlock Origin - a comprehensive, efficient content blocker
+    Copyright (C) 2014-present Raymond Hill
 
-function startApp(app, port=PORT) {
-  app.server = createServer(app);
-  app.server.listen(port);
-}
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-const srcDir = '../src/.',
-  PORT = 8000,
-  host = (hostname, port) => `${hostname}:${port}`,
-  firstPartyHostname = 'firstparty.local',
-  thirdPartyHostname = 'thirdparty.local',
-  firstPartyHost = host(firstPartyHostname, PORT),
-  thirdPartyHost = host(thirdPartyHostname, PORT);
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-function startApp(app, port=PORT) {
-  app.server = createServer(app);
-  app.server.listen(port);
-}
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see {http://www.gnu.org/licenses/}.
 
-function stopApp(app) {
-  app.server.close();
-}
+    Home: https://github.com/gorhill/uBlock
+*/
 
-/*
- * in /etc/hosts this requires:
- * 127.0.0.1    firstparty.local
- * 127.0.0.1    thirdparty.local
- */
+import µb from './background.js';
 
-async function loadDriverWithExtension(extPath) {
-  let chromeOptions = sw.Capabilities.chrome();
-  chromeOptions.set("chromeOptions",  {"args": [
-    `--load-extension=${extPath}`,
-    '--no-sandbox',
-  ]});
-  return new sw.Builder()
-      .forBrowser('chrome')
-      .withCapabilities(chromeOptions)
-      .build();
-}
+/******************************************************************************/
 
-async function newDriver() {
-  const srcPath = path.resolve(__dirname, srcDir);
-  return await loadDriverWithExtension(srcPath);
-}
-
-class Channel {
-  // async stack datastructure
-  constructor() {
-    this.items = [];
-    this.waiting = [];
-  }
-  async popQueue() {
-    if (this.items.length > 0) {
-      return this.items.pop();
-    } else {
-      return new Promise((resolve) => {
-        this.waiting.push(resolve);
-      });
+µb.formatCount = function(count) {
+    if ( typeof count !== 'number' ) { return ''; }
+    const s = `${count}`;
+    if ( count < 1000 ) { return s; }
+    if ( count < 10000 ) {
+        return '>' + s.slice(0,1) + 'k';
     }
-  }
-
-  // Get the item from the top of the stack, or wait for an item if there are none.
-  async next() {
-    return await this.popQueue();
-  }
-
-  // Push an item onto the stack.
-  push(item) {
-    if (this.waiting.length > 0) {
-      this.waiting.pop()(item);
-    } else {
-      this.items.push(item);
+    if ( count < 100000 ) {
+        return s.slice(0,2) + 'k';
     }
-  }
-}
+    if ( count < 1000000 ) {
+        return s.slice(0,3) + 'k';
+    }
+    return s.slice(0,-6) + 'M';
+};
 
-function requestRecorderMiddleware(app = express()) {
-  app.requests = new Channel();
-  app.responses = new Channel();
-  app.use((req, res, next) => {
-    app.requests.push(req);
-    app.responses.push(res);
-    next();
-  });
-  return app;
-}
+/******************************************************************************/
 
-function firstPartyApp(app = express(), tpHost = thirdPartyHost) {
-  app.get('*', (req, res) => {
-    return res.send(
-      `<script type="text/javascript" src="http://${tpHost}/tracker.js"></script>`
-    );
-  });
-  return app;
-}
+µb.dateNowToSensibleString = function() {
+    const now = new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000);
+    return now.toISOString().replace(/\.\d+Z$/, '')
+                            .replace(/:/g, '.')
+                            .replace('T', '_');
+};
 
-function thirdPartyApp(app = express()) {
-  app.get('*', (req, res) => {
-    return res.send('console.log("third party script")');
-  });
-  return app;
-}
+/******************************************************************************/
 
+µb.openNewTab = function(details) {
+    if ( details.url.startsWith('logger-ui.html') ) {
+        if ( details.shiftKey ) {
+            this.changeUserSettings(
+                'alwaysDetachLogger',
+                !this.userSettings.alwaysDetachLogger
+            );
+        }
+        if ( this.userSettings.alwaysDetachLogger ) {
+            details.popup = this.hiddenSettings.loggerPopupType;
+            const url = new URL(vAPI.getURL(details.url));
+            url.searchParams.set('popup', '1');
+            details.url = url.href;
+            let popupLoggerBox;
+            try {
+                popupLoggerBox = JSON.parse(
+                    vAPI.localStorage.getItem('popupLoggerBox')
+                );
+            } catch {
+            }
+            if ( popupLoggerBox !== undefined ) {
+                details.box = popupLoggerBox;
+            }
+        }
+    }
+    vAPI.tabs.open(details);
+};
 
-function baseTestApp(fpApp, tpApp, app = express(), fpHostname = firstPartyHostname, tpHostname = thirdPartyHostname) {
-  let firstParty = firstPartyApp(fpApp),
-    thirdParty = thirdPartyApp(tpApp);
-  app.all('/', vhost(fpHostname, firstParty));
-  app.all('/tracker.js', vhost(tpHostname, thirdParty));
-  Object.assign(app, {firstParty, thirdParty});
-  return app;
-}
+/******************************************************************************/
 
-Object.assign(module.exports, {newDriver, startApp, stopApp, PORT, firstPartyHostname, thirdPartyHostname, firstPartyHost, thirdPartyHost, Channel, requestRecorderMiddleware, firstPartyApp, thirdPartyApp, baseTestApp});
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+
+µb.escapeRegex = function(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
+/******************************************************************************/
+
+// TODO: properly compare arrays
+
+µb.getModifiedSettings = function(edit, orig = {}) {
+    const out = {};
+    for ( const prop in edit ) {
+        if ( Object.hasOwn(orig, prop) && edit[prop] !== orig[prop] ) {
+            out[prop] = edit[prop];
+        }
+    }
+    return out;
+};
+
+µb.settingValueFromString = function(orig, name, s) {
+    if ( typeof name !== 'string' || typeof s !== 'string' ) { return; }
+    if ( Object.hasOwn(orig, name) === false ) { return; }
+    let r;
+    switch ( typeof orig[name] ) {
+    case 'boolean':
+        if ( s === 'true' ) {
+            r = true;
+        } else if ( s === 'false' ) {
+            r = false;
+        }
+        break;
+    case 'string':
+        r = s.trim();
+        break;
+    case 'number':
+        if ( s.startsWith('0b') ) {
+            r = parseInt(s.slice(2), 2);
+        } else if ( s.startsWith('0x') ) {
+            r = parseInt(s.slice(2), 16);
+        } else {
+            r = parseInt(s, 10);
+        }
+        if ( isNaN(r) ) { r = undefined; }
+        break;
+    default:
+        break;
+    }
+    return r;
+};
