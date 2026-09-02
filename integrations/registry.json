@@ -1,10 +1,10 @@
 {
   "schema": "izgith.integration.v1",
-  "version": "6.0.0.42",
+  "version": "6.0.0.00044",
   "components": {
-    "SONPEF": {"status":"reference-present","execution":"controlled","terminal_required_for_normal_ui_use":false,"source_recovery":"not_found_in_current_library"},
-    "CONVGPT": {"status":"reference-present","execution":"user-initiated","terminal_required_for_normal_ui_use":false,"source_recovery":"not_found_in_current_library"},
-    "KIT_UNICO": {"status":"historical-reference","execution":"pending_source_recovery","terminal_required_for_normal_ui_use":false,"source_recovery":"not_found_in_current_library"},
+    "SONPEF": {"status":"legacy-source-present","execution":"controlled","terminal_required_for_normal_ui_use":false,"source_recovery":"archive/legacy/root contains FULLONE and BUSCAR-TODOS-SCRIPTS; exact sonpef_unify.ps1 not present in current repository search"},
+    "CONVGPT": {"status":"adapter-present","execution":"user-initiated","terminal_required_for_normal_ui_use":false,"source_recovery":"extension/scripts/chat_history_bridge.js and integrations/CONVGPT/integration.json present"},
+    "KIT_UNICO": {"status":"historical-reference","execution":"pending_feature_validation","terminal_required_for_normal_ui_use":false,"source_recovery":"integration record and archive/legacy material present; original external KIT_UNICO package is not currently available as a separate source"},
     "CHAT_HISTORY": {"status":"supported-flow","execution":"user-initiated","terminal_required_for_normal_ui_use":false}
   },
   "assistants": {
@@ -15,7 +15,7 @@
   "nativeMessaging": {
     "required_for_extension_boot": false,
     "missing_host_policy": "informational",
-    "host_name": "com.izgith.proplus",
+    "host_name": "com.izgith.host",
     "diagnostic_message": "NATIVE_HOST_CHECK"
   }
 }
