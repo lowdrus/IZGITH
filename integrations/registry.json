@@ -1,0 +1,19 @@
+{
+  "schema": "izgith.integration.v1",
+  "version": "6.0.0.41",
+  "components": {
+    "SONPEF": {"status":"recovered-reference","execution":"controlled","terminal_required_for_normal_ui_use":false},
+    "CONVGPT": {"status":"recovered-reference","execution":"user-initiated","terminal_required_for_normal_ui_use":false},
+    "KIT_UNICO": {"status":"historical-reference","execution":"pending-promotion","terminal_required_for_normal_ui_use":false},
+    "CHAT_HISTORY": {"status":"supported-flow","execution":"user-initiated","terminal_required_for_normal_ui_use":false}
+  },
+  "assistants": {
+    "julia": {"display_name":"Júlia"},
+    "ayelle": {"display_name":"Ayelle","aliases":["Ayella"]},
+    "izart": {"display_name":"IZART"}
+  },
+  "nativeMessaging": {
+    "required_for_extension_boot": false,
+    "missing_host_policy": "informational"
+  }
+}
