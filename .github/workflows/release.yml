@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify tag matches manifest version
+        run: |
+          python - <<'PY'
+          import json, os
+          version=json.load(open('manifest.json', encoding='utf-8'))['version']
+          tag=os.environ['GITHUB_REF_NAME']
+          if tag != f'v{version}':
+              raise SystemExit(f'tag {tag} does not match manifest v{version}')
+          print('Version OK:', tag)
+          PY
+      - name: Package extension and host
+        run: |
+          mkdir -p dist/extension dist/host
+          cp manifest.json background.js popup.html popup.css popup.js dashboard.html dashboard.css dashboard.js icon16.png icon48.png icon128.png dist/extension/
+          cp ext_host.py install_host.py installzipgithub_setup.bat install_host_unix.sh dist/host/
+          (cd dist/extension && zip -r ../IZGITH-extension-${GITHUB_REF_NAME}.zip .)
+          (cd dist/host && zip -r ../IZGITH-host-${GITHUB_REF_NAME}.zip .)
+          sha256sum dist/*.zip > dist/SHA256SUMS.txt
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            dist/IZGITH-extension-*.zip
+            dist/IZGITH-host-*.zip
+            dist/SHA256SUMS.txt
