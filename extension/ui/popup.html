@@ -1,35 +1,38 @@
 <!doctype html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>IZGITH</title>
   <link rel="stylesheet" href="popup.css">
 </head>
-
 <body>
-  <div class="orb orb-a"></div>
-  <div class="orb orb-b"></div>
+  <div class="orb orb-a"></div><div class="orb orb-b"></div>
   <main class="shell">
-    <header class="hdr"><img src="../assets/icons/icon48.png" alt="IZGITH" class="brand-icon">
-      <div><strong>IZGITH</strong><span>v6.0.0.00039 · CLEAN CORE</span></div><button id="openDashboard" class="icon-btn" title="Abrir dashboard">↗</button>
+    <header class="hdr">
+      <img src="../assets/icons/icon48.png" alt="IZGITH" class="brand-icon">
+      <div><strong>IZGITH</strong><span>v6.0.0.00043 · FUNCTIONAL INTEGRATION</span></div>
+      <button id="openDashboard" class="icon-btn" title="Abrir dashboard">↗</button>
     </header>
-    <section class="card"><label for="url">Download por link</label>
-      <div class="row"><input id="url" type="url" placeholder="https://exemplo.com/extensao.zip" autocomplete="off"><button id="btnDownload" class="btn primary">Baixar</button></div><small>O Chrome abrirá “Salvar como…” pela API oficial de downloads.</small>
+    <section class="card">
+      <label for="url">Download por link</label>
+      <div class="row"><input id="url" type="url" placeholder="https://exemplo.com/arquivo.zip" autocomplete="off"><button id="btnDownload" class="btn primary">Baixar</button></div>
+      <small>O Chrome usa a API oficial de downloads e o usuário escolhe o destino quando a configuração do navegador exigir.</small>
     </section>
     <section class="card">
-      <div class="card-head"><span>Fila rápida</span><span id="count" class="pill">0</span></div><input id="packages" type="file" accept=".zip,.crx,application/zip" multiple hidden><button id="btnPick" class="btn wide">Selecionar .ZIP / .CRX</button>
+      <div class="card-head"><span>Fila rápida</span><span id="count" class="pill">0</span></div>
+      <input id="packages" type="file" accept=".zip,.crx,application/zip" multiple hidden>
+      <button id="btnPick" class="btn wide">Selecionar .ZIP / .CRX</button>
       <div id="dropzone" class="dropzone" tabindex="0">Arraste arquivos aqui</div>
       <div id="queue" class="queue empty">Nenhum pacote selecionado.</div>
     </section>
     <section class="card compact">
       <div class="scoreline"><span>Pré-check</span><strong id="score">—</strong></div>
       <div id="status" class="status neutral">Pronto</div>
-    </section><button id="btnGuide" class="btn success wide">Abrir preparação segura</button>
-    <p class="legal">A seleção do popup mantém metadados da fila. Para auditoria/extrair/testar por caminho local, use o Dashboard + Native Host. O IZGITH não instala silenciosamente extensões no perfil principal.</p>
+    </section>
+    <button id="btnGuide" class="btn success wide">Abrir preparação segura</button>
+    <p class="legal">O IZGITH não instala silenciosamente extensões no perfil principal. Recursos que dependem do Native Messaging são opcionais e informam claramente quando o host não está disponível.</p>
   </main>
   <script src="popup.js"></script>
 </body>
-
 </html>
