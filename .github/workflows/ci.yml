@@ -1,68 +1,45 @@
 name: CI
-
 on:
   push:
     branches: [main, develop, "fix/**", "feature/**", "release/**"]
   pull_request:
     branches: [main, develop]
-
 permissions:
   contents: read
-
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+        with: {python-version: "3.12"}
       - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - name: Validate manifest
+        with: {node-version: "22"}
+      - name: Validate Manifest V3
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          m = json.loads(Path('manifest.json').read_text(encoding='utf-8'))
-          assert m['manifest_version'] == 3
-          assert m['name'] == 'IZGITH'
-          assert 'version' in m
-          assert Path(m['action']['default_popup']).is_file()
-          assert Path(m['background']['service_worker']).is_file()
-          for p in m.get('icons', {}).values():
-              assert Path(p).is_file(), p
-          print('Manifest MV3 OK:', m['version'])
+          root=Path('extension');m=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          assert m['manifest_version']==3 and m['name']=='IZGITH'
+          assert (root/m['action']['default_popup']).is_file()
+          assert (root/m['background']['service_worker']).is_file()
+          for p in m.get('icons',{}).values(): assert (root/p).is_file(),p
+          print('Manifest OK',m['version'])
           PY
       - name: JavaScript syntax
-        run: |
-          node --check background.js
-          node --check popup.js
-          node --check dashboard.js
+        run: node --check extension/background.js && node --check extension/popup.js && node --check extension/dashboard.js
       - name: Python syntax
-        run: python -m compileall -q ext_host.py install_host.py extract_conversations.py tests
+        run: python -m compileall -q host-python tools tests
       - name: Unit tests
         run: python -m unittest discover -s tests -v
       - name: Shell syntax
-        run: sh -n install_host_unix.sh
-      - name: Reject known placeholder artifacts
+        run: sh -n host-python/installers/install_host_unix.sh
+      - name: Verify no private keys/placeholders
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          bad=[]
-          for name in ['installzipgithub_by_sorate.crx','installzipgithub_by_sorate.pem','TUTORIAL_FINAL - VERSAO ESTA COM ERRO.pdf','webextensions-examples-main.zip']:
-              p=Path(name)
-              if p.exists(): bad.append(name)
-          if bad: raise SystemExit('Remove invalid/placeholder artifacts: '+', '.join(bad))
-          PY
-      - name: Build unpacked ZIP
-        run: |
-          mkdir -p dist/izgith-extension
-          cp manifest.json background.js popup.html popup.css popup.js dashboard.html dashboard.css dashboard.js icon16.png icon48.png icon128.png dist/izgith-extension/
-          cd dist && zip -r IZGITH-extension-${{ github.sha }}.zip izgith-extension
+          test -z "$(find . -type f \( -name '*.pem' -o -name '*.key' -o -name '*.p12' -o -name '*.pfx' \) -print -quit)"
+          ! grep -RIl --exclude-dir=.git -E 'Download simulado|placeholder simulado|CRX_HEADER_INVALID' extension host-python
+      - name: Build extension ZIP
+        run: mkdir -p dist && (cd extension && zip -r ../dist/IZGITH-extension-${{ github.sha }}.zip .)
       - uses: actions/upload-artifact@v4
-        with:
-          name: izgith-extension
-          path: dist/IZGITH-extension-*.zip
-          if-no-files-found: error
+        with: {name: izgith-extension, path: "dist/IZGITH-extension-*.zip", if-no-files-found: error}
