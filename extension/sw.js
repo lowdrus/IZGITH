@@ -1,3 +1,4 @@
+/* IZGITH 6.0.0.00044 - classic MV3 service worker. */
 const DEFAULTS = {
   theme: 'cyber-neon',
   autoMode: 'confirm',
@@ -9,44 +10,94 @@ const DEFAULTS = {
 
 const NATIVE_HOST = 'com.izgith.host';
 
-chrome.runtime.onInstalled.addListener(async ({ reason }) => {
-  const current = await chrome.storage.local.get(Object.keys(DEFAULTS));
-  const patch = {};
-  for (const [key, value] of Object.entries(DEFAULTS)) {
-    if (current[key] === undefined) patch[key] = value;
-  }
-  if (Object.keys(patch).length) await chrome.storage.local.set(patch);
-  console.info(`[IZGITH] ${reason}`);
+chrome.runtime.onInstalled.addListener(function(details) {
+  chrome.storage.local.get(Object.keys(DEFAULTS)).then(function(current) {
+    const patch = {};
+    Object.keys(DEFAULTS).forEach(function(key) {
+      if (current[key] === undefined) patch[key] = DEFAULTS[key];
+    });
+    if (Object.keys(patch).length) return chrome.storage.local.set(patch);
+  }).catch(function(error) {
+    console.warn('[IZGITH] storage init failed', error);
+  });
+  console.info('[IZGITH] installed/updated:', details.reason);
 });
 
 function nativeHostCheck(sendResponse) {
   let port;
-  try { port = chrome.runtime.connectNative(NATIVE_HOST); }
-  catch (error) { sendResponse({ ok:false, available:false, error:String(error?.message || error) }); return; }
+  try {
+    port = chrome.runtime.connectNative(NATIVE_HOST);
+  } catch (error) {
+    sendResponse({ ok: false, available: false, code: 'CONNECT_THROW', error: String(error && error.message || error) });
+    return;
+  }
+
   let finished = false;
-  const finish = payload => { if (finished) return; finished = true; sendResponse(payload); try { port.disconnect(); } catch (_) {} };
-  const timer = setTimeout(() => finish({ ok:false, available:false, error:'Native host did not respond.' }), 2500);
-  port.onMessage.addListener(message => { clearTimeout(timer); finish({ ok:true, available:true, response:message ?? null }); });
-  port.onDisconnect.addListener(() => {
+  let timer = setTimeout(function() {
+    finish({ ok: false, available: false, code: 'TIMEOUT', error: 'Native host did not respond.' });
+  }, 3000);
+
+  function finish(payload) {
+    if (finished) return;
+    finished = true;
     clearTimeout(timer);
-    const runtimeError = chrome.runtime.lastError;
-    finish({ ok:false, available:false, error:runtimeError?.message || 'Native host disconnected without a response.' });
+    try { port.disconnect(); } catch (_) {}
+    sendResponse(payload);
+  }
+
+  port.onMessage.addListener(function(message) {
+    finish({ ok: true, available: true, response: message || null });
   });
-  try { port.postMessage({ cmd:'ping' }); }
-  catch (error) { clearTimeout(timer); finish({ ok:false, available:false, error:String(error?.message || error) }); }
+
+  port.onDisconnect.addListener(function() {
+    /* Chrome only exposes lastError while this callback is running. */
+    const lastError = chrome.runtime.lastError;
+    finish({
+      ok: false,
+      available: false,
+      code: 'DISCONNECT',
+      error: lastError && lastError.message ? lastError.message : 'Native host disconnected without a response.'
+    });
+  });
+
+  try {
+    port.postMessage({ command: 'ping' });
+  } catch (error) {
+    finish({ ok: false, available: false, code: 'POST_THROW', error: String(error && error.message || error) });
+  }
 }
 
-chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (!message || typeof message !== 'object') return false;
-  if (message.type === 'PING') { sendResponse({ ok:true, version:chrome.runtime.getManifest().version }); return false; }
-  if (message.type === 'NATIVE_HOST_CHECK') { nativeHostCheck(sendResponse); return true; }
-  if (message.type === 'GET_MODE') {
-    chrome.storage.local.get({ operationMode:'unified' }).then(({ operationMode }) => sendResponse({ ok:true, operationMode })).catch(error => sendResponse({ ok:false, error:String(error) }));
-    return true;
-  }
-  if (message.type === 'GET_INTEGRATION_STATUS') {
-    sendResponse({ ok:true, nativeMessaging:{ host:NATIVE_HOST, bootRequired:false }, integrations:['SONPEF','CONVGPT','KIT_UNICO','CHAT_HISTORY'], assistants:['Júlia','Ayelle','IZART'] });
+
+  if (message.type === 'PING') {
+    sendResponse({ ok: true, version: chrome.runtime.getManifest().version });
     return false;
   }
+
+  if (message.type === 'NATIVE_HOST_CHECK') {
+    nativeHostCheck(sendResponse);
+    return true;
+  }
+
+  if (message.type === 'GET_MODE') {
+    chrome.storage.local.get({ operationMode: 'unified' }).then(function(result) {
+      sendResponse({ ok: true, operationMode: result.operationMode });
+    }).catch(function(error) {
+      sendResponse({ ok: false, error: String(error && error.message || error) });
+    });
+    return true;
+  }
+
+  if (message.type === 'GET_INTEGRATION_STATUS') {
+    sendResponse({
+      ok: true,
+      nativeMessaging: { host: NATIVE_HOST, bootRequired: true },
+      integrations: ['SONPEF', 'CONVGPT', 'KIT_UNICO', 'CHAT_HISTORY'],
+      assistants: ['Júlia', 'Ayelle', 'IZART']
+    });
+    return false;
+  }
+
   return false;
 });
