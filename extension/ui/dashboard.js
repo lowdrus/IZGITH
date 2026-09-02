@@ -14,6 +14,12 @@ async function runHost(payload,target){ target.textContent='Processando...'; try
 $('hostPing').addEventListener('click',()=>runHost({command:'ping'},$('hostResult')));
 $('pickFolder').addEventListener('click',()=>runHost({command:'pick_and_analyze'},$('hostResult')));
 $('pickPackage').addEventListener('click',()=>runHost({command:'pick_and_prepare'},$('hostResult')));
+async function openChatGpt(){ await chrome.tabs.create({url:'https://chatgpt.com/'}); }
+$('toolConvgpt').addEventListener('click',openChatGpt);
+$('toolHistory').addEventListener('click',openChatGpt);
+$('toolSonpef').addEventListener('click',()=>runHost({command:'sonpef_status'},$('hostResult')));
+$('toolKit').addEventListener('click',()=>{ $('hostResult').textContent='KIT_UNICO registrado no projeto. Nenhum executor nativo foi acionado.'; });
+$('toolIzart').addEventListener('click',()=>{ $('hostResult').textContent='IZART registrado como assistente canônico. Nenhum executor nativo foi acionado.'; });
 $('clearQueue').addEventListener('click',async()=>{await chrome.storage.local.set({izgithQueue:[]});await renderQueue();});
 $('copyExtensionsUrl').addEventListener('click',async()=>{await navigator.clipboard.writeText('chrome://extensions');$('copyExtensionsUrl').textContent='Copiado ✓';setTimeout(()=>$('copyExtensionsUrl').textContent='Copiar chrome://extensions',1400);});
 $('randomTheme').addEventListener('click',()=>applyTheme(THEMES[Math.floor(Math.random()*THEMES.length)][0]));
@@ -21,5 +27,7 @@ $('operationMode').addEventListener('change',async event=>{const result=await se
 $('autoMode').addEventListener('change',event=>chrome.storage.local.set({autoMode:event.target.value}));
 $('performanceMode').addEventListener('change',async event=>{const enabled=event.target.checked;document.body.classList.toggle('reduce-motion',enabled);await chrome.storage.local.set({performanceMode:enabled});});
 $('visualDepth').addEventListener('change',event=>{document.documentElement.dataset.depth=event.target.value;chrome.storage.local.set({visualDepth:event.target.value});});
+$('minimizeDashboard').addEventListener('click',async()=>{try{const w=await chrome.windows.getCurrent();await chrome.windows.update(w.id,{state:'minimized'});}catch(error){$('hostResult').textContent='Nao foi possivel minimizar: '+error.message;}});
+$('closeDashboard').addEventListener('click',async()=>{try{const tab=await chrome.tabs.getCurrent();if(tab&&tab.id!==undefined)await chrome.tabs.remove(tab.id);else window.close();}catch(error){window.close();}});
 document.addEventListener('pointermove',event=>{const glow=$('cursorGlow');if(glow&&!document.body.classList.contains('reduce-motion')){glow.style.left=event.clientX+'px';glow.style.top=event.clientY+'px';}const hero=document.querySelector('.tilt');if(!hero||document.body.classList.contains('reduce-motion'))return;const rect=hero.getBoundingClientRect();const x=(event.clientX-rect.left)/rect.width-.5;const y=(event.clientY-rect.top)/rect.height-.5;hero.style.transform=`perspective(1000px) rotateX(${-y*3}deg) rotateY(${x*4}deg)`;});
 (async function init(){buildThemeGrid();const settings=await chrome.storage.local.get(['theme','autoMode','operationMode','performanceMode','visualDepth']);applyTheme(settings.theme||'cyber-neon');$('autoMode').value=settings.autoMode||'confirm';$('operationMode').value=settings.operationMode||'unified';$('performanceMode').checked=Boolean(settings.performanceMode);$('visualDepth').value=settings.visualDepth||'3D';document.documentElement.dataset.depth=settings.visualDepth||'3D';document.body.classList.toggle('reduce-motion',Boolean(settings.performanceMode));$('statMode').textContent=$('operationMode').selectedOptions[0].textContent.split(' — ')[0];await renderQueue();const initial=location.hash.slice(1);openTab(Object.prototype.hasOwnProperty.call(TITLES,initial)?initial:'overview');$('splash').classList.add('hidden');})();
