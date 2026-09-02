@@ -1,0 +1,1 @@
+echo Windows 1-click installer placeholder
