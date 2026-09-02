@@ -50,6 +50,8 @@ O pacote é criado em `dist/`. Nenhuma dependência npm é necessária.
 - `docs/`: tutorial, arquitetura e especificação.
 - `archive/legacy/`: fontes históricas incorporadas, fora do build.
 
+Consulte [docs/AUDITORIA_DO_LEGADO.md](docs/AUDITORIA_DO_LEGADO.md) para saber exatamente o que foi preservado, removido e efetivamente integrado.
+
 ## Segurança e privacidade
 
 O projeto não requer token do GitHub para consultar releases públicas e não armazena credenciais. Leia [SECURITY.md](SECURITY.md) e [docs/PRIVACIDADE.md](docs/PRIVACIDADE.md).
