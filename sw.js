@@ -1,0 +1,1 @@
+chrome.runtime.onInstalled.addListener(()=>{console.log("IZGITH 00042 READY");});

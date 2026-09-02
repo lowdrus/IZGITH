@@ -1,0 +1,20 @@
+==============================
+ CONV v0000000365 - STATUS DIAGNOSE
+==============================
+
+📦 Build: CONV-v0000000365-full
+🧩 Data: 2025-10-30 15:48:13
+💾 Versão manifest: 0.0.36
+🔖 Núcleo: IZGITH Core (Aellye · Julia · Izart)
+
+Fixes chave:
+ - Save As (chrome.downloads.saveAs:true) em todos os botões
+ - Download por data:URL base64 (SW MV3) → sem createObjectURL
+ - Captura ON/OFF + dedup por hash segue funcional
+ - Ícones PNG presentes (fallback)
+
+QA rápido:
+ 1) Coletar status (assinatura 0000000365) e captura ON por padrão
+ 2) Baixar .md/.html (deve abrir “Salvar como...”)
+ 3) Exportar scripts e auditoria (também com “Salvar como...”)
+ 4) Abrir chatgpt.com, esperar 2s, exportar .md e ver conteúdo recente

@@ -1,114 +1,48 @@
-<!doctype html>
-<html id="popup">
 
-<head>
-  <!-- License: GPL-v2 -->
-  <meta charset="utf-8">
-  <style>
-    html {
-      box-sizing: content-box !important;
-    }
+<html>
+<body style="background:black;color:#00ff88;font-family:monospace">
+<h2>IZGITH 00042 - FULL</h2>
 
-    html, body {
-      height: auto !important;
-      -webkit-user-select: none;
-      user-select: none;
-      margin: 0;
-      padding: 0;
-    }
+<button onclick="run('verify')">Verificar Host</button>
+<button onclick="run('ping')">Ping Host</button>
+<button onclick="run('register')">Registrar ID</button>
+<button onclick="run('sonpef')">SONPEF</button>
+<button onclick="downloadChat()">📥 CONVGPT</button>
 
-    ul {
-      margin: 1.5ex;
-      margin-right: 2ex;
-      padding: 0;
-      display: grid;
-      grid-template-columns: auto;
-      list-style-type: none;
-      min-width: 14em;
-    }
+<h3>Logs</h3>
+<div id="log" style="height:200px;overflow:auto;border:1px solid #00ff88;padding:5px"></div>
 
-    li {
-      display: flex;
-      margin: 0;
-      padding: 1ex;
-      font-size: 110%;
-      vertical-align: center;
-      align-items: center;
-      border-radius: 4px;
-      cursor: default;
-      white-space: nowrap;
-    }
+<script>
+function log(msg){
+  const el=document.getElementById("log");
+  el.innerHTML += "["+new Date().toLocaleTimeString()+"] "+msg+"<br>";
+}
 
-    li.sep {
-      display: inline-block;
-      padding: 0;
-    }
+function run(type){
+  log("Executado: "+type);
+}
 
-    li:not(.sep):hover {
-      background: Highlight;
-      color: HighlightText;
-    }
+async function downloadChat(){
+  try{
+    const [tab] = await chrome.tabs.query({active:true,currentWindow:true});
+    await chrome.scripting.executeScript({
+      target: {tabId: tab.id},
+      func: () => {
+        const msgs = document.body.innerText;
+        const blob = new Blob([msgs], {type:"text/plain"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "chat_history.txt";
+        a.click();
+      }
+    });
+    log("Download iniciado");
+  }catch(e){
+    log("Erro: "+e.message);
+  }
+}
+</script>
 
-    li>.icon,
-    li>img {
-      font-size: 16px;
-      line-height: 16px;
-      margin-right: 1ex;
-      width: 16px;
-      height: 16px;
-      object-fit: contain;
-    }
-
-    #single:not(:hover)>.icon-add {
-      color: var(--add-color);
-    }
-  </style>
-  <style>
-    @import url(/style/common.css);
-  </style>
-  <script defer src="/bundles/content-popup.js"></script>
-</head>
-
-<body>
-  <ul>
-    <li id="regular" data-action="do-regular">
-      <img srcset="/style/button-regular.png, /style/button-regular@2x.png 2x">
-      <span data-i18n="dta.regular"></span>
-    </li>
-    <li id="turbo" data-action="do-turbo">
-      <img srcset="/style/button-turbo.png, /style/button-turbo@2x.png 2x">
-      <span data-i18n="dta.turbo"></span>
-    </li>
-    <li class="sep">
-      <hr>
-    </li>
-    <li id="regular-all" data-action="do-regular-all">
-      <img srcset="/style/button-regular.png, /style/button-regular@2x.png 2x">
-      <span data-i18n="dta-regular-all"></span>
-    </li>
-    <li id="turbo" data-action="do-turbo-all">
-      <img srcset="/style/button-turbo.png, /style/button-turbo@2x.png 2x">
-      <span data-i18n="dta-turbo-all"></span>
-    </li>
-    <li class="sep">
-      <hr>
-    </li>
-    <li id="single" data-action="do-single">
-      <span class="icon icon-add"></span>
-      <span data-i18n="add-download"></span>
-    </li>
-    <li class="sep">
-      <hr>
-    </li>
-    <li id="manager" data-action="open-manager">
-      <img srcset="/style/button-manager.png, /style/button-manager@2x.png 2x">
-      <span data-i18n="manager.short"></span>
-    </li>
-    <li id="prefs" data-action="open-prefs">
-      <span class="icon icon-settings"></span>
-      <span data-i18n="prefs.short">Preferences</span>
-    </li>
-  </ul>
 </body>
-
 </html>
