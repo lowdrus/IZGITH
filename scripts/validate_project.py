@@ -79,13 +79,17 @@ def main():
     for name in ('SONPEF', 'CONVGPT', 'KIT_UNICO'):
         check(name, (ROOT / f'integrations/{name}/integration.json').is_file())
 
+    convgpt = EXT / 'integrations/convgpt.js'
+    convgpt_text = convgpt.read_text(encoding='utf-8') if convgpt.is_file() else ''
+    for token in ("convgpt.v2", "pdf", "doc", "txt", "md", "json", "xls", "Baixar todos os formatos"):
+        check(f'CONVGPT {token}', token in convgpt_text)
+
     assistants_path = EXT / 'scripts/assistants.js'
     assistants = assistants_path.read_text(encoding='utf-8') if assistants_path.is_file() else ''
     canonical = ('Júlia', 'Ayella', 'IZART')
     forbidden = ('Ayelle', 'alias Ayella', 'Alias: Ayella')
     check('IA/assistentes', all(x in assistants for x in canonical) and not any(x in assistants for x in forbidden))
 
-    # Keep the service worker under the same naming contract as the assistant registry.
     worker_text = worker.read_text(encoding='utf-8') if worker.is_file() else ''
     check('service worker sem alias proibido', not any(x in worker_text for x in forbidden))
 
