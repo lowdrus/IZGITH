@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "IZGITH",
   "description": "Hub offline-first para download, auditoria e preparacao segura de extensoes Chromium.",
-  "version": "6.0.0.40",
-  "version_name": "6.0.0.00040 CLEAN CORE",
+  "version": "6.0.0.42",
+  "version_name": "6.0.0.00042 ULTRA+CONTROLLED UNIFIED",
   "minimum_chrome_version": "111",
   "action": {
     "default_title": "IZGITH",
@@ -15,7 +15,10 @@
       "128": "assets/icons/icon128.png"
     }
   },
-  "background": { "service_worker": "sw.js", "type": "module" },
+  "background": {
+    "service_worker": "sw.js",
+    "type": "module"
+  },
   "icons": {
     "16": "assets/icons/icon16.png",
     "32": "assets/icons/icon32.png",
