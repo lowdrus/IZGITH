@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "IZGITH",
   "description": "Hub offline-first para download, auditoria e preparacao segura de extensoes Chromium.",
-  "version": "6.0.0.50",
-  "version_name": "6.0.0.00050 INTEGRATION VERIFICATION",
+  "version": "6.0.0.51",
+  "version_name": "6.0.0.00051 FUNCTIONAL INTEGRATION",
   "minimum_chrome_version": "111",
   "action": {
     "default_title": "IZGITH",
