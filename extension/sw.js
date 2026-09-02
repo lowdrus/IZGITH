@@ -1,4 +1,4 @@
-/* IZGITH 6.0.0.00050 - MV3 service worker. Native Messaging is optional. */
+/* IZGITH 6.0.0.00051 - MV3 service worker. Native Messaging is optional. */
 const DEFAULTS = { theme: 'cyber-neon', autoMode: 'confirm', operationMode: 'unified', performanceMode: false, githubRepos: [], history: [] };
 const NATIVE_HOST = 'com.izgith.host';
 const NATIVE_TIMEOUT_MS = 5000;
@@ -42,6 +42,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     const allowed=['unified','controlled','ultra']; const value=allowed.indexOf(message.operationMode)>=0 ? message.operationMode : 'unified';
     chrome.storage.local.set({operationMode:value}).then(function(){sendResponse({ok:true,operationMode:value});}).catch(function(e){sendResponse({ok:false,error:String(e && e.message || e)});}); return true;
   }
-  if (message.type === 'GET_INTEGRATION_STATUS') { sendResponse({ok:true,nativeMessaging:{host:NATIVE_HOST,bootRequired:false,probeBeforeCall:true},integrations:['SONPEF','CONVGPT','KIT_UNICO','CHAT_HISTORY'],assistants:['Júlia','Ayelle','IZART'],operationMode:'unified'}); return false; }
+  if (message.type === 'GET_INTEGRATION_STATUS') { sendResponse({ok:true,nativeMessaging:{host:NATIVE_HOST,bootRequired:false,probeBeforeCall:true},integrations:['SONPEF','CONVGPT','KIT_UNICO','CHAT_HISTORY'],assistants:['Júlia','Ayella','IZART'],operationMode:'unified'}); return false; }
   return false;
 });
