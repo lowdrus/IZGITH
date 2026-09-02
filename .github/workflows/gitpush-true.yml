@@ -1,0 +1,101 @@
+name: GitPush True — atualização autorizada
+
+on:
+  workflow_dispatch:
+    inputs:
+      path:
+        description: "Caminho relativo do arquivo"
+        required: true
+        type: string
+      content_base64:
+        description: "Conteúdo completo codificado em Base64"
+        required: true
+        type: string
+      message:
+        description: "Mensagem do commit"
+        required: false
+        default: "Atualização automatizada autorizada"
+        type: string
+  repository_dispatch:
+    types: [gitpush_true]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gitpush-true-main
+  cancel-in-progress: false
+
+jobs:
+  validar-e-publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o estado completo do main
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Configurar atualização solicitada
+        id: request
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_PATH: ${{ inputs.path }}
+          INPUT_CONTENT: ${{ inputs.content_base64 }}
+          INPUT_MESSAGE: ${{ inputs.message }}
+          DISPATCH_PATH: ${{ github.event.client_payload.path }}
+          DISPATCH_CONTENT: ${{ github.event.client_payload.content_base64 }}
+          DISPATCH_MESSAGE: ${{ github.event.client_payload.message }}
+        run: |
+          python - <<'PY'
+          import base64, os
+          from pathlib import Path, PurePosixPath
+
+          dispatch=os.environ.get('EVENT_NAME') == 'repository_dispatch'
+          raw_path=os.environ.get('DISPATCH_PATH' if dispatch else 'INPUT_PATH','').strip()
+          raw_content=os.environ.get('DISPATCH_CONTENT' if dispatch else 'INPUT_CONTENT','').strip()
+          message=(os.environ.get('DISPATCH_MESSAGE' if dispatch else 'INPUT_MESSAGE','').strip()
+                   or 'Atualização automatizada autorizada')
+
+          path=PurePosixPath(raw_path)
+          if not raw_path or path.is_absolute() or '..' in path.parts:
+              raise SystemExit('Caminho inválido: use somente caminho relativo dentro do repositório')
+          blocked={'.git','.env','conversations.json','user.json','message_feedback.json','shared_conversations.json'}
+          if any(part in blocked for part in path.parts) or path.suffix.lower() in {'.pem','.key','.p12','.pfx'}:
+              raise SystemExit('Arquivo sensível ou interno não pode ser publicado')
+          try:
+              content=base64.b64decode(raw_content,validate=True)
+          except Exception as exc:
+              raise SystemExit(f'Base64 inválido: {exc}')
+          if len(content)>1024*1024:
+              raise SystemExit('Limite de 1 MiB por atualização')
+          target=Path(*path.parts)
+          target.parent.mkdir(parents=True,exist_ok=True)
+          target.write_bytes(content)
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as output:
+              output.write(f'path={path.as_posix()}\n')
+              output.write(f'message={message.replace(chr(10)," ")[:120]}\n')
+          PY
+
+      - name: Validar o projeto
+        run: |
+          npm test
+          npm run package
+          python -m compileall -q host-python scripts tools tests
+          git diff --check
+
+      - name: Fazer pull, commit e push
+        env:
+          COMMIT_MESSAGE: ${{ steps.request.outputs.message }}
+          UPDATED_PATH: ${{ steps.request.outputs.path }}
+        run: |
+          git config user.name "izgith-automation[bot]"
+          git config user.email "izgith-automation[bot]@users.noreply.github.com"
+          git add -- "$UPDATED_PATH"
+          if git diff --cached --quiet; then
+            echo "O conteúdo enviado já corresponde ao arquivo atual."
+            exit 0
+          fi
+          git commit -m "$COMMIT_MESSAGE"
+          git pull --rebase origin main
+          git push origin HEAD:main

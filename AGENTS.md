@@ -10,4 +10,4 @@ Estas regras valem para sessões Codex/ChatGPT que clonarem este repositório co
 6. Confirmar no GitHub Actions que CI e CodeQL terminaram com sucesso; corrigir falhas introduzidas pela alteração antes de concluir o trabalho.
 7. Manter `README.md`, tutorial e `CHANGELOG.md` atualizados quando o comportamento do produto mudar.
 
-O GitHub App/plugin conectado fornece autenticação. Não existe nem deve ser criada uma opção `git push true`, um token permanente em arquivo ou uma permissão vinculada a uma URL de conversa.
+O GitHub App/plugin conectado fornece autenticação. O workflow `gitpush-true.yml` aceita uma atualização autorizada manual ou por `repository_dispatch`, valida o projeto e só então faz pull/commit/push. Ele não armazena token e não consegue buscar conteúdo que exista apenas dentro de uma conversa ainda não conectada ao GitHub.
