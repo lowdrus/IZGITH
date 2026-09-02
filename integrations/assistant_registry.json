@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "project": "IZGITH",
+  "canonical_assistants": [
+    {
+      "id": "julia",
+      "name": "Júlia"
+    },
+    {
+      "id": "ayella",
+      "name": "Ayella"
+    },
+    {
+      "id": "izart",
+      "name": "IZART"
+    }
+  ],
+  "naming_policy": {
+    "ayella_is_alias": false,
+    "forbidden_display_names": ["Ayelle", "alias Ayella", "Alias: Ayella"]
+  },
+  "version": "6.0.0.00046"
+}
