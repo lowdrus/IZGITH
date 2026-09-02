@@ -1,0 +1,36 @@
+name: Automação Total de Código (ChatGPT -> Repositório)
+
+on:
+  repository_dispatch:
+    types: [atualizar_codigo] # O gatilho automático que a automação vai disparar
+
+permissions:
+  contents: write # Permissão total de escrita para modificar todas as pastas
+
+jobs:
+  upload-automatico:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Completo do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Git do Bot
+        run: |
+          git config --global user.name "chatgpt-automation[bot]"
+          git config --global user.email "chatgpt-automation[bot]@users.noreply.github.com"
+
+      - name: Criar ou Modificar o Arquivo Alvo
+        env:
+          CAMINHO_ARQUIVO: ${{ github.event.client_payload.path }}
+          CONTEUDO_ARQUIVO: ${{ github.event.client_payload.content }}
+        run: |
+          mkdir -p "$(dirname "$CAMINHO_ARQUIVO")"
+          echo "$CONTEUDO_ARQUIVO" > "$CAMINHO_ARQUIVO"
+
+      - name: Commit e Push Automático
+        run: |
+          git add .
+          git diff-index --quiet HEAD || git commit -m "🤖 Automação: Atualizando arquivo em ${{ github.event.client_payload.path }}"
+          git pull --rebase origin main
+          git push origin main
