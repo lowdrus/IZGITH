@@ -1,3 +1,19 @@
 {
-  "id":"conv-d","name":"CONV-D","status":"functional","entry":"../../extension/integrations/conv-d.js","output":["pdf","doc","txt","markdown","json","xls"],"privacy":"local-only","scope":"full-or-last-round-of-current-conversation-on-supported-AI-web-apps","providers":["ChatGPT","Claude","Gemini","Copilot","Perplexity","Grok","DeepSeek","Poe","Le Chat","You.com"],"schema":"izgith.conv-d.v4","selection":["Tudo","Ultima Rodada"],"save":"Chrome downloads saveAs dialog; user chooses the local destination","activation":"Dashboard button Ativar CONV toggles convDEnabled in chrome.storage.local","behavior":"button injected on supported conversation pages and remounted after SPA/DOM navigation"
+  "id":"conv-d",
+  "name":"CONV-D",
+  "status":"functional",
+  "entry":"../../extension/integrations/conv-d.js",
+  "link_entry":"../../extension/integrations/conv-d-link.js",
+  "output":["pdf","doc","txt","markdown","json","xls"],
+  "privacy":"local-only",
+  "scope":"full-or-last-round-of-current-conversation-on-supported-AI-web-apps",
+  "providers":["ChatGPT","Claude","Gemini","Copilot","Perplexity","Grok","DeepSeek","Poe","Le Chat","You.com","Meta AI","Qwen","HuggingChat","Character.AI","Mistral"],
+  "schema":"izgith.conv-d.v5",
+  "selection":["Tudo","Ultima Rodada"],
+  "save":"Chrome downloads saveAs dialog; user chooses the local destination",
+  "activation":"Dashboard button Ativar CONV toggles convDEnabled in chrome.storage.local",
+  "behavior":"button injected into supported conversation pages and remounted after SPA/DOM navigation",
+  "link_behavior":"Dashboard Download por Link validates a supported AI URL and opens that exact conversation in a new tab; the CONV-D button then appears there",
+  "identity":"exports preserve detected user/assistant roles and platform message IDs when the platform exposes them; no private account ID is fabricated",
+  "format_note":"DOC uses Word-compatible HTML and XLS uses Excel SpreadsheetML so the files remain portable without native executors"
 }
