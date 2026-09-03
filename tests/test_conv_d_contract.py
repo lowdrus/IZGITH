@@ -24,6 +24,20 @@ class ConvDContractTests(unittest.TestCase):
         self.assertNotIn('izgith-cd-min', text)
         self.assertIn("saveAs:true", ROOT.joinpath('extension/sw.js').read_text(encoding='utf-8'))
 
+    def test_dashboard_has_requested_tools_and_no_duplicate_izart_tool(self):
+        text = (EXT / 'ui' / 'dashboard.html').read_text(encoding='utf-8')
+        for token in ('CONVERSAS POR URL', 'Download por Link', 'Fila Rápida', 'Selecionar .ZIP/.CRX', 'SONPEF', 'KIT_UNICO', 'Ativar CONV'):
+            self.assertIn(token, text)
+        self.assertIn('assistant-grid', text)
+        self.assertNotIn('id="toolIzart"', text)
+        self.assertIn('LIMPAR', text.upper())
+
+    def test_dashboard_js_implements_url_and_queue_actions(self):
+        text = (EXT / 'ui' / 'dashboard.js').read_text(encoding='utf-8')
+        for token in ('conversationUrlPrepare', 'downloadByLink', 'toolQuickQueue', 'toolZipCrx', 'enqueueFiles', 'supportedConversationUrl'):
+            self.assertIn(token, text)
+        self.assertNotIn('connectNative', text)
+
     def test_registry_matches_manifest_package(self):
         manifest = json.loads((EXT / 'manifest.json').read_text(encoding='utf-8'))
         package = json.loads((ROOT / 'package.json').read_text(encoding='utf-8'))

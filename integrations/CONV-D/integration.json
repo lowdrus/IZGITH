@@ -8,12 +8,16 @@
   "privacy":"local-only",
   "scope":"full-or-last-round-of-current-conversation-on-supported-AI-web-apps",
   "providers":["ChatGPT","Claude","Gemini","Copilot","Perplexity","Grok","DeepSeek","Poe","Le Chat","You.com","Meta AI","Qwen","HuggingChat","Character.AI","Mistral"],
-  "schema":"izgith.conv-d.v5",
+  "schema":"izgith.conv-d.v6",
   "selection":["Tudo","Ultima Rodada"],
   "save":"Chrome downloads saveAs dialog; user chooses the local destination",
   "activation":"Dashboard button Ativar CONV toggles convDEnabled in chrome.storage.local",
   "behavior":"button injected into supported conversation pages and remounted after SPA/DOM navigation",
-  "link_behavior":"Dashboard Download por Link validates a supported AI URL and opens that exact conversation in a new tab; the CONV-D button then appears there",
   "identity":"exports preserve detected user/assistant roles and platform message IDs when the platform exposes them; no private account ID is fabricated",
-  "format_note":"DOC uses Word-compatible HTML and XLS uses Excel SpreadsheetML so the files remain portable without native executors"
+  "format_note":"DOC uses Word-compatible HTML and XLS uses Excel SpreadsheetML; the user explicitly selects the format before saving",
+  "conversation_url_module":"Central de Ferramentas > CONVERSAS POR URL validates an authenticated AI conversation URL and opens the exact conversation so CONV-D can operate there",
+  "repository_field":"A GitHub repository URL may be recorded as the intended destination, but this extension module does not perform force-push, embed credentials, or publish private conversation data automatically",
+  "download_link":"Central de Ferramentas > Download por Link supports HTTP/HTTPS file URLs with the browser save dialog and supported AI conversation URLs",
+  "quick_queue":"Central de Ferramentas > Fila Rápida stores local file metadata in chrome.storage.local for later processing",
+  "zip_crx":"Central de Ferramentas > Selecionar .ZIP/.CRX adds local packages to the queue for later audit/extraction"
 }
