@@ -1,4 +1,4 @@
-/* IZGITH 6.0.0.00052 - MV3 service worker. Native Messaging is optional. */
+/* IZGITH 6.0.0.00059 - MV3 service worker. Native Messaging is optional. */
 const DEFAULTS = { theme: 'cyber-neon', autoMode: 'confirm', operationMode: 'unified', performanceMode: false, githubRepos: [], history: [] };
 const NATIVE_HOST = 'com.izgith.host';
 const NATIVE_TIMEOUT_MS = 5000;
@@ -29,9 +29,23 @@ function nativeRequest(payload, timeoutMs) {
   });
 }
 
+function saveBase64(message, sendResponse) {
+  try {
+    const filename = String(message.filename || 'izgith-export.txt').replace(/[\\/:*?"<>|]+/g, '_');
+    const mime = String(message.mime || 'application/octet-stream');
+    const base64 = String(message.base64 || '');
+    if (!base64) { sendResponse({ok:false,error:'Arquivo vazio.'}); return; }
+    const url = 'data:' + mime + ';base64,' + base64;
+    chrome.downloads.download({url:url, filename:filename, saveAs:true, conflictAction:'uniquify'})
+      .then(function(id) { sendResponse({ok:true,downloadId:id,saveDialog:true}); })
+      .catch(function(error) { sendResponse({ok:false,error:String(error && error.message || error)}); });
+  } catch (error) { sendResponse({ok:false,error:String(error && error.message || error)}); }
+}
+
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (!message || typeof message !== 'object') return false;
   if (message.type === 'PING') { sendResponse({ok:true,version:chrome.runtime.getManifest().version,mode:'unified'}); return false; }
+  if (message.type === 'SAVE_FILE') { saveBase64(message, sendResponse); return true; }
   if (message.type === 'NATIVE_HOST_CHECK') {
     nativeRequest({command:'ping'}, 3000).then(function(result) { sendResponse({ok:result.ok===true,available:result.available===true,host:NATIVE_HOST,code:result.code||null,error:result.error||null,response:result.response||null}); });
     return true;
@@ -42,6 +56,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     const allowed=['unified','controlled','ultra']; const value=allowed.indexOf(message.operationMode)>=0 ? message.operationMode : 'unified';
     chrome.storage.local.set({operationMode:value}).then(function(){sendResponse({ok:true,operationMode:value});}).catch(function(e){sendResponse({ok:false,error:String(e && e.message || e)});}); return true;
   }
-  if (message.type === 'GET_INTEGRATION_STATUS') { sendResponse({ok:true,nativeMessaging:{host:NATIVE_HOST,bootRequired:false,probeBeforeCall:true},integrations:['SONPEF','CONVGPT','KIT_UNICO','CHAT_HISTORY'],assistants:['Júlia','Ayella','IZART'],operationMode:'unified'}); return false; }
+  if (message.type === 'GET_INTEGRATION_STATUS') { sendResponse({ok:true,nativeMessaging:{host:NATIVE_HOST,bootRequired:false,probeBeforeCall:true},integrations:['SONPEF','CONV-D','KIT_UNICO','CHAT_HISTORY'],assistants:['Júlia','Ayella','IZART'],operationMode:'unified'}); return false; }
   return false;
 });
