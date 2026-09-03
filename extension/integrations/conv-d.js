@@ -1,27 +1,22 @@
 (() => {
   'use strict';
-  const ID='izgith-conv-d-export';
-  const FORMATS=['pdf','doc','txt','md','json','xls'];
-  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-  const clean=v=>String(v||'').replace(/\u00a0/g,' ').trim();
-  const safe=v=>clean(v).replace(/[\\/:*?"<>|]+/g,'_').slice(0,90)||'conversa-ai';
-  const host=location.hostname;
+  const ID='izgith-conv-d-export'; const FORMATS=['pdf','doc','txt','md','json','xls']; const sleep=ms=>new Promise(r=>setTimeout(r,ms)); const clean=v=>String(v||'').replace(/\u00a0/g,' ').trim(); const safe=v=>clean(v).replace(/[\\/:*?"<>|]+/g,'_').slice(0,90)||'conversa-ai'; const host=location.hostname;
   const ADAPTERS={
     chatgpt:{name:'ChatGPT',match:/(^|\.)chatgpt\.com$/i,selectors:['[data-message-author-role]'],role:n=>n.getAttribute('data-message-author-role')||'unknown'},
     claude:{name:'Claude',match:/(^|\.)claude\.ai$/i,selectors:['[data-testid="user-message"]','[data-testid="assistant-message"]','[data-is-streaming]'],role:n=>n.matches('[data-testid="user-message"]')?'user':'assistant'},
-    gemini:{name:'Gemini',match:/(^|\.)gemini\.google\.com$/i,selectors:['message-content','user-query','model-response'],role:n=>n.tagName.toLowerCase()==='user-query'?'user':'assistant'},
-    copilot:{name:'Copilot',match:/(^|\.)copilot\.microsoft\.com$/i,selectors:['[data-content]','[data-message-author-role]'],role:n=>n.getAttribute('data-message-author-role')||n.getAttribute('data-content')?'assistant':'unknown'},
+    gemini:{name:'Gemini',match:/(^|\.)gemini\.google\.com$/i,selectors:['user-query','model-response','message-content'],role:n=>n.tagName.toLowerCase()==='user-query'?'user':'assistant'},
+    copilot:{name:'Copilot',match:/(^|\.)copilot\.microsoft\.com$/i,selectors:['[data-content]','[data-message-author-role]'],role:n=>n.getAttribute('data-message-author-role')||'assistant'},
     perplexity:{name:'Perplexity',match:/(^|\.)perplexity\.ai$/i,selectors:['[data-testid="conversation-turn"]','[data-message-author-role]'],role:n=>n.getAttribute('data-message-author-role')||'unknown'},
     grok:{name:'Grok',match:/(^|\.)grok\.com$/i,selectors:['[data-testid="message"]','[data-message-author-role]'],role:n=>n.getAttribute('data-message-author-role')||'unknown'},
-    deepseek:{name:'DeepSeek',match:/(^|\.)chat\.deepseek\.com$/i,selectors:['[class*="message"]'],role:n=>/user/i.test(n.className)?'user':'assistant'},
+    deepseek:{name:'DeepSeek',match:/(^|\.)chat\.deepseek\.com$/i,selectors:['[class*="message"]'],role:n=>/user/i.test(String(n.className))?'user':'assistant'},
     poe:{name:'Poe',match:/(^|\.)poe\.com$/i,selectors:['[data-message-id]'],role:n=>/user/i.test(n.getAttribute('data-sender')||'')?'user':'assistant'},
     mistral:{name:'Le Chat',match:/(^|\.)chat\.mistral\.ai$/i,selectors:['[data-message-author-role]','[class*="message"]'],role:n=>n.getAttribute('data-message-author-role')||'unknown'},
     you:{name:'You.com',match:/(^|\.)you\.com$/i,selectors:['[data-testid*="message"]','[data-message-author-role]'],role:n=>n.getAttribute('data-message-author-role')||'unknown'}
   };
   const adapter=Object.values(ADAPTERS).find(a=>a.match.test(host))||{name:host,selectors:['[data-message-author-role]','article','main [role="article"]','main p'],role:()=> 'unknown'};
   function nodes(){for(const s of adapter.selectors){const n=[...document.querySelectorAll(s)].filter(x=>clean(x.innerText));if(n.length>=2)return n;}return [];}
-  function collect(){const ns=nodes();const seen=new Set();const messages=[];for(const n of ns){const text=clean(n.innerText);if(!text||seen.has(text))continue;seen.add(text);messages.push({index:messages.length+1,role:adapter.role(n),text});}return {schema:'izgith.conv-d.v1',provider:adapter.name,host,title:clean(document.querySelector('h1')?.innerText||document.title),url:location.href,exportedAt:new Date().toISOString(),messageCount:messages.length,messages};}
-  async function collectConversation(){const y=scrollY;let stable=0,last=0;for(let i=0;i<28;i++){const c=nodes().length;if(c===last)stable++;else stable=0;last=c;window.scrollTo(0,document.body.scrollHeight);await sleep(140);window.scrollTo(0,0);await sleep(120);if(stable>=2)break;}const d=collect();scrollTo(0,y);return d;}
+  function collect(){const ns=nodes(),seen=new Set(),messages=[];for(const n of ns){const text=clean(n.innerText);if(!text||seen.has(text))continue;seen.add(text);messages.push({index:messages.length+1,role:adapter.role(n),text});}return {schema:'izgith.conv-d.v1',provider:adapter.name,host,title:clean(document.querySelector('h1')?.innerText||document.title),url:location.href,exportedAt:new Date().toISOString(),messageCount:messages.length,messages};}
+  async function collectConversation(){const y=scrollY;let stable=0,last=-1;for(let i=0;i<28;i++){const c=nodes().length;if(c===last)stable++;else stable=0;last=c;window.scrollTo(0,document.body.scrollHeight);await sleep(140);window.scrollTo(0,0);await sleep(120);if(stable>=2)break;}const d=collect();scrollTo(0,y);return d;}
   const md=d=>`# ${d.title||'Conversa AI'}\n\n- Provedor: ${d.provider}\n- URL: ${d.url}\n- Exportado: ${d.exportedAt}\n- Mensagens: ${d.messageCount}\n\n${d.messages.map(m=>`## ${m.index}. ${m.role}\n\n${m.text}`).join('\n\n---\n\n')}\n`;
   const txt=d=>d.messages.map(m=>`[${m.index}] ${m.role}\n${m.text}`).join('\n\n'+'='.repeat(72)+'\n\n')+'\n';
   const esc=v=>String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -32,5 +27,6 @@
   function one(d,f){const b=safe(d.title);if(f==='md')download(`${b}.md`,md(d),'text/markdown;charset=utf-8');else if(f==='txt')download(`${b}.txt`,txt(d),'text/plain;charset=utf-8');else if(f==='json')download(`${b}.json`,JSON.stringify(d,null,2),'application/json;charset=utf-8');else if(f==='doc')download(`${b}.doc`,html(d),'application/msword;charset=utf-8');else if(f==='xls')download(`${b}.xls`,xls(d),'application/vnd.ms-excel;charset=utf-8');else if(f==='pdf')download(`${b}.pdf`,pdf(d),'application/pdf');}
   async function run(){const b=document.getElementById(ID);if(b)b.disabled=true;try{const d=await collectConversation();if(!d.messages.length)throw new Error(`Nenhuma mensagem detectada em ${adapter.name}.`);FORMATS.forEach(f=>one(d,f));if(b)b.textContent=`CONV-D ✓ ${d.provider} · ${d.messageCount}`;}catch(e){console.error('[IZGITH CONV-D]',e);if(b)b.textContent=`CONV-D: ${e.message}`;}finally{setTimeout(()=>{if(b){b.disabled=false;b.textContent='Baixar Conversa · CONV-D';}},3500);}}
   function mount(){if(document.getElementById(ID))return;const b=document.createElement('button');b.id=ID;b.type='button';b.textContent='Baixar Conversa · CONV-D';b.addEventListener('click',run);document.body.appendChild(b);}
+  chrome.runtime?.onMessage?.addListener((m,_s,sendResponse)=>{if(m?.type!=='CONV_D_EXPORT')return;run().then(()=>sendResponse({ok:true})).catch(e=>sendResponse({ok:false,error:e.message}));return true;});
   mount();new MutationObserver(mount).observe(document.documentElement,{childList:true,subtree:true});
 })();
