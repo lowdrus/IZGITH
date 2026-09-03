@@ -5,8 +5,10 @@
   "entry":"../../extension/integrations/conv-d.js",
   "output":["pdf","doc","txt","markdown","json","xls"],
   "privacy":"local-only",
-  "scope":"current-conversation-on-supported-AI-web-apps",
+  "scope":"full-or-selected-round-of-current-conversation-on-supported-AI-web-apps",
   "providers":["ChatGPT","Claude","Gemini","Copilot","Perplexity","Grok","DeepSeek","Poe","Le Chat","You.com"],
-  "schema":"izgith.conv-d.v1",
-  "behavior":"button injected on each supported conversation page"
+  "schema":"izgith.conv-d.v3",
+  "selection":["Tudo — início até o final","Rodada — uma rodada da conversa"],
+  "save":"Chrome downloads saveAs dialog; user chooses the local destination",
+  "behavior":"button injected on supported conversation pages and remounted after SPA/DOM navigation"
 }
