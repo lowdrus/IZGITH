@@ -1,12 +1,14 @@
 {
-  "schema_version": 1,
-  "conversation_url": "https://chatgpt.com/gg/69cb3e9ea61c81a2895c94c07cbd9c33",
-  "repository": "lowdrus/IZGITH",
-  "branch": "main",
-  "dispatch_event": "gitpush_true",
-  "workflow": ".github/workflows/gitpush-true.yml",
-  "authentication": "github-app-or-repository-token",
-  "permissions_required": ["contents:write"],
-  "secrets_stored_in_repository": false,
-  "status": "registered"
+  "schema_version":2,
+  "conversation_url":"https://chatgpt.com/gg/69cb3e9ea61c81a2895c94c07cbd9c33",
+  "repository":"lowdrus/IZGITH",
+  "branch":"main",
+  "module":{"id":"conv-d-link","name":"CONV-D Download por Link","entry":"extension/ui/dashboard.js","input":"conversation_url","action":"validate URL, open exact conversation in a supported AI tab, then let CONV-D inject Baixar Conversa","selection":["Tudo","Ultima Rodada"],"formats":["pdf","doc","txt","md","json","xls"],"local_save":true},
+  "supported_platforms":["ChatGPT","Claude","Gemini","Grok","Copilot","Perplexity","DeepSeek","Poe","Le Chat","You.com","Meta AI","Qwen","HuggingChat","Character.AI"],
+  "dispatch_event":"gitpush_true",
+  "workflow":".github/workflows/gitpush-true.yml",
+  "authentication":"github-app-or-repository-token",
+  "permissions_required":["contents:write"],
+  "secrets_stored_in_repository":false,
+  "status":"functional-module"
 }
