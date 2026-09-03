@@ -1,1 +1,1 @@
-{"id":"sonpef","name":"SONPEF","status":"adapter-ready","entry":"../../extension/scripts/assistants.js","legacy_source":"../../archive/legacy/root"}
+{"id":"sonpef","name":"SONPEF","status":"implemented-safe-unifier","entry":"./sonpef_unify.ps1","legacy_source":"../../archive/legacy/root","executes_discovered_scripts":false}

@@ -2,7 +2,7 @@
 
 Extensao Chrome Manifest V3 para baixar, preparar e auditar pacotes de extensoes Chromium com seguranca. O IZGITH reune em um unico produto o popup, a fila, o painel de controle, o monitor de releases publicas do GitHub e um host local opcional em Python.
 
-## Estado atual - 6.0.0.00049
+## Estado atual - 6.0.0.00050
 
 A linha atual preserva a referencia visual `IZGITH_v6.0.0.00034_Full_Build` e usa **Ultra + Controlado unificados** como modo padrao. O usuario ainda pode selecionar `Controlado` ou `Ultra` individualmente em Configuracoes.
 
@@ -44,7 +44,7 @@ O popup funciona sem programas adicionais. Para auditoria local, CRX/ZIP e labor
 
 ## Verificacao Windows
 
-Na raiz do repositorio, o par `build/IZGITH_BUILD_00049.bat` + `build/IZGITH_BUILD_00049.ps1` verifica a estrutura do pacote, Manifest V3, service worker, UI, quatro icones, catalogo de 36 temas e registro dos assistentes. O `.ps1` foi escrito sem `?.` e sem usar `$Host` como variavel, evitando os erros recorrentes observados em Windows PowerShell antigo.
+Na raiz do repositorio, o par `build/IZGITH_BUILD_00050.bat` + `build/IZGITH_BUILD_00050.ps1` cria uma base limpa a partir do proprio repositorio e verifica manifest.json, service worker, UI e os quatro icones PNG. O `.ps1` foi escrito sem `?.` e sem usar `$Host` como variavel, evitando os erros recorrentes observados em Windows PowerShell antigo. O BAT e o PS1 permanecem juntos na mesma pasta.
 
 ## Desenvolvimento
 
@@ -70,6 +70,12 @@ O pacote e criado em `dist/`. Nenhuma dependencia npm e necessaria.
 - `archive/legacy/`: fontes historicas incorporadas, fora do build.
 
 Consulte `docs/AUDITORIA_DO_LEGADO.md` para saber exatamente o que foi preservado, removido e efetivamente integrado.
+
+## Recuperacao do legado
+
+Os fontes antigos nao foram simplesmente descartados. A auditoria registra que 616 arquivos historicos uteis foram preservados em `archive/legacy/root/`. O SONPEF historico, por exemplo, esta preservado para migracao controlada; a nova entrada `integrations/SONPEF/sonpef_unify.ps1` e uma implementacao segura que inventaria e unifica fontes sem executar os scripts descobertos.
+
+KIT_UNICO permanece como fonte auditada e CONVGPT como adaptador de historico. Nenhum arquivo historico e promovido automaticamente para a extensao sem revisao de permissao, licenca e testes.
 
 ## Seguranca e privacidade
 
