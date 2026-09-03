@@ -3,8 +3,8 @@
   "name": "IZGITH",
   "short_name": "IZGITH",
   "description": "Extensao Manifest V3 para preparacao e auditoria segura de extensoes Chromium.",
-  "version": "6.0.0.58",
-  "version_name": "6.0.0.00058 CONV-D UNIVERSAL",
+  "version": "6.0.0.59",
+  "version_name": "6.0.0.00059 CONV-D UNIVERSAL",
   "minimum_chrome_version": "111",
   "action": {
     "default_title": "IZGITH",
@@ -22,46 +22,17 @@
     "48": "assets/icons/icon48.png",
     "128": "assets/icons/icon128.png"
   },
-  "background": {
-    "service_worker": "sw.js"
-  },
-  "permissions": [
-    "downloads",
-    "storage",
-    "tabs",
-    "windows"
-  ],
+  "background": {"service_worker": "sw.js"},
+  "permissions": ["downloads","storage","tabs","windows"],
   "host_permissions": [
-    "https://chatgpt.com/*",
-    "https://claude.ai/*",
-    "https://gemini.google.com/*",
-    "https://copilot.microsoft.com/*",
-    "https://perplexity.ai/*",
-    "https://www.perplexity.ai/*",
-    "https://grok.com/*",
-    "https://chat.deepseek.com/*",
-    "https://poe.com/*",
-    "https://chat.mistral.ai/*",
-    "https://you.com/*"
+    "https://chatgpt.com/*","https://claude.ai/*","https://gemini.google.com/*","https://copilot.microsoft.com/*","https://perplexity.ai/*","https://www.perplexity.ai/*","https://grok.com/*","https://chat.deepseek.com/*","https://poe.com/*","https://chat.mistral.ai/*","https://you.com/*"
   ],
-  "content_scripts": [
-    {
-      "matches": [
-        "https://chatgpt.com/*",
-        "https://claude.ai/*",
-        "https://gemini.google.com/*",
-        "https://copilot.microsoft.com/*",
-        "https://perplexity.ai/*",
-        "https://www.perplexity.ai/*",
-        "https://grok.com/*",
-        "https://chat.deepseek.com/*",
-        "https://poe.com/*",
-        "https://chat.mistral.ai/*",
-        "https://you.com/*"
-      ],
-      "js": ["integrations/conv-d.js"],
-      "css": ["integrations/conv-d.css"],
-      "run_at": "document_idle"
-    }
-  ]
+  "content_scripts": [{
+    "matches": [
+      "https://chatgpt.com/*","https://claude.ai/*","https://gemini.google.com/*","https://copilot.microsoft.com/*","https://perplexity.ai/*","https://www.perplexity.ai/*","https://grok.com/*","https://chat.deepseek.com/*","https://poe.com/*","https://chat.mistral.ai/*","https://you.com/*"
+    ],
+    "js": ["integrations/conv-d.js"],
+    "css": ["integrations/conv-d.css"],
+    "run_at": "document_idle"
+  }]
 }
