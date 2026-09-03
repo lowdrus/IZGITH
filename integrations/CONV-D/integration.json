@@ -1,14 +1,3 @@
 {
-  "id":"conv-d",
-  "name":"CONV-D",
-  "status":"functional",
-  "entry":"../../extension/integrations/conv-d.js",
-  "output":["pdf","doc","txt","markdown","json","xls"],
-  "privacy":"local-only",
-  "scope":"full-or-selected-round-of-current-conversation-on-supported-AI-web-apps",
-  "providers":["ChatGPT","Claude","Gemini","Copilot","Perplexity","Grok","DeepSeek","Poe","Le Chat","You.com"],
-  "schema":"izgith.conv-d.v3",
-  "selection":["Tudo — início até o final","Rodada — uma rodada da conversa"],
-  "save":"Chrome downloads saveAs dialog; user chooses the local destination",
-  "behavior":"button injected on supported conversation pages and remounted after SPA/DOM navigation"
+  "id":"conv-d","name":"CONV-D","status":"functional","entry":"../../extension/integrations/conv-d.js","output":["pdf","doc","txt","markdown","json","xls"],"privacy":"local-only","scope":"full-or-last-round-of-current-conversation-on-supported-AI-web-apps","providers":["ChatGPT","Claude","Gemini","Copilot","Perplexity","Grok","DeepSeek","Poe","Le Chat","You.com"],"schema":"izgith.conv-d.v4","selection":["Tudo","Ultima Rodada"],"save":"Chrome downloads saveAs dialog; user chooses the local destination","activation":"Dashboard button Ativar CONV toggles convDEnabled in chrome.storage.local","behavior":"button injected on supported conversation pages and remounted after SPA/DOM navigation"
 }
