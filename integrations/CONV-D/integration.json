@@ -1,0 +1,12 @@
+{
+  "id":"conv-d",
+  "name":"CONV-D",
+  "status":"functional",
+  "entry":"../../extension/integrations/conv-d.js",
+  "output":["pdf","doc","txt","markdown","json","xls"],
+  "privacy":"local-only",
+  "scope":"current-conversation-on-supported-AI-web-apps",
+  "providers":["ChatGPT","Claude","Gemini","Copilot","Perplexity","Grok","DeepSeek","Poe","Le Chat","You.com"],
+  "schema":"izgith.conv-d.v1",
+  "behavior":"button injected on each supported conversation page"
+}
