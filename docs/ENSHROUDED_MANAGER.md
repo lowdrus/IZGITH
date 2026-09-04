@@ -1,56 +1,43 @@
-# ENSHROUDED MANAGER
+# Enshrouded Manager — IZGITH
 
-## Objetivo
+## Estado atual
 
-O ENSHROUDED MANAGER do IZGITH incorpora, de forma incremental e sem copiar o projeto de referência, conceitos do `enshctl` encontrado em `lincolnthalles/enshrouded-container`: versionamento determinístico, preparação de instalação, ciclo de vida, backups, retenção, restauração, mods e observabilidade de recursos.
+O **ENSHROUDED MANAGER** está integrado ao dashboard e funciona como uma camada de gerenciamento/preparação local. Ele mantém perfis, valida endpoints, prepara configurações, gera compose e registra planos de ação.
 
-Fonte de referência: https://github.com/lincolnthalles/enshrouded-container
+### Limite deliberado de execução
 
-## O que foi extraído como conceito
+A extensão não inicia Docker, Wine, SteamCMD ou executáveis do sistema por conta própria. As ações `install`, `start`, `stop`, `backup`, `restore`, `prune`, `mods`, `resources` e `version` são representadas como **planos preparados**. Isso evita Native Messaging e evita execução silenciosa no computador.
 
-O `enshctl` é um orquestrador Python dentro de um container. A árvore pública possui módulos de configuração, download, instalação, mods, recursos, retenção e comandos de backup/restore/start/stop/verify/version. O README do projeto também documenta version pinning por Steam manifest, backups live/cold/emergency, retenção, overlay de mods e polling de CPU/RSS.
+## Referência oficial do projeto
 
-O IZGITH não incorpora Docker, Wine, Steam credentials ou DepotDownloader dentro da extensão. Em vez disso, o módulo cria perfis, valida endpoints, gera configuração, gera `docker-compose`, e produz planos auditáveis de execução.
+A referência de arquitetura é `lincolnthalles/enshrouded-container`.
 
-## Arquitetura Windows recomendada
+Na versão consultada em 4 de setembro de 2026, o projeto de referência declara:
 
-### Camada 1 — IZGITH Extension
+- imagem `ghcr.io/lincolnthalles/enshrouded-container:latest`;
+- Docker 24+ como requisito;
+- `network_mode: host` no compose principal;
+- `VERSION` para versão/manifests;
+- backups configuráveis por `BACKUP_CRON`;
+- configuração `ENSHROUDED_*` para o servidor;
+- volumes para backups, config, logs, mods, saves, manifests e Wine prefix;
+- `15636/udp` e `15637/udp` para tráfego do servidor e consulta, com `27015` usado para RCON/gameplay conforme a documentação do projeto.
 
-- interface do ENSHROUDED MANAGER;
-- perfis e configurações persistentes em `chrome.storage.local`;
-- validação de host/porta;
-- geração de configuração e planos;
-- nenhuma execução de processo arbitrário.
+O IZGITH usa esses dados como referência de composição e documentação; não copia o projeto nem executa seus comandos automaticamente.
 
-### Camada 2 — Runtime local opcional
+## Fluxo recomendado
 
-Para executar de verdade Docker/Wine/Steam/DepotDownloader em Windows seria necessário um processo local autorizado pelo sistema operacional. Ele pode ser futuramente implementado como serviço Windows ou aplicativo desktop assinado, com uma API local limitada e autenticação por origem.
+1. Abra **Servidores**.
+2. Informe nome, host e porta.
+3. Use **Validar**.
+4. Salve o perfil.
+5. Use uma ação de preparação para gerar o plano.
+6. Baixe **Config**, **Compose** ou **Plano** quando precisar levar a configuração para um ambiente externo autorizado.
 
-### Camada 3 — Runtime Enshrouded
+## Segurança
 
-O runtime executaria o container ou servidor dedicado e cuidaria de:
+Não coloque senhas, tokens Steam, chaves ou cookies no perfil. Credenciais para operações externas devem ser fornecidas somente no ambiente externo apropriado e nunca gravadas pelo dashboard.
 
-1. instalar/atualizar uma versão;
-2. iniciar/parar de forma graciosa;
-3. produzir backups live/cold/emergency;
-4. aplicar retenção;
-5. restaurar backup selecionado;
-6. aplicar mods;
-7. coletar CPU/RSS e logs;
-8. validar configuração e portas.
+## Por que essa arquitetura?
 
-## Limite importante
-
-Uma extensão Chrome/Chromium não pode iniciar silenciosamente um processo Windows, Docker Desktop, Wine ou um serviço arbitrário. Portanto, a versão atual é deliberadamente **browser-plan-only**: ela é funcional para preparação, validação, persistência e geração de artefatos, mas não finge executar processos externos sem uma ponte local autorizada.
-
-Isso preserva a exigência de não depender de Native Messaging para o boot do IZGITH e evita introduzir uma execução silenciosa insegura.
-
-## Fluxo de uso atual
-
-1. Abra **Servidores → ENSHROUDED MANAGER**.
-2. Crie um perfil com nome, host e porta.
-3. Salve/valide o perfil.
-4. Use **Verificar**, **Preparar Instalação**, **Preparar Início**, **Backup**, **Restaurar**, **Mods**, **Recursos**, etc. para criar planos locais.
-5. Use **Baixar Config**, **Baixar Compose** ou **Baixar Plano** quando precisar levar a configuração para um runtime externo.
-
-Nenhuma senha Steam, token GitHub ou credencial é solicitada pelo módulo.
+O navegador é excelente para UI, armazenamento local e preparação de arquivos, mas não deve fingir que pode iniciar processos do sistema sem uma ponte explícita. A separação entre **preparar** e **executar** deixa o IZGITH previsível, auditável e compatível com a exigência de não depender de Native Messaging.
