@@ -8,16 +8,20 @@ O **ENSHROUDED MANAGER** do IZGITH é uma camada de preparação e gerenciamento
 
 ## Referência técnica verificada
 
-A referência declarada é `lincolnthalles/enshrouded-container`, um projeto público de container para Enshrouded Dedicated Server. O repositório está público e descreve version pinning, mod injection e backups agendados. citeturn38file0turn39file0
+A referência declarada é `lincolnthalles/enshrouded-container`, um projeto público de container para Enshrouded Dedicated Server. O repositório está público e descreve version pinning, mod injection e backups agendados.
 
-A documentação consultada descreve Fedora 44 + Wine 11, Docker 24+, `VERSION` com `latest`, manifest ID ou `build:<id>`, configuração por variáveis `ENSHROUDED_*`, backups configuráveis, polling de recursos e volumes persistentes para manifests, Wine prefix, mods, saves, backups, configuração e logs. citeturn39file0
+Fonte externa consultada: https://github.com/lincolnthalles/enshrouded-container
 
-### Portas verificadas na referência
+A documentação consultada descreve Fedora 44 + Wine 11, Docker 24+, `VERSION` com `latest`, manifest ID ou `build:<id>`, configuração por variáveis `ENSHROUDED_*`, backups configuráveis, polling de recursos e volumes persistentes para manifests, Wine prefix, mods, saves, backups, configuração e logs.
+
+## Portas verificadas na referência
 
 - `15636/udp` — dados do servidor;
 - `15637/udp` — consulta;
 - `27015/tcp` — RCON;
-- `27015/udp` — tráfego/gameplay documentado pelo projeto. citeturn39file0
+- `27015/udp` — tráfego/gameplay documentado pelo projeto.
+
+Fonte: README do projeto de referência, consultado em 4 de setembro de 2026.
 
 ## O que o IZGITH faz
 
@@ -39,14 +43,14 @@ Essa separação é intencional: o navegador funciona como painel e preparador, 
 
 ## Backups, mods e versionamento
 
-A arquitetura de referência suporta backups agendados e de desligamento, retenção configurável, mod injection e versionamento por Steam manifest. O IZGITH documenta esses conceitos e gera artefatos de preparação; ele não copia nem executa o container de terceiros automaticamente. citeturn39file0
+A arquitetura de referência suporta backups agendados e de desligamento, retenção configurável, mod injection e versionamento por Steam manifest. O IZGITH documenta esses conceitos e gera artefatos de preparação; ele não copia nem executa o container de terceiros automaticamente.
 
 ## Segurança
 
-Nunca coloque senhas Steam, tokens, cookies ou chaves privadas em campos do dashboard ou em arquivos versionados. O projeto de referência também trata autenticação para manifests antigos como uma operação explícita; o IZGITH mantém essa mesma separação entre preparação e credenciais. citeturn39file0
+Nunca coloque senhas Steam, tokens, cookies ou chaves privadas em campos do dashboard ou em arquivos versionados. Operações que exigem autenticação devem permanecer explícitas no ambiente externo autorizado.
 
 ## Estado da integração 00069
 
-O botão de expansão usa um ícone compatível com o padrão visual do Lucide e abre o **ENSHROUDED MANAGER** em uma nova janela dedicada. O ícone é apenas um elemento de UI; a referência visual é o conjunto de ícones do Lucide, que é baseado em SVG escalável e personalizável. citeturn0search5
+O botão de expansão usa um ícone compatível com o padrão visual do Lucide e abre o **ENSHROUDED MANAGER** em uma nova janela dedicada. Referência visual: https://lucide.dev/icons/square-arrow-out-up-right
 
 A implementação permanece **browser-plan-only**. Qualquer execução de Docker/SteamCMD/Wine deverá ocorrer fora da extensão, em ambiente explicitamente autorizado.
