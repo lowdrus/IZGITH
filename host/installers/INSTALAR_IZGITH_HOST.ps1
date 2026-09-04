@@ -67,10 +67,31 @@ if (-not $SkipDependencies) {
 
 if (-not $SkipLogin) {
     Confirm-Step 'Conectar sua conta ao GitHub CLI e configura-lo como autenticador Git para github.com? O login ocorre no fluxo oficial do GitHub. Nenhum token sera solicitado pelo IZGITH.'
+    # gh auth setup-git delegates to Git config. Some environments inherit a stale
+    # HOME such as D:\github\home, causing "could not lock config file". Normalize
+    # the Git user config location to the real Windows profile before setup-git.
+    $userHome = [Environment]::GetFolderPath('UserProfile')
+    if ([string]::IsNullOrWhiteSpace($userHome)) { $userHome = $env:USERPROFILE }
+    if ([string]::IsNullOrWhiteSpace($userHome)) { throw 'Nao foi possivel determinar o perfil do usuario Windows.' }
+    [void](New-Item -ItemType Directory -Path $userHome -Force)
+    if (-not (Test-Path -LiteralPath (Join-Path $userHome '.gitconfig') -PathType Leaf)) {
+        [IO.File]::WriteAllText((Join-Path $userHome '.gitconfig'), '', (New-Object System.Text.UTF8Encoding($false)))
+    }
+    $env:HOME = $userHome
+    $env:HOMEDRIVE = [IO.Path]::GetPathRoot($userHome).TrimEnd('\')
+    $env:HOMEPATH = $userHome.Substring($env:HOMEDRIVE.Length)
+    $env:GIT_CONFIG_GLOBAL = Join-Path $userHome '.gitconfig'
+
     & gh auth login --hostname github.com --git-protocol https --web
     if ($LASTEXITCODE -ne 0) { throw 'Login nao concluido. O host nao foi registrado.' }
     & gh auth setup-git --hostname github.com
-    if ($LASTEXITCODE -ne 0) { throw 'Nao foi possivel configurar a autenticacao Git.' }
+    if ($LASTEXITCODE -ne 0) {
+        # Deterministic fallback: configure Git to use the official gh credential
+        # helper without relying on a broken inherited HOME/config path.
+        & git config --global --unset-all credential.helper 2>$null
+        & git config --global credential.helper '!gh auth git-credential'
+        if ($LASTEXITCODE -ne 0) { throw 'Nao foi possivel configurar a autenticacao Git.' }
+    }
 }
 
 [void](New-Item -ItemType Directory -Path $InstallDirectory -Force)
