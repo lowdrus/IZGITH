@@ -1,14 +1,23 @@
 name: IZGITH CI
 on:
   push:
-    branches: [ main ]
+    branches: [main, develop, "fix/**", "feature/**", "release/**"]
   pull_request:
-    branches: [ main ]
+    branches: [main, develop]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: izgith-ci-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
       - name: Validate project
         run: python scripts/validate_project.py
       - name: Unit tests
@@ -16,7 +25,9 @@ jobs:
       - name: Build package
         run: python scripts/package_extension.py
       - name: Upload package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
-          name: IZGITH-extension
+          name: IZGITH-extension-compat
           path: dist/*
+          if-no-files-found: error
+          retention-days: 30
