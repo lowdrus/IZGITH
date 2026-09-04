@@ -2,7 +2,7 @@
 
 Extensão Chrome Manifest V3 para preparação, auditoria, exportação local e organização de ferramentas. A árvore reúne popup, fila, painel geral, Central De Ferramentas, CONV-D, SONPEF, KIT_UNICO e ENSHROUDED MANAGER.
 
-## Estado atual — 6.0.0.00067
+## Estado atual — 6.0.0.00069
 
 A interface usa **Ultra + Controlado — Unificado** como padrão, com `Controlado` e `Ultra` disponíveis. A navegação é **Painel Geral → Ferramentas → Servidores → Configurações → Logs → Temas**, com EULA e Guia Rápido no rodapé.
 
@@ -18,7 +18,8 @@ A interface usa **Ultra + Controlado — Unificado** como padrão, com `Controla
 - SONPEF, CONV-D, KIT_UNICO e ENSHROUDED MANAGER;
 - assistentes IZART, Ayella e Júlia no Painel Geral;
 - UPPER URL e UPPER GITHUB;
-- menus de CONV-D e UPPER GITHUB com abertura/fechamento determinístico e fechamento ao clicar fora.
+- menus de CONV-D e UPPER GITHUB com abertura/fechamento determinístico, ancoragem ao card e fechamento ao clicar fora;
+- tela dedicada do ENSHROUDED MANAGER com controle de expansão para nova janela.
 
 ## Carregamento correto no Chrome
 
@@ -42,11 +43,11 @@ Formatos: PDF, Word `.doc`, TXT, Markdown `.md`, JSON estruturado e Excel `.xls`
 
 ## Menus
 
-Os menus são controles de estado locais. O ícone abre e fecha a lista, `aria-expanded` acompanha o estado e um clique fora recolhe o menu. O controlador `extension/ui/menu-fix.js` é carregado depois do dashboard para impedir dupla alternância causada por listeners antigos.
+Os menus são controles de estado locais. O ícone abre e fecha a lista, `aria-expanded` acompanha o estado e um clique fora recolhe o menu. O controlador `extension/ui/menu-fix.js` é carregado explicitamente pelo dashboard para impedir dupla alternância e manter o menu dentro do card correspondente.
 
 ## ENSHROUDED MANAGER
 
-O módulo mantém perfis e prepara informações de servidores. A referência técnica declarada é `lincolnthalles/enshrouded-container`, que documenta Docker 24+, Fedora 44 + Wine 11, versionamento por manifest, mods, backups, polling e variáveis `ENSHROUDED_*`. O IZGITH não inicia processos externos silenciosamente.
+O módulo mantém perfis e prepara informações de servidores. A referência técnica declarada é `lincolnthalles/enshrouded-container`, que atualmente documenta Fedora 44 + Wine 11, Docker 24+, versionamento por manifest, mod injection, backups, polling de recursos e variáveis `ENSHROUDED_*`. O IZGITH usa esses dados como referência e não inicia processos externos silenciosamente.
 
 ## Segurança
 
@@ -64,6 +65,13 @@ npm run package
 ```
 
 O CI deve validar primeiro e só depois gerar o ZIP. O artefato distribuível é construído a partir de `extension/` para evitar o erro histórico de ZIP com `manifest.json` em subpasta.
+
+## Documentação ativa
+
+- `docs/GUIA_RAPIDO.md` — operação da interface, menus, assistentes e Enshrouded Manager.
+- `docs/EULA.md` — termos informativos e responsabilidades.
+- `docs/ENSHROUDED_MANAGER.md` — arquitetura, referência técnica e limites da integração.
+- `docs/CHANGELOG_00069.md` — mudanças da rodada 00069.
 
 ## Estrutura
 
