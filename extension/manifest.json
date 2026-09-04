@@ -3,8 +3,8 @@
   "name": "IZGITH",
   "short_name": "IZGITH",
   "description": "Extensao Manifest V3 para preparacao, auditoria segura e exportacao local de conversas.",
-  "version": "6.0.0.65",
-  "version_name": "6.0.0.00065 root-loadable",
+  "version": "6.0.0.67",
+  "version_name": "6.0.0.00067 root-loadable",
   "minimum_chrome_version": "111",
   "action": {
     "default_title": "IZGITH",
@@ -22,9 +22,7 @@
     "48": "assets/icons/icon48.png",
     "128": "assets/icons/icon128.png"
   },
-  "background": {
-    "service_worker": "sw.js"
-  },
+  "background": { "service_worker": "sw.js" },
   "permissions": ["downloads", "storage", "tabs", "windows"],
   "host_permissions": [
     "https://chatgpt.com/*", "https://claude.ai/*", "https://gemini.google.com/*", "https://copilot.microsoft.com/*",
@@ -43,5 +41,5 @@
     "css": ["integrations/conv-d.css"],
     "run_at": "document_idle"
   }],
-  "content_security_policy": {"extension_pages": "script-src 'self'; object-src 'self'"}
+  "content_security_policy": { "extension_pages": "script-src 'self'; object-src 'self'" }
 }

@@ -1,43 +1,44 @@
 # Enshrouded Manager — IZGITH
 
-## Estado atual
+## Objetivo
 
-O **ENSHROUDED MANAGER** está integrado ao dashboard e funciona como uma camada de gerenciamento/preparação local. Ele mantém perfis, valida endpoints, prepara configurações, gera compose e registra planos de ação.
+O **ENSHROUDED MANAGER** do IZGITH é uma camada de preparação e gerenciamento de perfis de servidores. Ele mantém nome, host, porta e observações, valida endpoints e organiza informações para uma operação posterior.
 
-### Limite deliberado de execução
+## Referência técnica
 
-A extensão não inicia Docker, Wine, SteamCMD ou executáveis do sistema por conta própria. As ações `install`, `start`, `stop`, `backup`, `restore`, `prune`, `mods`, `resources` e `version` são representadas como **planos preparados**. Isso evita Native Messaging e evita execução silenciosa no computador.
+A referência declarada para a arquitetura é `lincolnthalles/enshrouded-container`. A versão consultada em 4 de setembro de 2026 descreve um container de servidor dedicado com Fedora 44 + Wine 11, Docker 24+, versionamento por manifest da Steam, injeção de mods, backups agendados, polling de recursos e configuração por variáveis `ENSHROUDED_*`.
 
-## Referência oficial do projeto
+Entre os pontos úteis para o IZGITH estão:
 
-A referência de arquitetura é `lincolnthalles/enshrouded-container`.
+- `VERSION` para usar `latest`, um manifest ID ou `build:<id>`;
+- `BACKUP_CRON`, `BACKUP_FORMAT` e retenção configurável;
+- configurações do servidor através do prefixo `ENSHROUDED_*`;
+- volumes separados para manifests, Wine prefix, mods, saves, backups, config e logs;
+- portas UDP `15636` (tráfego do servidor) e `15637` (consulta), além de `27015` TCP/UDP para as funções descritas pelo projeto.
 
-Na versão consultada em 4 de setembro de 2026, o projeto de referência declara:
+## O que o IZGITH faz
 
-- imagem `ghcr.io/lincolnthalles/enshrouded-container:latest`;
-- Docker 24+ como requisito;
-- `network_mode: host` no compose principal;
-- `VERSION` para versão/manifests;
-- backups configuráveis por `BACKUP_CRON`;
-- configuração `ENSHROUDED_*` para o servidor;
-- volumes para backups, config, logs, mods, saves, manifests e Wine prefix;
-- `15636/udp` e `15637/udp` para tráfego do servidor e consulta, com `27015` usado para RCON/gameplay conforme a documentação do projeto.
+1. Cria e guarda perfis locais.
+2. Valida host e porta.
+3. Permite organizar informações antes da execução externa.
+4. Mantém a preparação separada da execução do servidor.
 
-O IZGITH usa esses dados como referência de composição e documentação; não copia o projeto nem executa seus comandos automaticamente.
+## O que o IZGITH não faz automaticamente
+
+O dashboard não inicia Docker, Wine, SteamCMD ou executáveis do sistema por conta própria. Não instala um servidor silenciosamente e não pede credenciais Steam.
+
+Essa separação é intencional: a extensão funciona como painel e preparador, enquanto a execução fica em um ambiente externo explicitamente autorizado pelo operador.
 
 ## Fluxo recomendado
 
-1. Abra **Servidores**.
-2. Informe nome, host e porta.
-3. Use **Validar**.
-4. Salve o perfil.
-5. Use uma ação de preparação para gerar o plano.
-6. Baixe **Config**, **Compose** ou **Plano** quando precisar levar a configuração para um ambiente externo autorizado.
+**Servidores → Nome/Host/Porta → Validar → Salvar perfil → preparar a operação externa.**
+
+Para uma implantação real, siga a documentação e os requisitos do projeto de referência antes de abrir portas ou iniciar containers. O servidor dedicado é um processo externo ao navegador.
+
+## Backups e mods
+
+A arquitetura de referência suporta backups programados e no desligamento, além de uma camada de mods sobre uma instalação versionada. O IZGITH documenta essas capacidades como referência; ele não copia nem executa o container de terceiros automaticamente.
 
 ## Segurança
 
-Não coloque senhas, tokens Steam, chaves ou cookies no perfil. Credenciais para operações externas devem ser fornecidas somente no ambiente externo apropriado e nunca gravadas pelo dashboard.
-
-## Por que essa arquitetura?
-
-O navegador é excelente para UI, armazenamento local e preparação de arquivos, mas não deve fingir que pode iniciar processos do sistema sem uma ponte explícita. A separação entre **preparar** e **executar** deixa o IZGITH previsível, auditável e compatível com a exigência de não depender de Native Messaging.
+Nunca coloque senhas Steam, tokens, cookies ou chaves privadas em campos do dashboard ou em arquivos versionados. Use o mecanismo de secrets do ambiente externo quando uma operação realmente exigir autenticação.

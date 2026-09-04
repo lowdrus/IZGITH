@@ -1,78 +1,79 @@
 # IZGITH
 
-Extensão Chrome Manifest V3 para baixar, preparar e auditar pacotes de extensões Chromium com segurança. O IZGITH reúne popup, fila, painel de controle, ferramentas locais, CONV-D, SONPEF, KIT_UNICO e ENSHROUDED MANAGER em uma árvore única.
+Extensão Chrome Manifest V3 para preparação, auditoria, exportação local e organização de ferramentas. A árvore reúne popup, fila, painel geral, Central De Ferramentas, CONV-D, SONPEF, KIT_UNICO e ENSHROUDED MANAGER.
 
-## Estado atual — 6.0.0.00065 · Rodada 00066
+## Estado atual — 6.0.0.00067
 
-A interface usa **Ultra + Controlado — Unificado** como modo padrão, com `Controlado` e `Ultra` disponíveis separadamente. A navegação principal é **Painel Geral → Ferramentas → Servidores → Configurações → Logs → Temas**, com EULA e Guia Rápido no rodapé.
+A interface usa **Ultra + Controlado — Unificado** como padrão, com `Controlado` e `Ultra` disponíveis. A navegação é **Painel Geral → Ferramentas → Servidores → Configurações → Logs → Temas**, com EULA e Guia Rápido no rodapé.
 
-## O que funciona
+## Funcionalidades
 
 - download HTTP/HTTPS com diálogo de salvamento;
 - fila local de arquivos ZIP/CRX;
-- auditoria de `manifest.json`;
-- extração protegida contra ZIP Slip;
-- preparação de ZIP e CRX;
+- auditoria e validação de Manifest V3;
+- proteção contra ZIP Slip;
+- preparação de ZIP/CRX;
 - 36 temas com profundidades 2D/3D/4D;
-- CI, CodeQL, testes, pacote ZIP e releases;
-- SONPEF, CONV-D, KIT_UNICO e ENSHROUDED MANAGER registrados;
-- assistentes **IZART, Ayella e Júlia** no painel inicial;
-- **UPPER URL** e **UPPER GITHUB** com controles visuais de estado;
-- menus de ferramentas ancorados aos respectivos cards para evitar controles soltos.
+- CI, testes, CodeQL e empacotamento;
+- SONPEF, CONV-D, KIT_UNICO e ENSHROUDED MANAGER;
+- assistentes IZART, Ayella e Júlia no Painel Geral;
+- UPPER URL e UPPER GITHUB;
+- menus de CONV-D e UPPER GITHUB com abertura/fechamento determinístico e fechamento ao clicar fora.
+
+## Carregamento correto no Chrome
+
+O repositório possui uma árvore de desenvolvimento e uma árvore de extensão. Para **Carregar sem compactação**, selecione a pasta:
+
+`IZGITH/extension/`
+
+Essa pasta contém diretamente `manifest.json`, `sw.js`, `ui/`, `assets/` e `integrations/`.
+
+O `manifest.json` da raiz também é mantido como uma entrada **root-loadable** para ferramentas que precisam iniciar pelo diretório do repositório. O pacote oficial do CI, entretanto, é gerado a partir de `extension/` e coloca `manifest.json` na raiz do ZIP.
+
+Se o Chrome disser **“O arquivo de manifesto está faltando ou não pode ser lido”**, quase sempre a pasta selecionada não é a pasta que contém diretamente o manifesto. Não selecione `dist/`, `dist/IZGITH_v..._FULL/` pai, `docs/` ou uma pasta intermediária.
 
 ## CONV-D
 
-O CONV-D adiciona **Baixar Conversa** às plataformas de IA suportadas quando a página fornece conteúdo acessível à extensão. O usuário escolhe `Tudo` ou `Ultima Rodada` e depois o formato de exportação. O salvamento é local e usa o diálogo do navegador.
+CONV-D adiciona **Baixar Conversa** às páginas de provedores suportados quando o conteúdo da conversa é acessível ao content script. O usuário escolhe o escopo e o formato antes do salvamento.
 
-## Native Messaging e execução externa
+Escopos: **Tudo** ou **Ultima Rodada**.
 
-Native Messaging **não é requisito** da versão atual. A extensão não instala nem registra executáveis silenciosamente. SONPEF funciona com arquivos selecionados pelo usuário e o ENSHROUDED MANAGER prepara planos/configurações no navegador.
+Formatos: PDF, Word `.doc`, TXT, Markdown `.md`, JSON estruturado e Excel `.xls`, conforme o adaptador/implementação disponível.
 
-Uma extensão Chromium não deve fingir que pode iniciar Docker, Wine, SteamCMD ou outro processo arbitrário sem uma ponte autorizada pelo sistema operacional. Por isso a camada Enshrouded é deliberadamente `browser-plan-only`.
+## Menus
+
+Os menus são controles de estado locais. O ícone abre e fecha a lista, `aria-expanded` acompanha o estado e um clique fora recolhe o menu. O controlador `extension/ui/menu-fix.js` é carregado depois do dashboard para impedir dupla alternância causada por listeners antigos.
 
 ## ENSHROUDED MANAGER
 
-O módulo mantém perfis, valida host/porta e prepara ações como instalação, início, parada, backup, restauração, retenção, mods, recursos e versão. A composição usa como referência pública `lincolnthalles/enshrouded-container`, incluindo a imagem `ghcr.io/lincolnthalles/enshrouded-container:latest`, `network_mode: host`, version pinning, backups e configuração por `ENSHROUDED_*`.
+O módulo mantém perfis e prepara informações de servidores. A referência técnica declarada é `lincolnthalles/enshrouded-container`, que documenta Docker 24+, Fedora 44 + Wine 11, versionamento por manifest, mods, backups, polling e variáveis `ENSHROUDED_*`. O IZGITH não inicia processos externos silenciosamente.
 
-A documentação de integração está em `docs/ENSHROUDED_MANAGER.md`.
+## Segurança
 
-## Instalação rápida no Chrome
+Native Messaging não é requisito do baseline. Credenciais, cookies, tokens e chaves privadas não devem ser colocados no dashboard nem versionados. Publicações em GitHub devem usar autenticação explícita e permissões apropriadas.
 
-1. Baixe/extraia o pacote da extensão.
-2. Abra `chrome://extensions`.
-3. Ative **Modo do desenvolvedor**.
-4. Clique em **Carregar sem compactação**.
-5. Selecione **a pasta `extension/`**, isto é, a pasta que contém diretamente `manifest.json`.
-6. Fixe o IZGITH na barra do Chrome e abra o popup.
-
-Se o Chrome disser que o manifesto está ausente, não selecione a raiz do repositório: selecione `extension/`.
-
-## Desenvolvimento e validação
+## Validação
 
 Requisitos: Python 3.11+ e Node.js 24+.
 
-```bash
+```text
 python scripts/validate_project.py
 python -m unittest discover -s tests -v
 npm test
 npm run package
 ```
 
-O pacote é criado em `dist/`. A validação inclui Manifest V3, service worker, referências, ícones, 36 temas, integrações, assistentes canônicos, profundidade visual, menus e controles da rodada 00066.
+O CI deve validar primeiro e só depois gerar o ZIP. O artefato distribuível é construído a partir de `extension/` para evitar o erro histórico de ZIP com `manifest.json` em subpasta.
 
 ## Estrutura
 
-- `extension/`: extensão distribuível.
-- `integrations/`: registros de SONPEF, CONV-D, KIT_UNICO e ENSHROUDED MANAGER.
-- `scripts/`: validação e empacotamento.
-- `tests/`: testes unitários e estáticos.
-- `docs/`: documentação ativa e histórica.
-- `archive/legacy/`: material histórico preservado fora do build.
-
-## Segurança e privacidade
-
-Não coloque tokens, cookies, senhas ou chaves privadas no repositório. Operações efetivas de publicação em GitHub exigem autenticação explícita. Leia `SECURITY.md`, `docs/EULA.md` e `docs/PRIVACIDADE.md`.
+- `extension/` — árvore distribuível e diretamente carregável.
+- `integrations/` — contratos de integração.
+- `scripts/` — validação e empacotamento.
+- `tests/` — testes.
+- `docs/` — documentação ativa e histórica.
+- `archive/legacy/` — material legado preservado.
 
 ## Licença
 
-Consulte `LICENSE`. Fontes históricas mantêm suas próprias licenças.
+Consulte `LICENSE` e a documentação correspondente às fontes históricas.

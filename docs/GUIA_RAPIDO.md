@@ -1,73 +1,88 @@
-# Guia Rápido — IZGITH
+# IZGITH — Guia Rápido 00067
 
-## 1. Abrir a extensão
+## 1. Carregar a extensão sem erro de manifesto
 
-No Chromium, abra `chrome://extensions`, ative o **Modo do desenvolvedor** e carregue **a pasta `extension/`** como extensão descompactada. O `manifest.json` precisa estar diretamente dentro dessa pasta.
+Há duas formas válidas:
+
+- **Desenvolvimento:** abra `chrome://extensions`, ative **Modo do desenvolvedor** e use **Carregar sem compactação** apontando para a pasta que contém o `manifest.json` na raiz do pacote.
+- **Pacote CI:** extraia `dist/IZGITH_v*_FULL.zip` e selecione a pasta extraída que contém `manifest.json` diretamente na raiz.
+
+Não selecione uma pasta pai que contenha outra pasta `IZGITH_v...`; o manifesto precisa estar no nível escolhido pelo Chrome.
 
 ## 2. Central De Ferramentas
 
 ### CONV-D
-Ativa/desativa o módulo de exportação de conversas. Nas páginas de conversa suportadas, o botão **Baixar Conversa** permite escolher o recorte e o formato antes do salvamento.
+Ativa/desativa a captura/exportação de conversas suportadas. O botão **Baixar Conversa** aparece nas páginas de conversa suportadas. O usuário escolhe **Tudo** ou **Ultima Rodada** e depois o formato.
 
 ### UPPER URL
-Cole a URL HTTPS de uma conversa suportada. O segundo campo é o repositório GitHub pretendido. O botão de power controla o estado local do FORSE-SINC; ele não concede permissões nem envia tokens automaticamente.
+Cole uma URL HTTPS de conversa. O campo de repositório é apenas o destino pretendido. A abertura é explícita e não envia tokens automaticamente.
 
 ### Download por Link
-Cole uma URL **HTTP/HTTPS direta** para um arquivo e use o ícone de download. O navegador abre o diálogo de salvamento quando configurado para isso. FTP, SMTP, POP e torrents não são transportes genéricos suportados pela API de downloads do navegador.
+Aceita URLs HTTP/HTTPS diretas e usa a API de downloads do navegador. FTP, SMTP, POP e torrents não são transportes genéricos oferecidos pela API de downloads da extensão.
 
 ### SONPEF
-Selecione arquivos `.ps1` e `.py`. O módulo reúne o conteúdo em uma saída unificada no navegador, sem exigir executor local.
+Selecione arquivos `.ps1` e `.py` para unificação local no navegador. O fluxo não depende de Native Messaging.
 
 ### KIT_UNICO
-É o hub lógico das integrações e papéis compartilhados do IZGITH.
+Hub de integrações e fluxos compartilhados do IZGITH.
 
 ### Selecionar .ZIP/.CRX
-Selecione um pacote local quando quiser conferir o arquivo antes de inspeção, auditoria ou instalação. O módulo não instala automaticamente o pacote.
+Escolha um pacote local para conferir nome, tamanho e extensão antes de inspeção, auditoria ou instalação.
 
 ### UPPER GITHUB
-Use o menu para selecionar arquivos/pastas e verificar o estado de integração. A publicação efetiva exige autenticação explícita; o IZGITH não coleta credenciais silenciosamente.
+Prepara arquivos/pastas e registra o destino. Publicações em GitHub devem usar autenticação explícita e permissões adequadas.
 
 ### JDOWNLOADER
-A interface registra atalhos de integração/captura, mas não instala nem inicia o aplicativo externo automaticamente.
+Fornece integração/atalhos de captura sem instalar ou iniciar o aplicativo externo automaticamente.
 
-## 3. Fila Rápida
+## 3. Menus
 
-A Fila Rápida é um espaço de preparação e acompanhamento. Ela permite manter itens organizados antes de uma etapa posterior, sem disparar operações externas escondidas.
+Os menus de **CONV-D** e **UPPER GITHUB** são alternáveis. Clique no ícone para abrir/fechar; clique fora para recolher. O estado é controlado pelo atributo `aria-expanded`.
 
 ## 4. Assistentes
 
-**IZART**, **Ayella** e **Júlia** aparecem na página inicial. Clique em uma delas para abrir o chat no próprio painel. Use **Limpar chat** para reiniciar a conversa e **×** para fechar apenas o painel da assistente.
+**IZART** — diagnóstico, auditoria, arquitetura e testes.
 
-## 5. Janela do IZGITH
+**Ayella** — orientação, operação, configuração, CONV-D e temas.
 
-- `—` = minimiza somente a janela do IZGITH.
-- `×` = fecha somente a janela do IZGITH.
-- O navegador não é encerrado.
+**Júlia** — organização, fila, KIT_UNICO, SONPEF e pacotes.
 
-## 6. Temas e profundidade
+As três conversas ficam dentro do painel inicial e possuem **minimizar**, **fechar** e **limpar chat**.
 
-Há **36 temas**. A profundidade pode ser `2D`, `3D` ou `4D`:
+## 5. Enshrouded Manager
 
-- **2D:** visual plano e leve.
-- **3D:** perspectiva e profundidade.
-- **4D:** camada dinâmica com movimento e variação temporal.
+Em **Servidores**, informe nome, host e porta, valide e salve o perfil. O módulo prepara dados; não inicia Docker, Wine, SteamCMD ou executáveis silenciosamente.
 
-**Aleatório** escolhe um tema e sua profundidade automaticamente.
+## 6. Configurações
 
-## 7. Modos operacionais
+**Ultra + Controlado — Unificado:** equilíbrio entre automação interna e salvaguardas.
 
-- **Ultra + Controlado — Unificado:** automatiza tarefas internas e mantém ações sensíveis sob controle.
-- **Controlado:** prioriza previsibilidade e confirmação.
-- **Ultra:** reduz interrupções para tarefas locais suportadas.
+**Controlado:** prioriza previsibilidade e confirmação.
 
-## 8. Modos automáticos
+**Ultra:** reduz interrupções para operações internas suportadas.
 
-- **Auto preparar:** organiza dados, arquivos, parâmetros e sequência, mas não executa uma etapa externa sozinho.
-- **Auto com confirmação:** prepara a ação, mostra o que será feito e aguarda confirmação antes da etapa efetiva.
-- **Manual:** cada etapa é iniciada pelo usuário.
+**Auto preparar:** organiza dados, arquivos, parâmetros e sequência sem executar etapa externa.
 
-## 9. Enshrouded Manager
+**Auto com confirmação:** prepara a ação e mostra o que será feito; a execução depende da confirmação.
 
-O módulo mantém perfis de servidor, valida host/porta e prepara configurações, compose e planos. A implementação atual é deliberadamente **browser-plan-only**: não inicia Docker, Wine, SteamCMD ou processos do sistema sem uma integração externa explicitamente autorizada.
+**Manual:** cada etapa é iniciada explicitamente.
 
-A arquitetura é compatível conceitualmente com o projeto de referência `lincolnthalles/enshrouded-container`, que atualmente usa a imagem `ghcr.io/lincolnthalles/enshrouded-container:latest`, `network_mode: host`, persistência e configuração por variáveis de ambiente.
+## 7. Profundidade visual
+
+**2D:** interface plana e leve.
+
+**3D:** perspectiva e profundidade.
+
+**4D:** movimento e efeitos temporais/dinâmicos.
+
+Os três modos são aplicados por `data-depth` e podem ser trocados em Configurações.
+
+## 8. Janela
+
+**—** minimiza somente a janela do IZGITH.
+
+**×** fecha somente a janela do IZGITH.
+
+## 9. Segurança
+
+Não informe senhas, cookies, tokens ou chaves privadas ao dashboard. O navegador e a extensão não devem ser usados para contornar autenticação de terceiros.
