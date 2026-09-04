@@ -1,20 +1,21 @@
 {
   "project": "IZGITH",
-  "version": "6.0.0.00049",
-  "base": "v6.0.0.00034 UI + 00048 CLEAN CORE",
-  "recovery_date": "2026-09-02",
+  "version": "6.0.0.00063",
+  "base": "v6.0.0.00034 UI + 00062 CLEAN CORE",
+  "recovery_date": "2026-09-03",
   "modes": {
     "controlled": {"id": "controlled", "confirmation_before_local_sensitive_actions": true},
     "ultra": {"id": "ultra", "confirmation_before_local_sensitive_actions": false},
     "unified": {"id": "unified", "combines": "ultra automation with controlled safeguards", "default": true}
   },
   "ui_reference": "IZGITH_v6.0.0.00034_Full_Build",
-  "navigation_order": ["Identidade & Host", "Ferramentas", "Configuracoes", "Logs", "Temas"],
+  "navigation_order": ["PAINEL GERAL", "Ferramentas", "Configuracoes", "Logs", "Temas"],
   "footer_tabs": ["EULA", "Guia Rapido"],
   "themes": 36,
-  "integrations": ["KIT_UNICO", "CONVGPT", "SONPEF", "CHAT_HISTORY"],
+  "depth_modes": ["2D", "3D", "4D"],
+  "integrations": ["KIT_UNICO", "CONV-D", "SONPEF", "CHAT_HISTORY"],
   "assistants": ["Júlia", "Ayella", "IZART"],
-  "native_messaging": {"required_for_boot": false, "missing_host_policy": "informational", "host_name": "com.izgith.host", "probe_before_call": true},
+  "native_messaging": {"required_for_boot": false, "missing_host_policy": "informational"},
   "historical_archive": "archive/legacy/root",
   "historical_archive_file_count": 616,
   "reconstruction_rule": "Only repository-recovered material is promoted; unavailable expired attachments are not fabricated."
