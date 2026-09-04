@@ -1,6 +1,6 @@
 # IZGITH — EULA / Termos de Uso
 
-**Versão documental: 00067 — 4 de setembro de 2026**
+**Versão documental: 00068 — 4 de setembro de 2026**
 
 ## 1. Natureza do software
 
@@ -22,18 +22,22 @@ Recursos relacionados a UPPER URL e UPPER GITHUB registram/preparam destinos. Op
 
 O baseline do IZGITH evita execução silenciosa de processos do sistema. Native Messaging não é requisito para o carregamento normal. O Enshrouded Manager prepara perfis e informações; não inicia Docker, Wine, SteamCMD ou executáveis externos automaticamente.
 
-## 6. Terceiros
+## 6. Menus e interface
+
+Os menus de ferramentas possuem abertura/fechamento explícitos, fechamento por clique externo e Escape, além de estado acessível por `aria-expanded`. O ícone de abertura do Enshrouded Manager cria somente uma nova aba interna do IZGITH.
+
+## 7. Terceiros
 
 Integrações com ChatGPT, Claude, Gemini, Grok, GitHub, Enshrouded e outros serviços não implicam afiliação ou endosso. Os respectivos nomes e marcas pertencem aos seus titulares.
 
-## 7. Segurança
+## 8. Segurança
 
 Não coloque segredos em arquivos versionados. Para operações que exigem autenticação, utilize os mecanismos oficiais do serviço e as práticas de secrets do ambiente correspondente.
 
-## 8. Limitação de responsabilidade
+## 9. Limitação de responsabilidade
 
 O software é fornecido conforme sua implementação e documentação. Mudanças de navegador, provedores, APIs, políticas, formatos de páginas, redes ou sistemas externos podem afetar funcionalidades.
 
-## 9. Aceite
+## 10. Aceite
 
 Ao utilizar o IZGITH, o usuário declara que possui autorização para acessar, exportar, armazenar e manipular os dados utilizados e que observará as leis, políticas e termos aplicáveis.
