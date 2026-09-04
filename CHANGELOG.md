@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 6.0.0.00070 - REPOSITORY VERIFICATION
+
+- Revalidated the current main baseline after the extension service-worker path correction.
+- Confirmed the directly loadable extension tree is `extension/`, with `manifest.json` and `sw.js` at its root.
+- Confirmed CI validation and packaging complete successfully on the current main commit.
+- Kept the root-loadable manifest/documentation guidance explicit so users do not select an intermediate directory when loading the extension.
+- Preserved the existing CONV-D, SONPEF, KIT_UNICO, ENSHROUDED MANAGER and 36-theme architecture without overwriting historical material.
+
 ## 6.0.0.00059 - CONV-D FULL + ROUND EXPORT
 
 - CONV-D exporta a conversa inteira, percorrendo o conteúdo carregado do início ao fim e acumulando mensagens durante a rolagem.
