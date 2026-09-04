@@ -1,11 +1,16 @@
 {
   "id": "enshrouded-manager",
   "name": "ENSHROUDED MANAGER",
-  "status": "functional-local-profile-manager",
+  "status": "functional-browser-side-orchestrator",
   "entry": "../../extension/integrations/enshrouded-manager.js",
-  "scope": "local server profile preparation and validation",
-  "capabilities": ["create-profile", "save-profile", "validate-endpoint", "copy-connection-address"],
+  "scope": "local Enshrouded server profile, configuration and orchestration-plan management",
+  "source_reference": "https://github.com/lincolnthalles/enshrouded-container",
+  "source_component": "src/enshctl",
+  "inspired_capabilities": ["version pinning and preparation", "install/update planning", "start/stop lifecycle planning", "scheduled/live/cold/emergency backup planning", "backup retention planning", "restore preparation", "mod overlay preparation", "CPU/RSS resource polling configuration", "configuration generation"],
+  "capabilities": ["create-profile", "save-profile", "validate-endpoint", "copy-connection-address", "prepare-action-plan", "generate-server-config", "generate-docker-compose", "generate-verification-plan", "version-profile", "backup-profile", "restore-profile", "mods-profile", "resource-profile", "retention-profile"],
   "external_process": false,
   "native_messaging": false,
-  "description": "Gerencia perfis locais de servidor Enshrouded, endereço, porta e observações. Não inicia processos externos nem altera servidores sem ação explícita do usuário."
+  "docker_execution": false,
+  "security_boundary": "browser-plan-only",
+  "description": "Gerencia perfis, configuração e planos de operação de servidores Enshrouded inspirados no enshctl do projeto de referência. Gera configurações, docker-compose e planos de ação localmente, sem iniciar Docker, Wine, Steam, DepotDownloader ou qualquer processo externo. A execução real de um servidor Windows/Docker exige um runtime local autorizado pelo sistema operacional."
 }
