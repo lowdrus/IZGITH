@@ -79,6 +79,7 @@ def main():
 
     dash = (EXT / 'ui/dashboard.html').read_text(encoding='utf-8')
     dash_js = (EXT / 'ui/dashboard.js').read_text(encoding='utf-8')
+    dash_css = (EXT / 'ui/dashboard.css').read_text(encoding='utf-8')
     check('EULA', 'EULA' in dash or (ROOT / 'docs/EULA.md').is_file())
     check('Guia Rápido', 'Guia Rápido' in dash or (ROOT / 'docs/GUIA_RAPIDO.md').is_file())
     check('SONPEF', (ROOT / 'integrations/SONPEF/integration.json').is_file())
@@ -122,9 +123,9 @@ def main():
     check('UPPER GITHUB power', 'githubPower' in dash and 'upperGithubEnabled' in dash_js)
     check('UPPER URL power', 'toggleForceSync' in dash and 'forceSyncStatus' in dash and 'power-action' in dash)
     check('CONV-D menu', 'providerMenuButton' in dash and 'providerMenu' in dash)
-    check('menus ancorados', 'position:relative' in (EXT / 'ui/dashboard.css').read_text(encoding='utf-8') and 'upper-github-menu' in (EXT / 'ui/dashboard.css').read_text(encoding='utf-8'))
+    check('menus ancorados', 'position:static' in dash_css and '.provider-list[hidden]{display:none!important}' in dash_css and 'upper-github-menu' in dash_css)
     check('window controls', 'minimizeDashboard' in dash and 'closeDashboard' in dash and 'chrome.windows.update' in dash_js and 'chrome.windows.remove' in dash_js)
-    check('documentação 00066', (ROOT / 'docs/CHANGELOG_00066.md').is_file() and (ROOT / 'docs/GUIA_RAPIDO.md').is_file() and (ROOT / 'docs/EULA.md').is_file())
+    check('documentação atual', (ROOT / 'docs/CHANGELOG_00067.md').is_file() and (ROOT / 'docs/GUIA_RAPIDO.md').is_file() and (ROOT / 'docs/EULA.md').is_file())
 
     providers = read_json(ROOT / 'integrations/CONV-D/integration.json').get('providers', [])
     check('CONV-D providers', len(providers) >= 10 and 'ChatGPT' in providers and 'Claude' in providers)
