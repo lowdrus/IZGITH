@@ -78,6 +78,7 @@ def main():
     check('36 temas', isinstance(themes, dict) and themes.get('total') == 36 and sum(map(len, families.values())) == 36)
 
     dash = (EXT / 'ui/dashboard.html').read_text(encoding='utf-8')
+    dash_js = (EXT / 'ui/dashboard.js').read_text(encoding='utf-8')
     check('EULA', 'EULA' in dash or (ROOT / 'docs/EULA.md').is_file())
     check('Guia Rápido', 'Guia Rápido' in dash or (ROOT / 'docs/GUIA_RAPIDO.md').is_file())
     check('SONPEF', (ROOT / 'integrations/SONPEF/integration.json').is_file())
@@ -85,7 +86,8 @@ def main():
     check('KIT_UNICO', (ROOT / 'integrations/KIT_UNICO/integration.json').is_file())
     check('Servidores', 'data-tab="servers"' in dash and '<section class="tab" id="servers">' in dash)
     check('ENSHROUDED MANAGER', (ROOT / 'integrations/ENSHROUDED_MANAGER/integration.json').is_file() and (EXT / 'integrations/enshrouded-manager.js').is_file())
-    check('ENSHROUDED sem executor externo', 'external_process": false' in (ROOT / 'integrations/ENSHROUDED_MANAGER/integration.json').read_text(encoding='utf-8') and 'native_messaging": false' in (ROOT / 'integrations/ENSHROUDED_MANAGER/integration.json').read_text(encoding='utf-8'))
+    em = (ROOT / 'integrations/ENSHROUDED_MANAGER/integration.json').read_text(encoding='utf-8')
+    check('ENSHROUDED sem executor externo', 'external_process": false' in em and 'native_messaging": false' in em)
 
     conv = EXT / 'integrations/conv-d.js'
     ct = conv.read_text(encoding='utf-8') if conv.is_file() else ''
@@ -116,6 +118,13 @@ def main():
     check('assistentes na inicial', 'assistant-grid' in dash and all(x in dash for x in ['IZART', 'Ayella', 'Júlia']))
     check('configurações documentadas', all(x in dash for x in ['Ultra + Controlado — Unificado', 'Controlado', 'Ultra', 'Auto preparar', 'Auto com confirmação', 'Manual']))
     check('profundidade funcional', all(x in dash for x in ['2D', '3D', '4D']) and 'data-depth' in dash)
+    check('UPPER GITHUB menu', 'githubMenuButton' in dash and 'githubMenu' in dash and 'upper-github-menu' in dash)
+    check('UPPER GITHUB power', 'githubPower' in dash and 'upperGithubEnabled' in dash_js)
+    check('UPPER URL power', 'toggleForceSync' in dash and 'forceSyncStatus' in dash and 'power-action' in dash)
+    check('CONV-D menu', 'providerMenuButton' in dash and 'providerMenu' in dash)
+    check('menus ancorados', 'position:relative' in (EXT / 'ui/dashboard.css').read_text(encoding='utf-8') and 'upper-github-menu' in (EXT / 'ui/dashboard.css').read_text(encoding='utf-8'))
+    check('window controls', 'minimizeDashboard' in dash and 'closeDashboard' in dash and 'chrome.windows.update' in dash_js and 'chrome.windows.remove' in dash_js)
+    check('documentação 00066', (ROOT / 'docs/CHANGELOG_00066.md').is_file() and (ROOT / 'docs/GUIA_RAPIDO.md').is_file() and (ROOT / 'docs/EULA.md').is_file())
 
     providers = read_json(ROOT / 'integrations/CONV-D/integration.json').get('providers', [])
     check('CONV-D providers', len(providers) >= 10 and 'ChatGPT' in providers and 'Claude' in providers)
