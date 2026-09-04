@@ -1,6 +1,6 @@
 # EULA — IZGITH
 
-**Versão funcional documentada: 6.0.0.00065 · Rodada 00066**
+**Versão funcional documentada: 6.0.0.00067 · Rodada 00067**
 
 ## 1. Finalidade
 
@@ -26,10 +26,14 @@ UPPER GITHUB e UPPER URL podem registrar/preparar destinos, arquivos e operaçõ
 
 Cada plataforma de IA possui DOM, autenticação, políticas e mecanismos de navegação próprios. A disponibilidade do botão CONV-D depende de a página fornecer conteúdo acessível à extensão e de a integração correspondente permanecer compatível.
 
-## 7. Segurança
+## 7. Enshrouded Manager
+
+O módulo é uma camada de preparação e gerenciamento de perfis no navegador. Sua arquitetura toma como referência pública `lincolnthalles/enshrouded-container`, mas não copia, inicia ou distribui executáveis desse projeto. Dados de Docker, Wine, SteamCMD, manifests, backups, mods, portas e variáveis `ENSHROUDED_*` devem ser tratados como parâmetros de configuração e sempre validados no ambiente externo responsável pela execução.
+
+## 8. Segurança
 
 Não coloque senhas, tokens, cookies de sessão ou chaves privadas em arquivos do projeto. Não utilize `git push --force` contra repositórios alheios. O modo de preparação não equivale a autorização de execução.
 
-## 8. Aceite
+## 9. Aceite
 
 Ao utilizar IZGITH, o usuário reconhece que é responsável pelos dados exportados, pelas permissões concedidas ao navegador e pelos destinos para os quais decidir publicar conteúdo.
