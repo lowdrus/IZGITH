@@ -1,0 +1,14 @@
+(() => {
+  const $ = id => document.getElementById(id);
+  const result = text => { $('result').textContent = text; };
+  const profile = () => ({name:$('serverName').value,host:$('serverHost').value,port:$('serverPort').value,notes:$('serverNotes').value});
+  const download = (content, filename, mime) => { const u=URL.createObjectURL(new Blob([content],{type:mime})); const a=document.createElement('a'); a.href=u; a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(u),1000); };
+  const actions=[['verify','Verificar'],['install','Preparar Instalação'],['start','Preparar Início'],['stop','Preparar Parada'],['backup','Backup'],['restore','Restaurar'],['prune','Retenção'],['mods','Mods'],['resources','Recursos'],['version','Versão']];
+  actions.forEach(([action,label])=>{const b=document.createElement('button');b.className='btn';b.type='button';b.textContent=label;b.onclick=async()=>{const p=profile(),v=IZGITHEnshrouded.validate(p);if(!v.ok){result('Informe host e porta válidos.');return}try{const plan=await IZGITHEnshrouded.prepare(p,action);result(`ENSHROUDED MANAGER · ${label}\n${plan.steps.map(s=>`${s.order}. ${s.description}`).join('\n')}\n\nNenhum processo externo foi iniciado.`)}catch(e){result('Falha: '+e.message)}};$('actions').appendChild(b)});
+  $('save').onclick=async()=>{try{const item=await IZGITHEnshrouded.upsert(profile());$('serverName').value=item.name;$('serverPort').value=item.port;result(`Perfil salvo: ${item.name} · ${IZGITHEnshrouded.address(item)}`)}catch(e){result('Falha: '+e.message)}};
+  $('validate').onclick=()=>{const v=IZGITHEnshrouded.validate(profile());result(v.ok?`Endpoint válido: ${v.host}:${v.port}`:`Endpoint inválido: ${v.errors.join('; ')}`)};
+  $('clear').onclick=()=>{['serverName','serverHost','serverNotes'].forEach(id=>$(id).value='');$('serverPort').value='15636';result('Formulário limpo.')};
+  $('config').onclick=()=>{const p=profile(),v=IZGITHEnshrouded.validate(p);if(!v.ok){result('Informe host e porta válidos.');return}download(JSON.stringify(IZGITHEnshrouded.config(p),null,2),'enshrouded-server-config.json','application/json');result('Configuração gerada localmente.')};
+  $('compose').onclick=()=>{const p=profile(),v=IZGITHEnshrouded.validate(p);if(!v.ok){result('Informe host e porta válidos.');return}download(IZGITHEnshrouded.compose(p),'docker-compose.enshrouded.yml','text/yaml');result('Compose gerado localmente.')};
+  $('plan').onclick=()=>{const p=profile(),v=IZGITHEnshrouded.validate(p);if(!v.ok){result('Informe host e porta válidos.');return}download(JSON.stringify(IZGITHEnshrouded.plan(p,'verify'),null,2),'enshrouded-manager-plan.json','application/json');result('Plano gerado localmente.')};
+})();
