@@ -1,0 +1,11 @@
+{
+  "id": "enshrouded-manager",
+  "name": "ENSHROUDED MANAGER",
+  "status": "functional-local-profile-manager",
+  "entry": "../../extension/integrations/enshrouded-manager.js",
+  "scope": "local server profile preparation and validation",
+  "capabilities": ["create-profile", "save-profile", "validate-endpoint", "copy-connection-address"],
+  "external_process": false,
+  "native_messaging": false,
+  "description": "Gerencia perfis locais de servidor Enshrouded, endereço, porta e observações. Não inicia processos externos nem altera servidores sem ação explícita do usuário."
+}
