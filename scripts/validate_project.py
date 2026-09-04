@@ -26,8 +26,6 @@ def read_json(path):
 
 def main():
     check('pasta raiz', ROOT.is_dir())
-
-    # The repository root is intentionally a loadable Chromium extension.
     root_manifest_path = ROOT / 'manifest.json'
     root_manifest = read_json(root_manifest_path) if root_manifest_path.is_file() else None
     check('manifest.json raiz', root_manifest_path.is_file())
@@ -85,6 +83,9 @@ def main():
     check('SONPEF', (ROOT / 'integrations/SONPEF/integration.json').is_file())
     check('CONV-D', (ROOT / 'integrations/CONV-D/integration.json').is_file())
     check('KIT_UNICO', (ROOT / 'integrations/KIT_UNICO/integration.json').is_file())
+    check('Servidores', 'data-tab="servers"' in dash and '<section class="tab" id="servers">' in dash)
+    check('ENSHROUDED MANAGER', (ROOT / 'integrations/ENSHROUDED_MANAGER/integration.json').is_file() and (EXT / 'integrations/enshrouded-manager.js').is_file())
+    check('ENSHROUDED sem executor externo', 'external_process": false' in (ROOT / 'integrations/ENSHROUDED_MANAGER/integration.json').read_text(encoding='utf-8') and 'native_messaging": false' in (ROOT / 'integrations/ENSHROUDED_MANAGER/integration.json').read_text(encoding='utf-8'))
 
     conv = EXT / 'integrations/conv-d.js'
     ct = conv.read_text(encoding='utf-8') if conv.is_file() else ''
