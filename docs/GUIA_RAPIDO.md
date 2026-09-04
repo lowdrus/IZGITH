@@ -1,45 +1,45 @@
-# IZGITH — Guia Rápido 00067
+# IZGITH — Guia Rápido 00069
 
 ## 1. Carregar a extensão sem erro de manifesto
 
-Há duas formas válidas:
+No Chromium, abra `chrome://extensions`, ative **Modo do desenvolvedor** e use **Carregar sem compactação** apontando exatamente para a pasta que contém o `manifest.json` da extensão.
 
-- **Desenvolvimento:** abra `chrome://extensions`, ative **Modo do desenvolvedor** e use **Carregar sem compactação** apontando para a pasta que contém o `manifest.json` na raiz do pacote.
-- **Pacote CI:** extraia `dist/IZGITH_v*_FULL.zip` e selecione a pasta extraída que contém `manifest.json` diretamente na raiz.
+O pacote publicado pelo CI também pode ser extraído e carregado a partir da pasta que contém `manifest.json` diretamente no nível selecionado.
 
-Não selecione uma pasta pai que contenha outra pasta `IZGITH_v...`; o manifesto precisa estar no nível escolhido pelo Chrome.
+## 2. Ordem da interface
 
-## 2. Central De Ferramentas
+A navegação principal permanece: **Painel Geral → Ferramentas → Servidores → Configurações → Logs → Temas**.
+
+No rodapé ficam **EULA** e **Guia Rápido** como abas informativas. O EULA não é um bloqueio de uso.
+
+## 3. Menus UPPER GITHUB e CONV-D
+
+Os dois menus possuem botão próprio, `aria-expanded`, fechamento ao clicar fora e posicionamento relativo ao card correspondente. Se um menu abrir, ele deve permanecer visualmente preso ao módulo que o originou, sem escapar para outro card.
+
+## 4. Ferramentas
 
 ### CONV-D
-Ativa/desativa a captura/exportação de conversas suportadas. O botão **Baixar Conversa** aparece nas páginas de conversa suportadas. O usuário escolhe **Tudo** ou **Ultima Rodada** e depois o formato.
+Ativa/desativa a captura/exportação de conversas suportadas. O botão **Baixar Conversa** aparece nas páginas compatíveis. O usuário escolhe **Tudo** ou **Ultima Rodada** e depois o formato.
 
 ### UPPER URL
 Cole uma URL HTTPS de conversa. O campo de repositório é apenas o destino pretendido. A abertura é explícita e não envia tokens automaticamente.
 
 ### Download por Link
-Aceita URLs HTTP/HTTPS diretas e usa a API de downloads do navegador. FTP, SMTP, POP e torrents não são transportes genéricos oferecidos pela API de downloads da extensão.
+Aceita URLs HTTP/HTTPS diretas e usa a API de downloads do navegador com **Salvar como**. Protocolos como FTP e torrents não são tratados como transporte genérico pela API padrão de downloads da extensão.
 
 ### SONPEF
-Selecione arquivos `.ps1` e `.py` para unificação local no navegador. O fluxo não depende de Native Messaging.
+Selecione arquivos `.ps1` e `.py` para unificação local no navegador. O fluxo normal não depende de Native Messaging.
 
 ### KIT_UNICO
 Hub de integrações e fluxos compartilhados do IZGITH.
-
-### Selecionar .ZIP/.CRX
-Escolha um pacote local para conferir nome, tamanho e extensão antes de inspeção, auditoria ou instalação.
 
 ### UPPER GITHUB
 Prepara arquivos/pastas e registra o destino. Publicações em GitHub devem usar autenticação explícita e permissões adequadas.
 
 ### JDOWNLOADER
-Fornece integração/atalhos de captura sem instalar ou iniciar o aplicativo externo automaticamente.
+Oferece integração/atalhos de captura sem instalar ou iniciar o aplicativo externo automaticamente.
 
-## 3. Menus
-
-Os menus de **CONV-D** e **UPPER GITHUB** são alternáveis. Clique no ícone para abrir/fechar; clique fora para recolher. O estado é controlado pelo atributo `aria-expanded`.
-
-## 4. Assistentes
+## 5. Assistentes
 
 **IZART** — diagnóstico, auditoria, arquitetura e testes.
 
@@ -47,13 +47,17 @@ Os menus de **CONV-D** e **UPPER GITHUB** são alternáveis. Clique no ícone pa
 
 **Júlia** — organização, fila, KIT_UNICO, SONPEF e pacotes.
 
-As três conversas ficam dentro do painel inicial e possuem **minimizar**, **fechar** e **limpar chat**.
+As três ficam no painel inicial e possuem minimizar, fechar e limpar chat.
 
-## 5. Enshrouded Manager
+## 6. Enshrouded Manager
 
-Em **Servidores**, informe nome, host e porta, valide e salve o perfil. O módulo prepara dados; não inicia Docker, Wine, SteamCMD ou executáveis silenciosamente.
+Em **Servidores**, informe nome, host e porta, valide e salve o perfil. O módulo prepara dados e planos; não inicia Docker, Wine, SteamCMD ou executáveis silenciosamente.
 
-## 6. Configurações
+Na tela dedicada do **ENSHROUDED MANAGER**, o ícone de expansão abre uma nova janela do próprio módulo. A aparência do ícone segue o padrão `square-arrow-out-up-right` do Lucide.
+
+A referência técnica verificada é `lincolnthalles/enshrouded-container`, que documenta Fedora 44 + Wine 11, Docker 24+, versionamento por Steam manifest, mod injection, backups e configuração por `ENSHROUDED_*`.
+
+## 7. Configurações
 
 **Ultra + Controlado — Unificado:** equilíbrio entre automação interna e salvaguardas.
 
@@ -67,7 +71,7 @@ Em **Servidores**, informe nome, host e porta, valide e salve o perfil. O módul
 
 **Manual:** cada etapa é iniciada explicitamente.
 
-## 7. Profundidade visual
+## 8. Profundidade visual
 
 **2D:** interface plana e leve.
 
@@ -75,14 +79,12 @@ Em **Servidores**, informe nome, host e porta, valide e salve o perfil. O módul
 
 **4D:** movimento e efeitos temporais/dinâmicos.
 
-Os três modos são aplicados por `data-depth` e podem ser trocados em Configurações.
+O IZGITH mantém 36 presets: 26 base + 10 `#coders`.
 
-## 8. Janela
+## 9. Logs
 
-**—** minimiza somente a janela do IZGITH.
+A caixa de logs deve preservar a leitura monoespaçada, rolagem vertical, contraste alto e mensagens sem sobreposição. Erros de uma operação devem permanecer associados à ação que os originou.
 
-**×** fecha somente a janela do IZGITH.
-
-## 9. Segurança
+## 10. Segurança
 
 Não informe senhas, cookies, tokens ou chaves privadas ao dashboard. O navegador e a extensão não devem ser usados para contornar autenticação de terceiros.
