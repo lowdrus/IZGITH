@@ -1,0 +1,18 @@
+{
+  "schema": "izgith.enshrouded.runtime.v1",
+  "mode": "browser-to-agent",
+  "default_endpoint": "http://127.0.0.1:38751",
+  "health": "/health",
+  "principles": [
+    "Chrome is the control plane, not the process executor",
+    "Runtime Agent owns Docker Engine access",
+    "Agent must run with least privilege and explicit allow-listed operations",
+    "Every mutating action is auditable",
+    "No Docker socket is exposed to arbitrary web origins",
+    "Native Messaging is optional, not a baseline dependency"
+  ],
+  "operations": ["health","servers.list","server.start","server.stop","server.restart","server.update","players.list","player.kick","player.ban","player.unban","backups.list","backup.create","backup.restore","backup.prune","files.list","config.read","config.write","logs.tail"],
+  "reference_project": "lincolnthalles/enshrouded-container",
+  "reference_runtime": "Docker + Wine + Steam/DepotDownloader orchestrator",
+  "browser_execution": false
+}

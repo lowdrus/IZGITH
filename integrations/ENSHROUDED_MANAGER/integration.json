@@ -1,16 +1,17 @@
 {
   "id": "enshrouded-manager",
   "name": "ENSHROUDED MANAGER",
-  "status": "functional-browser-side-orchestrator",
+  "status": "ui-v2-runtime-agent-ready",
   "entry": "../../extension/integrations/enshrouded-manager.js",
-  "scope": "local Enshrouded server profile, configuration and orchestration-plan management",
+  "scope": "local Enshrouded server profiles, configuration, lifecycle, backups, players and orchestration",
   "source_reference": "https://github.com/lincolnthalles/enshrouded-container",
   "source_component": "src/enshctl",
-  "inspired_capabilities": ["version pinning and preparation", "install/update planning", "start/stop lifecycle planning", "scheduled/live/cold/emergency backup planning", "backup retention planning", "restore preparation", "mod overlay preparation", "CPU/RSS resource polling configuration", "configuration generation"],
-  "capabilities": ["create-profile", "save-profile", "validate-endpoint", "copy-connection-address", "prepare-action-plan", "generate-server-config", "generate-docker-compose", "generate-verification-plan", "version-profile", "backup-profile", "restore-profile", "mods-profile", "resource-profile", "retention-profile"],
+  "reference_capabilities": ["version pinning", "install/update planning", "start/stop lifecycle", "scheduled/live/cold/emergency backups", "retention", "restore", "mod overlay", "CPU/RSS polling", "configuration generation"],
+  "capabilities": ["create-profile", "save-profile", "validate-endpoint", "start", "stop", "restart", "update", "players", "kick", "ban", "unban", "backup", "restore", "prune", "mods", "resources", "version", "generate-server-config", "generate-docker-compose"],
   "external_process": false,
   "native_messaging": false,
   "docker_execution": false,
-  "security_boundary": "browser-plan-only",
-  "description": "Gerencia perfis, configuração e planos de operação de servidores Enshrouded inspirados no enshctl do projeto de referência. Gera configurações, docker-compose e planos de ação localmente, sem iniciar Docker, Wine, Steam, DepotDownloader ou qualquer processo externo. A execução real de um servidor Windows/Docker exige um runtime local autorizado pelo sistema operacional."
+  "runtime_agent": {"enabled": true, "default_endpoint": "http://127.0.0.1:38751", "health": "/health", "contract": "integrations/ENSHROUDED_MANAGER/runtime-contract.json"},
+  "security_boundary": "browser-control-plane-runtime-agent-executor",
+  "description": "Painel de operação alinhado ao enshrouded-container. A extensão gera e controla planos; execução de Docker/Wine/Steam/DepotDownloader fica no Runtime Agent explicitamente instalado e autorizado pelo sistema operacional."
 }
