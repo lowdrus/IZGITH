@@ -6,7 +6,7 @@ O **ENSHROUDED MANAGER** do IZGITH é uma camada de preparação e gerenciamento
 
 ## Referência técnica
 
-A referência declarada para a arquitetura é [`lincolnthalles/enshrouded-container`](https://github.com/lincolnthalles/enshrouded-container). A versão consultada em 4 de setembro de 2026 descreve um container de servidor dedicado com Fedora 44 + Wine 11, Docker 24+, versionamento por manifest da Steam, injeção de mods, backups agendados, polling de recursos e configuração por variáveis `ENSHROUDED_*`. citeturn2view0
+A referência declarada para a arquitetura é `lincolnthalles/enshrouded-container`. A versão consultada em 4 de setembro de 2026 descreve um container de servidor dedicado com Fedora 44 + Wine 11, Docker 24+, versionamento por manifest da Steam, injeção de mods, backups agendados, polling de recursos e configuração por variáveis `ENSHROUDED_*`.
 
 Entre os pontos úteis para o IZGITH estão:
 
@@ -14,7 +14,7 @@ Entre os pontos úteis para o IZGITH estão:
 - `BACKUP_CRON`, `BACKUP_FORMAT` e retenção configurável;
 - configurações do servidor através do prefixo `ENSHROUDED_*`;
 - volumes separados para manifests, Wine prefix, mods, saves, backups, config e logs;
-- portas UDP `15636` (tráfego do servidor) e `15637` (consulta), além de `27015` TCP/UDP para as funções descritas pelo projeto. citeturn2view0
+- portas UDP `15636` (tráfego do servidor) e `15637` (consulta), além de `27015` TCP/UDP para as funções descritas pelo projeto.
 
 ## O que o IZGITH faz
 
@@ -37,7 +37,7 @@ Para uma implantação real, siga a documentação e os requisitos do projeto de
 
 ## Backups e mods
 
-A arquitetura de referência suporta backups programados e no desligamento, além de uma camada de mods sobre uma instalação versionada. O IZGITH documenta essas capacidades como referência; ele não copia nem executa o container de terceiros automaticamente. citeturn2view0
+A arquitetura de referência suporta backups programados e no desligamento, além de uma camada de mods sobre uma instalação versionada. O IZGITH documenta essas capacidades como referência; ele não copia nem executa o container de terceiros automaticamente.
 
 ## Segurança
 
