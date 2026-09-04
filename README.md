@@ -2,7 +2,7 @@
 
 Extensão Chrome Manifest V3 para baixar, preparar e auditar pacotes de extensões Chromium com segurança. O IZGITH reúne popup, fila, painel de controle, ferramentas locais, CONV-D, SONPEF, KIT_UNICO e ENSHROUDED MANAGER em uma árvore única.
 
-## Estado atual — 6.0.0.00065 · Rodada 00066
+## Estado atual — 6.0.0.00068 · Rodada 00068
 
 A interface usa **Ultra + Controlado — Unificado** como modo padrão, com `Controlado` e `Ultra` disponíveis separadamente. A navegação principal é **Painel Geral → Ferramentas → Servidores → Configurações → Logs → Temas**, com EULA e Guia Rápido no rodapé.
 
@@ -18,7 +18,8 @@ A interface usa **Ultra + Controlado — Unificado** como modo padrão, com `Con
 - SONPEF, CONV-D, KIT_UNICO e ENSHROUDED MANAGER registrados;
 - assistentes **IZART, Ayella e Júlia** no painel inicial;
 - **UPPER URL** e **UPPER GITHUB** com controles visuais de estado;
-- menus de ferramentas ancorados aos respectivos cards para evitar controles soltos.
+- menus de CONV-D e UPPER GITHUB com abertura/fechamento determinísticos, fechamento externo e Escape;
+- controle de janela do IZGITH separado do navegador.
 
 ## CONV-D
 
@@ -32,9 +33,7 @@ Uma extensão Chromium não deve fingir que pode iniciar Docker, Wine, SteamCMD 
 
 ## ENSHROUDED MANAGER
 
-O módulo mantém perfis, valida host/porta e prepara ações como instalação, início, parada, backup, restauração, retenção, mods, recursos e versão. A composição usa como referência pública `lincolnthalles/enshrouded-container`, incluindo a imagem `ghcr.io/lincolnthalles/enshrouded-container:latest`, `network_mode: host`, version pinning, backups e configuração por `ENSHROUDED_*`.
-
-A documentação de integração está em `docs/ENSHROUDED_MANAGER.md`.
+O módulo mantém perfis, valida host/porta e prepara ações como instalação, início, parada, backup, restauração, retenção, mods, recursos e versão. A composição usa como referência pública `lincolnthalles/enshrouded-container`, cujo README atual descreve version pinning por manifest, mods em `/data/mods`, backups configuráveis, polling de recursos, configuração por `ENSHROUDED_*` e os volumes de dados correspondentes. O IZGITH usa essa referência para planejamento; não executa o container automaticamente.
 
 ## Instalação rápida no Chrome
 
@@ -58,7 +57,7 @@ npm test
 npm run package
 ```
 
-O pacote é criado em `dist/`. A validação inclui Manifest V3, service worker, referências, ícones, 36 temas, integrações, assistentes canônicos, profundidade visual, menus e controles da rodada 00066.
+A rodada 00068 adiciona regressão específica para os menus colapsáveis e para o botão de abertura do ENSHROUDED MANAGER. O pacote é criado em `dist/`.
 
 ## Estrutura
 

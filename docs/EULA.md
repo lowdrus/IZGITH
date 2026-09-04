@@ -1,6 +1,6 @@
 # EULA — IZGITH
 
-**Versão funcional documentada: 6.0.0.00065 · Rodada 00066**
+**Versão funcional documentada: 6.0.0.00068 · Rodada 00068**
 
 ## 1. Finalidade
 
@@ -12,7 +12,7 @@ O usuário decide quais arquivos selecionar, quais conversas exportar, qual form
 
 ## 3. Conversas e dados
 
-O CONV-D processa localmente o conteúdo disponibilizado pela página de conversa suportada. A extensão não deve fabricar IDs privados de contas: quando uma plataforma expõe um identificador ou papel público da mensagem, ele pode ser preservado; caso contrário, são usados rótulos como `Usuário` e `IA`.
+O CONV-D processa localmente o conteúdo disponibilizado pela página de conversa suportada. Quando a plataforma expõe um identificador de autor/usuário/mensagem, ele pode ser preservado. Quando não expõe, o exportador usa rótulos explícitos como `Você` e `IA[Plataforma]` e registra que o ID não foi exposto. O IZGITH não fabrica IDs privados.
 
 ## 4. Execução externa
 
@@ -28,8 +28,12 @@ Cada plataforma de IA possui DOM, autenticação, políticas e mecanismos de nav
 
 ## 7. Segurança
 
-Não coloque senhas, tokens, cookies de sessão ou chaves privadas em arquivos do projeto. Não utilize `git push --force` contra repositórios alheios. O modo de preparação não equivale a autorização de execução.
+Não coloque senhas, tokens, cookies de sessão ou chaves privadas em arquivos do projeto. Não use operações destrutivas ou force-push contra repositórios sem autorização. O modo de preparação não equivale a autorização de execução.
 
-## 8. Aceite
+## 8. Enshrouded Manager
+
+A integração é de planejamento no navegador. A referência pública `lincolnthalles/enshrouded-container` é usada para manter a documentação de version pinning, backups, mods, volumes e configuração coerente, sem copiar credenciais ou executar o container automaticamente.
+
+## 9. Aceite
 
 Ao utilizar IZGITH, o usuário reconhece que é responsável pelos dados exportados, pelas permissões concedidas ao navegador e pelos destinos para os quais decidir publicar conteúdo.

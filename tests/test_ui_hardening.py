@@ -10,7 +10,11 @@ def test_tool_menus_can_collapse():
     html = (EXT / 'ui' / 'dashboard.html').read_text(encoding='utf-8')
     assert '[hidden]{display:none!important}' in css
     assert 'providerMenuButton' in js and 'githubMenuButton' in js
-    assert "m.hidden=!open" in js
+    assert 'hardenedMenu' in js
+    assert 'stopImmediatePropagation' in js
+    assert 'menuEl.hidden=!open' in js
+    assert 'menuOutsideListener' in js
+    assert 'menuEscapeListener' in js
     assert 'id="providerMenu"' in html and 'id="githubMenu"' in html
 
 
@@ -21,4 +25,6 @@ def test_enshrouded_manager_screen_is_packaged():
     assert screen.is_file()
     assert screen_js.is_file()
     assert "chrome.tabs.create({url:chrome.runtime.getURL('ui/enshrouded.html'),active:true})" in manager
+    assert 'square-arrow' not in manager
+    assert 'M14 3h7v7' in manager
     assert 'ENSHROUDED MANAGER' in screen.read_text(encoding='utf-8')
