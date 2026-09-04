@@ -1,11 +1,11 @@
-# IZGITH — Guia Rápido 00067
+# IZGITH — Guia Rápido 00068
 
 ## 1. Carregar a extensão sem erro de manifesto
 
 Há duas formas válidas:
 
-- **Desenvolvimento:** abra `chrome://extensions`, ative **Modo do desenvolvedor** e use **Carregar sem compactação** apontando para a pasta que contém o `manifest.json` na raiz do pacote.
-- **Pacote CI:** extraia `dist/IZGITH_v*_FULL.zip` e selecione a pasta extraída que contém `manifest.json` diretamente na raiz.
+- **Desenvolvimento:** abra `chrome://extensions`, ative **Modo do desenvolvedor** e use **Carregar sem compactação** apontando para `IZGITH/extension/`, onde `manifest.json` fica diretamente na raiz da árvore distribuível.
+- **Pacote CI:** extraia o ZIP gerado e selecione a pasta que contém `manifest.json` diretamente na raiz.
 
 Não selecione uma pasta pai que contenha outra pasta `IZGITH_v...`; o manifesto precisa estar no nível escolhido pelo Chrome.
 
@@ -37,7 +37,7 @@ Fornece integração/atalhos de captura sem instalar ou iniciar o aplicativo ext
 
 ## 3. Menus
 
-Os menus de **CONV-D** e **UPPER GITHUB** são alternáveis. Clique no ícone para abrir/fechar; clique fora para recolher. O estado é controlado pelo atributo `aria-expanded`.
+Os menus de **CONV-D** e **UPPER GITHUB** são alternáveis e ancorados aos seus cards. Clique no ícone para abrir/fechar; clique fora ou pressione **Escape** para recolher. O estado é controlado pelo atributo `aria-expanded`.
 
 ## 4. Assistentes
 
@@ -51,7 +51,7 @@ As três conversas ficam dentro do painel inicial e possuem **minimizar**, **fec
 
 ## 5. Enshrouded Manager
 
-Em **Servidores**, informe nome, host e porta, valide e salve o perfil. O módulo prepara dados; não inicia Docker, Wine, SteamCMD ou executáveis silenciosamente.
+Em **Servidores**, informe nome, host e porta, valide e salve o perfil. O ícone ao lado de **ENSHROUDED MANAGER** abre a tela dedicada interna do IZGITH em nova aba. O módulo prepara dados; não inicia Docker, Wine, SteamCMD ou executáveis silenciosamente.
 
 ## 6. Configurações
 
