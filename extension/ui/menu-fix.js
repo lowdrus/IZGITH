@@ -1,6 +1,14 @@
 (() => {
   'use strict';
 
+  function installMenuLayout() {
+    if (document.getElementById('izgithMenuLayoutFix')) return;
+    const style = document.createElement('style');
+    style.id = 'izgithMenuLayoutFix';
+    style.textContent = '.tool-card{overflow:visible!important}.tool-grid{overflow:visible!important}.tool-card .tool-body{position:relative}.provider-menu{position:relative;z-index:40}.provider-list{z-index:100;max-height:60vh;overflow:auto}.upper-github-menu{position:absolute;right:0;left:auto;top:34px;z-index:100}';
+    document.head.appendChild(style);
+  }
+
   function bindMenu(buttonId, menuId) {
     const button = document.getElementById(buttonId);
     const menu = document.getElementById(menuId);
@@ -45,6 +53,7 @@
   }
 
   function init() {
+    installMenuLayout();
     bindMenu('providerMenuButton', 'providerMenu');
     bindMenu('githubMenuButton', 'githubMenu');
     bindOutsideClose();
