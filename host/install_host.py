@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import argparse,json,os,platform,subprocess,sys
+import argparse,json,os,platform,subprocess,sys,shlex
 from pathlib import Path
 HOST_NAME='com.izgith.host'
 def extension_origin(extension_id:str)->str:
@@ -8,7 +8,7 @@ def extension_origin(extension_id:str)->str:
     if len(value)!=32 or any(ch not in 'abcdefghijklmnop' for ch in value):raise ValueError('extension ID must contain 32 characters in the range a-p')
     return f'chrome-extension://{value}/'
 def unix_launcher(root:Path)->Path:
-    launcher=root/'izgith_host.sh';launcher.write_text(f'#!/bin/sh\nexec "{sys.executable}" "{root/"host.py"}"\n',encoding='utf-8');launcher.chmod(0o755);return launcher
+    launcher=root/'izgith_host.sh';launcher.write_text(f'#!/bin/sh\nexec {shlex.quote(sys.executable)} {shlex.quote(str(root/"host.py"))} "$@"\n',encoding='utf-8');launcher.chmod(0o755);return launcher
 def windows_executable(root:Path)->Path:
     candidates=[root/'dist/izgith_host.exe',root/'izgith_host.exe']
     found=next((p for p in candidates if p.is_file()),None)

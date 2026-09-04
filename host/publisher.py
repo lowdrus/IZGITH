@@ -64,11 +64,16 @@ def scan_file(path):
 
 
 def run_git(args, cwd=None):
+    from git_tools import executable
+    binary = executable('git')
+    if not binary:
+        raise RuntimeError('Git não encontrado. Execute INSTALAR_IZGITH_HOST.bat no pacote Windows.')
     env = os.environ.copy()
     env.update(GIT_TERMINAL_PROMPT='0', GIT_LFS_SKIP_SMUDGE='1', GIT_LITERAL_PATHSPECS='1')
     # Não imprimir stdout/stderr: um credential helper pode revelar dados sensíveis.
-    result = subprocess.run(['git', *args], cwd=cwd, env=env, capture_output=True,
-                            text=True, timeout=1800, shell=False)
+    result = subprocess.run([binary, *args], cwd=cwd, env=env, capture_output=True,
+                            text=True, timeout=1800, shell=False,
+                            creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
     if result.returncode:
         raise RuntimeError('Git/LFS não concluiu a operação. Verifique autenticação no Git Credential Manager, '
                            'permissão de escrita, proteção da branch, conexão e cota LFS. Nenhum force-push foi feito.')

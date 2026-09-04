@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 6.0.0.00066 — host Windows e diagnóstico Git
+
+- Compilação Windows do host e teste do protocolo nativo no executável gerado.
+- Instalador BAT/PS1 com configuração exportada pela extensão, registro por usuário e login externo.
+- Descoberta de Git/GitHub CLI mesmo quando o Chrome conserva o PATH antigo.
+- Handshake obrigatório do host, diagnóstico Git/LFS e limpeza de chamadas interrompidas.
+- Testes de mensagens truncadas, concorrência de conexão e falhas de transporte.
+
 ## 6.0.0.00065 — integração JDOWNLOADER e publicação confirmada
 
 - Recuperação das bibliotecas, estilos e traduções do RAR MyJDownloader.

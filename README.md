@@ -1,6 +1,10 @@
 # IZGITH
 
-## Versão em integração — 6.0.0.00065
+## Versão em integração — 6.0.0.00066
+
+Host Windows pré-compilado pelo workflow, instalador assistido e diagnóstico de
+Git/LFS: siga o [guia do host Windows](docs/HOST_WINDOWS.md). A instalação e a
+autenticação exigem confirmação local; não existe permissão de escrita concedida por commit.
 
 A branch `integracao` reúne JDOWNLOADER, UPPER GITHUB com Git/LFS e
 UPPER URL/FORSE-SINC. Consulte o [guia atual de instalação e testes](docs/GUIA_INTEGRACAO_00065.md).

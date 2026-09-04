@@ -124,7 +124,7 @@ def launch_sandbox(extension_path:str,browser:str|None=None)->dict[str,Any]:
     return {'ok':True,'profile':str(profile),'browser':browser_path,'path':str(manifest.parent),'name':analysis.get('name'),'version':analysis.get('version'),'score':analysis.get('score'),'findings':analysis.get('findings',[])}
 
 def diagnostics()->dict[str,Any]:
-    return {'ok':True,'host':HOST_NAME,'python':sys.version.split()[0],'platform':sys.platform,'browser':detect_browser(),'temp':tempfile.gettempdir()}
+    return {'ok':True,'host':HOST_NAME,'publisher_protocol':1,'python':sys.version.split()[0],'platform':sys.platform,'browser':detect_browser(),'temp':tempfile.gettempdir()}
 
 def handle(message:dict[str,Any])->dict[str,Any]:
     command=message.get('command')
@@ -143,6 +143,7 @@ def handle(message:dict[str,Any])->dict[str,Any]:
 def read_message()->dict[str,Any]|None:
     raw=sys.stdin.buffer.read(4)
     if not raw:return None
+    if len(raw)!=4:raise EOFError('incomplete native header')
     length=struct.unpack('<I',raw)[0]
     if length>16*1024*1024:raise ValueError('native message too large')
     payload=sys.stdin.buffer.read(length)
@@ -150,7 +151,9 @@ def read_message()->dict[str,Any]|None:
     return json.loads(payload.decode('utf-8'))
 
 def write_message(message:dict[str,Any])->None:
-    payload=json.dumps(message,ensure_ascii=False).encode('utf-8');sys.stdout.buffer.write(struct.pack('<I',len(payload)));sys.stdout.buffer.write(payload);sys.stdout.buffer.flush()
+    payload=json.dumps(message,ensure_ascii=False).encode('utf-8')
+    if len(payload)>1024*1024:raise ValueError('native response exceeds 1 MiB')
+    sys.stdout.buffer.write(struct.pack('<I',len(payload)));sys.stdout.buffer.write(payload);sys.stdout.buffer.flush()
 
 def native_loop()->None:
     from publisher import Publisher
@@ -161,7 +164,10 @@ def native_loop()->None:
             if message is None:break
             try:
                 if not isinstance(message,dict):raise ValueError('Mensagem inválida.')
-                result=publisher.handle(message) if str(message.get('command','')).startswith('publish_') else handle(message)
+                if message.get('command')=='git_diagnostics':
+                    from git_tools import diagnostics as git_diagnostics
+                    result={'ok':True,'tools':git_diagnostics()}
+                else:result=publisher.handle(message) if str(message.get('command','')).startswith('publish_') else handle(message)
                 result['requestId']=message.get('requestId')
                 write_message(result)
             except Exception as exc:write_message({'ok':False,'requestId':message.get('requestId') if isinstance(message,dict) else None,'error':str(exc)})

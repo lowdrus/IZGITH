@@ -1,0 +1,48 @@
+name: Host Windows
+on:
+  push:
+    branches: [main, integracao]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compilar-e-testar:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Compilar executável com dependências
+        run: |
+          python -m pip install "pyinstaller>=6,<7"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m PyInstaller --noconfirm --clean --onefile --name izgith_host --distpath host/dist --workpath host/build --specpath host host/host.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Testar protocolo do executável real
+        run: |
+          $env:IZGITH_TEST_HOST_BINARY = (Resolve-Path host/dist/izgith_host.exe).Path
+          python -m unittest discover -s tests -p test_native_protocol.py -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Testar instalador sem login nem alteração de registro
+        shell: powershell
+        run: |
+          & host/installers/INSTALAR_IZGITH_HOST.ps1 -ExtensionId 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' -InstallDirectory "$env:RUNNER_TEMP\izgith-host-test" -SkipDependencies -SkipLogin -NoRegister -NoPrompt
+          $m = Get-Content "$env:RUNNER_TEMP\izgith-host-test\com.izgith.host.json" -Raw | ConvertFrom-Json
+          if ($m.allowed_origins[0] -ne 'chrome-extension://aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/') { throw 'Origem incorreta' }
+          if (-not (Test-Path -LiteralPath $m.path)) { throw 'Executavel ausente' }
+      - name: Montar pacote Windows
+        run: |
+          New-Item -ItemType Directory -Path dist/IZGITH-Windows-Host | Out-Null
+          Copy-Item host/dist/izgith_host.exe dist/IZGITH-Windows-Host/
+          Copy-Item host/installers/INSTALAR_IZGITH_HOST.bat,host/installers/INSTALAR_IZGITH_HOST.ps1 dist/IZGITH-Windows-Host/
+          Copy-Item docs/HOST_WINDOWS.md dist/IZGITH-Windows-Host/LEIA_PRIMEIRO.md
+          Get-FileHash dist/IZGITH-Windows-Host/izgith_host.exe -Algorithm SHA256 | Format-List | Out-File dist/IZGITH-Windows-Host/SHA256.txt
+      - uses: actions/upload-artifact@v6
+        with:
+          name: IZGITH-Windows-Host
+          path: dist/IZGITH-Windows-Host/
+          if-no-files-found: error
+          retention-days: 30
