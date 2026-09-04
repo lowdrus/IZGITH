@@ -7,13 +7,13 @@ No Chromium, abra `chrome://extensions`, ative o **Modo do desenvolvedor** e car
 ## 2. Central De Ferramentas
 
 ### CONV-D
-Ativa/desativa o módulo de exportação de conversas. Nas páginas de conversa suportadas, o botão **Baixar Conversa** permite escolher o recorte e o formato antes do salvamento.
+Ativa/desativa o módulo de exportação. Nas páginas de conversa suportadas, **Baixar Conversa** permite escolher `Tudo` ou `Ultima Rodada` e depois o formato.
 
 ### UPPER URL
-Cole a URL HTTPS de uma conversa suportada. O segundo campo é o repositório GitHub pretendido. O botão de power controla o estado local do FORSE-SINC; ele não concede permissões nem envia tokens automaticamente.
+Cole a URL HTTPS de uma conversa suportada. O segundo campo é o repositório GitHub pretendido. A ação de abrir conversa apenas navega para a URL; ela não concede acesso ao repositório e não envia tokens automaticamente.
 
 ### Download por Link
-Cole uma URL **HTTP/HTTPS direta** para um arquivo e use o ícone de download. O navegador abre o diálogo de salvamento quando configurado para isso. FTP, SMTP, POP e torrents não são transportes genéricos suportados pela API de downloads do navegador.
+Cole uma URL **HTTP/HTTPS direta** para um arquivo e use o ícone de download. FTP, SMTP, POP e torrents não são transportes genéricos suportados pela API de downloads do navegador.
 
 ### SONPEF
 Selecione arquivos `.ps1` e `.py`. O módulo reúne o conteúdo em uma saída unificada no navegador, sem exigir executor local.
@@ -70,4 +70,4 @@ Há **36 temas**. A profundidade pode ser `2D`, `3D` ou `4D`:
 
 O módulo mantém perfis de servidor, valida host/porta e prepara configurações, compose e planos. A implementação atual é deliberadamente **browser-plan-only**: não inicia Docker, Wine, SteamCMD ou processos do sistema sem uma integração externa explicitamente autorizada.
 
-A arquitetura é compatível conceitualmente com o projeto de referência `lincolnthalles/enshrouded-container`, que atualmente usa a imagem `ghcr.io/lincolnthalles/enshrouded-container:latest`, `network_mode: host`, persistência e configuração por variáveis de ambiente.
+A arquitetura é alinhada conceitualmente ao projeto de referência `lincolnthalles/enshrouded-container`: version pinning por manifest, mods em `/data/mods`, backups configuráveis, polling de recursos, configuração `ENSHROUDED_*` e volumes persistentes.
