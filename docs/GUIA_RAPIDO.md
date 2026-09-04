@@ -1,28 +1,73 @@
-# GUIA RAPIDO IZGITH
+# Guia Rápido — IZGITH
 
-## 1. Abrir
-1. Extraia o pacote para uma pasta permanente.
-2. Abra `chrome://extensions`.
-3. Ative Modo do desenvolvedor.
-4. Use Carregar sem compactacao e selecione `extension` (a pasta que contem `manifest.json`).
+## 1. Abrir a extensão
 
-## 2. Identidade & Host
-- O IZGITH funciona sem Native Messaging.
-- Use **Testar host** somente para verificar o host nativo instalado.
-- Se aparecer OFF, isso significa que o host opcional nao esta instalado ou nao esta registrado; nao e falha do boot da extensao.
-- Para instalar o host no Windows, use os instaladores fornecidos no pacote/release e confirme o ID da extensao antes do registro.
+No Chromium, abra `chrome://extensions`, ative o **Modo do desenvolvedor** e carregue **a pasta `extension/`** como extensão descompactada. O `manifest.json` precisa estar diretamente dentro dessa pasta.
 
-## 3. Ferramentas
-Use as ferramentas de auditoria e preparacao para inspecionar ZIP/CRX. Operacoes que dependem do host exigem que ele esteja instalado.
+## 2. Central De Ferramentas
 
-## 4. Configuracoes
-O modo padrao e **Ultra + Controlado — Unificado**. Tambem existem os modos individuais Controlado e Ultra. `Pausar animacoes` reduz movimento, brilho e efeitos visuais.
+### CONV-D
+Ativa/desativa o módulo de exportação de conversas. Nas páginas de conversa suportadas, o botão **Baixar Conversa** permite escolher o recorte e o formato antes do salvamento.
 
-## 5. Logs
-Os eventos devem ser apresentados de forma legivel e, quando forem logs operacionais, em fonte verde.
+### UPPER URL
+Cole a URL HTTPS de uma conversa suportada. O segundo campo é o repositório GitHub pretendido. O botão de power controla o estado local do FORSE-SINC; ele não concede permissões nem envia tokens automaticamente.
 
-## 6. Temas
-Existem 36 presets. A profundidade visual suporta 2D, 3D e 4D como camadas de apresentacao; pausar animacoes desliga os efeitos dinamicos.
+### Download por Link
+Cole uma URL **HTTP/HTTPS direta** para um arquivo e use o ícone de download. O navegador abre o diálogo de salvamento quando configurado para isso. FTP, SMTP, POP e torrents não são transportes genéricos suportados pela API de downloads do navegador.
 
-## Rodada de diagnostico
-Se houver erro, primeiro recarregue a extensao em `chrome://extensions`, depois abra Inspecionar visualizacoes e confira o service worker. Nunca copie e cole trechos de arquivos antigos por cima de uma versao nova: use um build completo.
+### SONPEF
+Selecione arquivos `.ps1` e `.py`. O módulo reúne o conteúdo em uma saída unificada no navegador, sem exigir executor local.
+
+### KIT_UNICO
+É o hub lógico das integrações e papéis compartilhados do IZGITH.
+
+### Selecionar .ZIP/.CRX
+Selecione um pacote local quando quiser conferir o arquivo antes de inspeção, auditoria ou instalação. O módulo não instala automaticamente o pacote.
+
+### UPPER GITHUB
+Use o menu para selecionar arquivos/pastas e verificar o estado de integração. A publicação efetiva exige autenticação explícita; o IZGITH não coleta credenciais silenciosamente.
+
+### JDOWNLOADER
+A interface registra atalhos de integração/captura, mas não instala nem inicia o aplicativo externo automaticamente.
+
+## 3. Fila Rápida
+
+A Fila Rápida é um espaço de preparação e acompanhamento. Ela permite manter itens organizados antes de uma etapa posterior, sem disparar operações externas escondidas.
+
+## 4. Assistentes
+
+**IZART**, **Ayella** e **Júlia** aparecem na página inicial. Clique em uma delas para abrir o chat no próprio painel. Use **Limpar chat** para reiniciar a conversa e **×** para fechar apenas o painel da assistente.
+
+## 5. Janela do IZGITH
+
+- `—` = minimiza somente a janela do IZGITH.
+- `×` = fecha somente a janela do IZGITH.
+- O navegador não é encerrado.
+
+## 6. Temas e profundidade
+
+Há **36 temas**. A profundidade pode ser `2D`, `3D` ou `4D`:
+
+- **2D:** visual plano e leve.
+- **3D:** perspectiva e profundidade.
+- **4D:** camada dinâmica com movimento e variação temporal.
+
+**Aleatório** escolhe um tema e sua profundidade automaticamente.
+
+## 7. Modos operacionais
+
+- **Ultra + Controlado — Unificado:** automatiza tarefas internas e mantém ações sensíveis sob controle.
+- **Controlado:** prioriza previsibilidade e confirmação.
+- **Ultra:** reduz interrupções para tarefas locais suportadas.
+
+## 8. Modos automáticos
+
+- **Auto preparar:** organiza dados, arquivos, parâmetros e sequência, mas não executa uma etapa externa sozinho.
+- **Auto com confirmação:** prepara a ação, mostra o que será feito e aguarda confirmação antes da etapa efetiva.
+- **Manual:** cada etapa é iniciada pelo usuário.
+
+## 9. Enshrouded Manager
+
+O módulo mantém perfis de servidor, valida host/porta e prepara configurações, compose e planos. A implementação atual é deliberadamente **browser-plan-only**: não inicia Docker, Wine, SteamCMD ou processos do sistema sem uma integração externa explicitamente autorizada.
+
+A arquitetura é compatível conceitualmente com o projeto de referência `lincolnthalles/enshrouded-container`, que atualmente usa a imagem `ghcr.io/lincolnthalles/enshrouded-container:latest`, `network_mode: host`, persistência e configuração por variáveis de ambiente.

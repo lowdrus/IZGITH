@@ -1,50 +1,53 @@
 # IZGITH
 
-Extensao Chrome Manifest V3 para baixar, preparar e auditar pacotes de extensoes Chromium com seguranca. O IZGITH reune em um unico produto o popup, a fila, o painel de controle, o monitor de releases publicas do GitHub e ferramentas locais de preparação.
+Extensão Chrome Manifest V3 para baixar, preparar e auditar pacotes de extensões Chromium com segurança. O IZGITH reúne popup, fila, painel de controle, ferramentas locais, CONV-D, SONPEF, KIT_UNICO e ENSHROUDED MANAGER em uma árvore única.
 
-## Estado atual - 6.0.0.00065
+## Estado atual — 6.0.0.00065 · Rodada 00066
 
-A linha atual preserva a referencia visual `IZGITH_v6.0.0.00034_Full_Build` e usa **Ultra + Controlado unificados** como modo padrao. O usuario ainda pode selecionar `Controlado` ou `Ultra` individualmente em Configuracoes.
-
-A ordem fixa da interface e: **Painel Geral -> Ferramentas -> Servidores -> Configuracoes -> Logs -> Temas**. No rodape ficam **EULA** e **Guia Rapido**.
+A interface usa **Ultra + Controlado — Unificado** como modo padrão, com `Controlado` e `Ultra` disponíveis separadamente. A navegação principal é **Painel Geral → Ferramentas → Servidores → Configurações → Logs → Temas**, com EULA e Guia Rápido no rodapé.
 
 ## O que funciona
 
-- download HTTP/HTTPS com confirmacao de destino;
+- download HTTP/HTTPS com diálogo de salvamento;
 - fila local de arquivos ZIP/CRX;
-- auditoria de `manifest.json` com pontuacao explicavel;
-- extracao protegida contra ZIP Slip e links simbolicos;
-- preparacao de ZIP e CRX2/CRX3;
-- laboratorio isolado em perfil temporario do Chrome/Chromium;
-- monitor de releases publicas do GitHub;
+- auditoria de `manifest.json`;
+- extração protegida contra ZIP Slip;
+- preparação de ZIP e CRX;
 - 36 temas com profundidades 2D/3D/4D;
-- CI, CodeQL, testes, pacote ZIP e releases automaticas;
-- integracoes registradas para SONPEF, CONV-D e KIT_UNICO;
-- assistentes registrados: Julia, Ayella e IZART;
-- **ENSHROUDED MANAGER** com perfis, validacao, planos de operacao e geracao de configuracao/compose.
+- CI, CodeQL, testes, pacote ZIP e releases;
+- SONPEF, CONV-D, KIT_UNICO e ENSHROUDED MANAGER registrados;
+- assistentes **IZART, Ayella e Júlia** no painel inicial;
+- **UPPER URL** e **UPPER GITHUB** com controles visuais de estado;
+- menus de ferramentas ancorados aos respectivos cards para evitar controles soltos.
 
-## Native Messaging e execucao externa
+## CONV-D
 
-Native Messaging nao e requisito para abrir a extensao. A camada atual e local e deliberadamente nao inicia processos externos silenciosamente.
+O CONV-D adiciona **Baixar Conversa** às plataformas de IA suportadas quando a página fornece conteúdo acessível à extensão. O usuário escolhe `Tudo` ou `Ultima Rodada` e depois o formato de exportação. O salvamento é local e usa o diálogo do navegador.
 
-Uma extensao Chromium nao pode instalar/registrar ou iniciar silenciosamente um executavel Windows, Docker Desktop, Wine, Steam ou outro processo arbitrario. Por isso o ENSHROUDED MANAGER atual prepara e audita planos, configuracoes e artefatos. A execucao real de um runtime externo requer uma ponte local autorizada pelo sistema operacional.
+## Native Messaging e execução externa
+
+Native Messaging **não é requisito** da versão atual. A extensão não instala nem registra executáveis silenciosamente. SONPEF funciona com arquivos selecionados pelo usuário e o ENSHROUDED MANAGER prepara planos/configurações no navegador.
+
+Uma extensão Chromium não deve fingir que pode iniciar Docker, Wine, SteamCMD ou outro processo arbitrário sem uma ponte autorizada pelo sistema operacional. Por isso a camada Enshrouded é deliberadamente `browser-plan-only`.
 
 ## ENSHROUDED MANAGER
 
-O modulo foi desenhado a partir de conceitos publicos do projeto `lincolnthalles/enshrouded-container`, incluindo version pinning, instalacao, start/stop, backups live/cold/emergency, retencao, restore, mods e polling de recursos. A referencia e documentada em `docs/ENSHROUDED_MANAGER.md`.
+O módulo mantém perfis, valida host/porta e prepara ações como instalação, início, parada, backup, restauração, retenção, mods, recursos e versão. A composição usa como referência pública `lincolnthalles/enshrouded-container`, incluindo a imagem `ghcr.io/lincolnthalles/enshrouded-container:latest`, `network_mode: host`, version pinning, backups e configuração por `ENSHROUDED_*`.
 
-## Instalacao rapida no Google Chrome
+A documentação de integração está em `docs/ENSHROUDED_MANAGER.md`.
 
-1. Baixe o pacote `IZGITH-extension` da aba **Actions** ou da pagina **Releases**.
-2. Extraia o ZIP para uma pasta permanente, por exemplo `C:\IZGITH\extension`.
-3. Abra `chrome://extensions`.
-4. Ative **Modo do desenvolvedor**.
-5. Clique em **Carregar sem compactacao** e escolha a pasta que contem `manifest.json`.
+## Instalação rápida no Chrome
+
+1. Baixe/extraia o pacote da extensão.
+2. Abra `chrome://extensions`.
+3. Ative **Modo do desenvolvedor**.
+4. Clique em **Carregar sem compactação**.
+5. Selecione **a pasta `extension/`**, isto é, a pasta que contém diretamente `manifest.json`.
 6. Fixe o IZGITH na barra do Chrome e abra o popup.
 
-O popup funciona sem programas adicionais.
+Se o Chrome disser que o manifesto está ausente, não selecione a raiz do repositório: selecione `extension/`.
 
-## Desenvolvimento
+## Desenvolvimento e validação
 
 Requisitos: Python 3.11+ e Node.js 24+.
 
@@ -55,21 +58,21 @@ npm test
 npm run package
 ```
 
-O pacote e criado em `dist/`. Nenhuma dependencia npm e necessaria.
+O pacote é criado em `dist/`. A validação inclui Manifest V3, service worker, referências, ícones, 36 temas, integrações, assistentes canônicos, profundidade visual, menus e controles da rodada 00066.
 
 ## Estrutura
 
-- `extension/`: unica extensao distribuivel do IZGITH.
+- `extension/`: extensão distribuível.
 - `integrations/`: registros de SONPEF, CONV-D, KIT_UNICO e ENSHROUDED MANAGER.
-- `scripts/`: validacao e empacotamento.
-- `tests/`: testes unitarios e de integracao estatica.
-- `docs/`: tutorial, arquitetura e especificacoes.
-- `archive/legacy/`: fontes historicas incorporadas, fora do build.
+- `scripts/`: validação e empacotamento.
+- `tests/`: testes unitários e estáticos.
+- `docs/`: documentação ativa e histórica.
+- `archive/legacy/`: material histórico preservado fora do build.
 
-## Seguranca e privacidade
+## Segurança e privacidade
 
-O projeto nao requer token do GitHub para consultar releases publicas e nao armazena credenciais. Leia `SECURITY.md` e `docs/PRIVACIDADE.md`.
+Não coloque tokens, cookies, senhas ou chaves privadas no repositório. Operações efetivas de publicação em GitHub exigem autenticação explícita. Leia `SECURITY.md`, `docs/EULA.md` e `docs/PRIVACIDADE.md`.
 
-## Licenca
+## Licença
 
-Consulte `LICENSE`. Fontes historicas mantem suas proprias licencas e nao sao incluidas no pacote final.
+Consulte `LICENSE`. Fontes históricas mantêm suas próprias licenças.
