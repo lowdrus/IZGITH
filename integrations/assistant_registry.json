@@ -1,11 +1,11 @@
 {
-  "schema":1,
-  "project":"IZGITH",
-  "canonical_assistants":[
+  "schema": 1,
+  "project": "IZGITH",
+  "canonical_assistants": [
     {"id":"julia","name":"Júlia","role":"organizacao, tarefas e KIT_UNICO"},
     {"id":"ayella","name":"Ayella","role":"orientacao, fluxos e operacao"},
     {"id":"izart","name":"IZART","role":"diagnostico, auditoria e ferramentas"}
   ],
-  "naming_policy":{"ayella_is_alias":false,"forbidden_display_names":["Ayelle","alias Ayella","Alias: Ayella"]},
-  "version":"6.0.0.00064"
+  "naming_policy": {"ayella_is_alias": false, "forbidden_display_names":["Ayelle","alias Ayella","Alias: Ayella"]},
+  "version": "6.0.0.00065"
 }
