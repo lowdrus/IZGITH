@@ -1,6 +1,6 @@
 # IZGITH — EULA / Termos de Uso
 
-**Versão documental: 00067 — 4 de setembro de 2026**
+**Versão documental: 00069 — 4 de setembro de 2026**
 
 ## 1. Natureza do software
 
@@ -26,14 +26,22 @@ O baseline do IZGITH evita execução silenciosa de processos do sistema. Native
 
 Integrações com ChatGPT, Claude, Gemini, Grok, GitHub, Enshrouded e outros serviços não implicam afiliação ou endosso. Os respectivos nomes e marcas pertencem aos seus titulares.
 
-## 7. Segurança
+## 7. Enshrouded Manager
+
+O módulo usa `lincolnthalles/enshrouded-container` como referência técnica pública de arquitetura. O IZGITH não copia nem redistribui o código desse projeto e não transforma a interface web em executor oculto de Docker, Wine ou SteamCMD. Dados de portas, manifests, backups, mods e variáveis de ambiente devem ser conferidos no ambiente externo antes de uso.
+
+## 8. Segurança
 
 Não coloque segredos em arquivos versionados. Para operações que exigem autenticação, utilize os mecanismos oficiais do serviço e as práticas de secrets do ambiente correspondente.
 
-## 8. Limitação de responsabilidade
+## 9. Limitação de responsabilidade
 
 O software é fornecido conforme sua implementação e documentação. Mudanças de navegador, provedores, APIs, políticas, formatos de páginas, redes ou sistemas externos podem afetar funcionalidades.
 
-## 9. Aceite
+## 10. Conformidade
 
-Ao utilizar o IZGITH, o usuário declara que possui autorização para acessar, exportar, armazenar e manipular os dados utilizados e que observará as leis, políticas e termos aplicáveis.
+O usuário é responsável por utilizar o IZGITH de acordo com a legislação aplicável, contratos, licenças, termos de serviço, direitos autorais, direitos de terceiros e regras de segurança de sua organização. Este documento descreve o funcionamento e as responsabilidades do produto e não substitui aconselhamento jurídico profissional.
+
+## 11. Aceite informativo
+
+Este documento é disponibilizado como informação e não constitui um bloqueio de acesso às ferramentas da extensão. Ao utilizar o IZGITH, o usuário declara que possui autorização para acessar, exportar, armazenar e manipular os dados utilizados e que observará as leis, políticas e termos aplicáveis.
