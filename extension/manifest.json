@@ -1,15 +1,47 @@
 {
-  "manifest_version":3,
-  "name":"IZGITH",
-  "short_name":"IZGITH",
-  "description":"Extensao Manifest V3 para preparacao, auditoria segura e exportacao local de conversas.",
-  "version":"6.0.0.64",
-  "version_name":"6.0.0.00064 tool icons + compact cards",
-  "minimum_chrome_version":"111",
-  "action":{"default_title":"IZGITH","default_popup":"ui/popup.html","default_icon":{"16":"assets/icons/icon16.png","32":"assets/icons/icon32.png","48":"assets/icons/icon48.png","128":"assets/icons/icon128.png"}},
-  "icons":{"16":"assets/icons/icon16.png","32":"assets/icons/icon32.png","48":"assets/icons/icon48.png","128":"assets/icons/icon128.png"},
-  "background":{"service_worker":"sw.js"},
-  "permissions":["downloads","storage","tabs","windows"],
-  "host_permissions":["https://chatgpt.com/*","https://claude.ai/*","https://gemini.google.com/*","https://copilot.microsoft.com/*","https://perplexity.ai/*","https://www.perplexity.ai/*","https://grok.com/*","https://chat.deepseek.com/*","https://poe.com/*","https://chat.mistral.ai/*","https://you.com/*","https://www.meta.ai/*","https://meta.ai/*","https://chat.qwen.ai/*","https://huggingface.co/chat/*","https://character.ai/*"],
-  "content_scripts":[{"matches":["https://chatgpt.com/*","https://claude.ai/*","https://gemini.google.com/*","https://copilot.microsoft.com/*","https://perplexity.ai/*","https://www.perplexity.ai/*","https://grok.com/*","https://chat.deepseek.com/*","https://poe.com/*","https://chat.mistral.ai/*","https://you.com/*","https://www.meta.ai/*","https://meta.ai/*","https://chat.qwen.ai/*","https://huggingface.co/chat/*","https://character.ai/*"],"js":["integrations/conv-d.js"],"css":["integrations/conv-d.css"],"run_at":"document_idle"}]
+  "manifest_version": 3,
+  "name": "IZGITH",
+  "short_name": "IZGITH",
+  "description": "Extensao Manifest V3 para preparacao, auditoria segura e exportacao local de conversas.",
+  "version": "6.0.0.65",
+  "version_name": "6.0.0.00065 root-loadable",
+  "minimum_chrome_version": "111",
+  "action": {
+    "default_title": "IZGITH",
+    "default_popup": "ui/popup.html",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "32": "assets/icons/icon32.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "sw.js"
+  },
+  "permissions": ["downloads", "storage", "tabs", "windows"],
+  "host_permissions": [
+    "https://chatgpt.com/*", "https://claude.ai/*", "https://gemini.google.com/*", "https://copilot.microsoft.com/*",
+    "https://perplexity.ai/*", "https://www.perplexity.ai/*", "https://grok.com/*", "https://chat.deepseek.com/*",
+    "https://poe.com/*", "https://chat.mistral.ai/*", "https://you.com/*", "https://www.meta.ai/*",
+    "https://meta.ai/*", "https://chat.qwen.ai/*", "https://huggingface.co/chat/*", "https://character.ai/*"
+  ],
+  "content_scripts": [{
+    "matches": [
+      "https://chatgpt.com/*", "https://claude.ai/*", "https://gemini.google.com/*", "https://copilot.microsoft.com/*",
+      "https://perplexity.ai/*", "https://www.perplexity.ai/*", "https://grok.com/*", "https://chat.deepseek.com/*",
+      "https://poe.com/*", "https://chat.mistral.ai/*", "https://you.com/*", "https://www.meta.ai/*",
+      "https://meta.ai/*", "https://chat.qwen.ai/*", "https://huggingface.co/chat/*", "https://character.ai/*"
+    ],
+    "js": ["integrations/conv-d.js"],
+    "css": ["integrations/conv-d.css"],
+    "run_at": "document_idle"
+  }],
+  "content_security_policy": {"extension_pages": "script-src 'self'; object-src 'self'"}
 }
