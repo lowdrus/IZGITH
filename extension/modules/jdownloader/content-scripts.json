@@ -1,0 +1,93 @@
+[
+  {
+    "id": "izgith-jd-0",
+    "matches": [
+      "*://*/*"
+    ],
+    "js": [
+      "modules/jdownloader/contentscripts/cnlInterceptorMain.js"
+    ],
+    "allFrames": true,
+    "runAt": "document_start",
+    "world": "MAIN",
+    "persistAcrossSessions": true
+  },
+  {
+    "id": "izgith-jd-1",
+    "matches": [
+      "*://*/*"
+    ],
+    "js": [
+      "modules/jdownloader/contentscripts/cnlInterceptor.js"
+    ],
+    "allFrames": true,
+    "runAt": "document_start",
+    "world": "ISOLATED",
+    "persistAcrossSessions": true
+  },
+  {
+    "id": "izgith-jd-2",
+    "matches": [
+      "*://*/*"
+    ],
+    "js": [
+      "modules/jdownloader/contentscripts/onCopyContentscript.js"
+    ],
+    "allFrames": true,
+    "runAt": "document_start",
+    "world": "ISOLATED",
+    "persistAcrossSessions": true
+  },
+  {
+    "id": "izgith-jd-3",
+    "matches": [
+      "*://*/*"
+    ],
+    "js": [
+      "modules/jdownloader/contentscripts/toolbarContentscript.js"
+    ],
+    "allFrames": true,
+    "runAt": "document_start",
+    "world": "ISOLATED",
+    "persistAcrossSessions": true
+  },
+  {
+    "id": "izgith-jd-5",
+    "matches": [
+      "*://*/*"
+    ],
+    "js": [
+      "modules/jdownloader/contentscripts/myjdCaptchaSolver.js"
+    ],
+    "allFrames": false,
+    "runAt": "document_start",
+    "world": "ISOLATED",
+    "persistAcrossSessions": true
+  },
+  {
+    "id": "izgith-jd-6",
+    "matches": [
+      "*://*/*"
+    ],
+    "js": [
+      "modules/jdownloader/contentscripts/captchaSolverContentscript.js"
+    ],
+    "allFrames": false,
+    "runAt": "document_end",
+    "world": "ISOLATED",
+    "persistAcrossSessions": true
+  },
+  {
+    "id": "izgith-jd-7",
+    "matches": [
+      "*://my.jdownloader.org/*"
+    ],
+    "js": [
+      "modules/jdownloader/contentscripts/webinterfaceEnhancer.js"
+    ],
+    "allFrames": true,
+    "runAt": "document_end",
+    "world": "ISOLATED",
+    "persistAcrossSessions": true
+  }
+]

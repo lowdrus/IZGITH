@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 6.0.0.00065 — integração JDOWNLOADER e publicação confirmada
+
+- Recuperação das bibliotecas, estilos e traduções do RAR MyJDownloader.
+- Módulo JDOWNLOADER com caminhos adaptados, identidade única e captura de páginas opcional.
+- UPPER GITHUB com seleção local, Git LFS automático a partir de 100 MiB, confirmação e verificação do commit remoto.
+- UPPER URL/FORSE-SINC com configuração por conversa exata e revisão do JSON antes da publicação.
+- Notificações com ícones Lucide, detalhes de erro e orientação para correção.
+- JSON solicitado preservado byte a byte; acesso nativo opcional, sem PAT embutido.
+- CI/CodeQL passam a abranger `integracao`; testes de Git/LFS com repositório local, contratos de mensagens e referências HTML.
+- ZIP inclui o host Python e o guia atual. Contas externas, instalação Windows e execução ponta a ponta com MyJDownloader precisam de validação no ambiente do usuário.
+
 ## 6.0.0.00059 - CONV-D FULL + ROUND EXPORT
 
 - CONV-D exporta a conversa inteira, percorrendo o conteúdo carregado do início ao fim e acumulando mensagens durante a rolagem.

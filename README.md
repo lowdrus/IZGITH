@@ -1,5 +1,27 @@
 # IZGITH
 
+## Versão em integração — 6.0.0.00065
+
+A branch `integracao` reúne JDOWNLOADER, UPPER GITHUB com Git/LFS e
+UPPER URL/FORSE-SINC. Consulte o [guia atual de instalação e testes](docs/GUIA_INTEGRACAO_00065.md).
+As seções antigas abaixo registram versões anteriores: não comprovam que todas
+as funcionalidades históricas estejam conectadas à interface atual.
+
+- O pacote contém **uma extensão**, em `extension/`, e o host opcional em `host/`.
+- JDOWNLOADER inclui bibliotecas e estilos recuperados do RAR; usa conta e dispositivo MyJDownloader.
+- Publicação GitHub depende do host instalado, Git/Git LFS e autenticação externa.
+- FORSE-SINC publica somente as mensagens carregadas que o usuário revisou e confirmou.
+- Não há publicação silenciosa de chats, instalação silenciosa nem contorno de permissões.
+- O JSON fornecido foi preservado byte a byte como configuração histórica; não contém credenciais.
+- Assistentes locais são respostas baseadas em regras, não modelos de IA conectados a uma API.
+
+Fontes MyJDownloader e licenças permanecem em `MYJDOWNLOADER/`. O adaptador
+`scripts/build_jdownloader.py` gera `extension/modules/jdownloader/` sem inserir
+a identidade, a chave pública ou o manifesto da extensão original no pacote.
+O legado em `archive/` permanece histórico; não foi todo reativado.
+
+## Documentação histórica
+
 Extensao Chrome Manifest V3 para baixar, preparar e auditar pacotes de extensoes Chromium com seguranca. O IZGITH reune em um unico produto o popup, a fila, o painel de controle, o monitor de releases publicas do GitHub e um host local opcional em Python.
 
 ## Estado atual - 6.0.0.00049

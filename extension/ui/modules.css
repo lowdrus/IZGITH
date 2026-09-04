@@ -1,0 +1,5 @@
+.izgith-notice{position:fixed;bottom:20px;right:20px;z-index:2147483647;max-width:min(560px,90vw);display:flex;align-items:center;gap:12px;padding:18px;border:1px solid #84ffaf;border-radius:14px;color:#d9ffe9;background:#102019;box-shadow:0 8px 32px #0009}
+.izgith-notice button,dialog button{cursor:pointer;color:inherit;background:#17372a;border:1px solid #669d7e;border-radius:8px;padding:8px}
+dialog{background:#101a17;color:#e2ffed;border:1px solid #84ffaf;border-radius:12px;max-width:90vw;max-height:85vh}dialog pre{white-space:pre-wrap;overflow-wrap:anywhere;max-width:760px}
+.module-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.module-note{font-size:12px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}.tool-body label{display:block;margin-top:8px}.module-actions button{display:inline-flex;align-items:center;gap:6px}
+#forsePreview{white-space:pre-wrap;max-height:50vh;overflow:auto;padding:12px;background:#07110c;border-radius:8px}

@@ -1,4 +1,5 @@
-/* IZGITH 6.0.0.00061 - MV3 service worker. Local-only; Native Messaging is deliberately not used. */
+/* IZGITH MV3: publicação nativa opcional, somente pelas páginas internas. */
+importScripts('scripts/forse-worker.js', 'modules/jdownloader/background.js');
 const DEFAULTS={theme:'cyber-01',autoMode:'confirm',operationMode:'unified',performanceMode:false,visualDepth:'3D',convDEnabled:true,izgithQueue:[],history:[]};
 chrome.runtime.onInstalled.addListener(function(){
   chrome.storage.local.get(Object.keys(DEFAULTS)).then(function(current){

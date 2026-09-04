@@ -153,14 +153,22 @@ def write_message(message:dict[str,Any])->None:
     payload=json.dumps(message,ensure_ascii=False).encode('utf-8');sys.stdout.buffer.write(struct.pack('<I',len(payload)));sys.stdout.buffer.write(payload);sys.stdout.buffer.flush()
 
 def native_loop()->None:
-    while True:
-        message=read_message()
-        if message is None:break
-        try:write_message(handle(message))
-        except Exception as exc:write_message({'ok':False,'error':f'host error: {exc}'})
+    from publisher import Publisher
+    publisher=Publisher()
+    try:
+        while True:
+            message=read_message()
+            if message is None:break
+            try:
+                if not isinstance(message,dict):raise ValueError('Mensagem inválida.')
+                result=publisher.handle(message) if str(message.get('command','')).startswith('publish_') else handle(message)
+                result['requestId']=message.get('requestId')
+                write_message(result)
+            except Exception as exc:write_message({'ok':False,'requestId':message.get('requestId') if isinstance(message,dict) else None,'error':str(exc)})
+    finally:publisher.close()
 
 def main()->int:
-    parser=argparse.ArgumentParser(description='IZGITH native host');parser.add_argument('--analyze');parser.add_argument('--prepare');parser.add_argument('--sandbox');args=parser.parse_args()
+    parser=argparse.ArgumentParser(description='IZGITH native host');parser.add_argument('--analyze');parser.add_argument('--prepare');parser.add_argument('--sandbox');parser.add_argument('origin',nargs='?');parser.add_argument('--parent-window');args=parser.parse_args()
     if args.analyze:result=analyze_manifest(args.analyze)
     elif args.prepare:result=prepare_package(args.prepare)
     elif args.sandbox:result=launch_sandbox(args.sandbox)

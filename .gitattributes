@@ -1,0 +1,5 @@
+# Preservar exatamente o arquivo de configuração fornecido pelo proprietário.
+.chatgpt/conversations/69cb3e9ea61c81a2895c94c07cbd9c33.json -text whitespace=cr-at-eol
+# Fontes de terceiros são preservadas sem reformatação.
+MYJDOWNLOADER/** -text whitespace=-blank-at-eol,-blank-at-eof
+extension/modules/jdownloader/vendor/** -text whitespace=-blank-at-eol,-blank-at-eof
