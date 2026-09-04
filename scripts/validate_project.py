@@ -79,6 +79,8 @@ def main():
 
     dash = (EXT / 'ui/dashboard.html').read_text(encoding='utf-8')
     dash_js = (EXT / 'ui/dashboard.js').read_text(encoding='utf-8')
+    menu_fix = EXT / 'ui/menu-fix.js'
+    menu_fix_text = menu_fix.read_text(encoding='utf-8') if menu_fix.is_file() else ''
     check('EULA', 'EULA' in dash or (ROOT / 'docs/EULA.md').is_file())
     check('Guia Rápido', 'Guia Rápido' in dash or (ROOT / 'docs/GUIA_RAPIDO.md').is_file())
     check('SONPEF', (ROOT / 'integrations/SONPEF/integration.json').is_file())
@@ -123,6 +125,8 @@ def main():
     check('UPPER URL power', 'toggleForceSync' in dash and 'forceSyncStatus' in dash and 'power-action' in dash)
     check('CONV-D menu', 'providerMenuButton' in dash and 'providerMenu' in dash)
     check('menus ancorados', 'position:relative' in (EXT / 'ui/dashboard.css').read_text(encoding='utf-8') and 'upper-github-menu' in (EXT / 'ui/dashboard.css').read_text(encoding='utf-8'))
+    check('menu controller robusto', menu_fix.is_file() and 'stopImmediatePropagation' in menu_fix_text and "['githubMenuButton', 'githubMenu']" in menu_fix_text and "['providerMenuButton', 'providerMenu']" in menu_fix_text)
+    check('menu controller empacotado', 'menu-fix.js' in dash)
     check('window controls', 'minimizeDashboard' in dash and 'closeDashboard' in dash and 'chrome.windows.update' in dash_js and 'chrome.windows.remove' in dash_js)
     check('documentação 00066', (ROOT / 'docs/CHANGELOG_00066.md').is_file() and (ROOT / 'docs/GUIA_RAPIDO.md').is_file() and (ROOT / 'docs/EULA.md').is_file())
 
