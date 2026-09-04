@@ -46,7 +46,7 @@ $Candidates = @((Join-Path $PSScriptRoot 'izgith_host.exe'),
     (Join-Path $PSScriptRoot '..\dist\izgith_host.exe'))
 $SourceExe = $Candidates | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Select-Object -First 1
 if (-not $SourceExe) { throw 'Baixe o artefato IZGITH-Windows-Host no CI: izgith_host.exe nao encontrado.' }
-Confirm-Step "Registrar o host IZGITH para a extensao $ExtensionId em $InstallDirectory? Arquivos anteriores do host nesse destino serao atualizados."
+Confirm-Step "Registrar o host IZGITH para a extensao $ExtensionId em ${InstallDirectory}? Arquivos anteriores do host nesse destino serao atualizados."
 
 if (-not $SkipDependencies) {
     $Packages = @(@{Command='git'; Id='Git.Git'}, @{Command='gh'; Id='GitHub.cli'})
