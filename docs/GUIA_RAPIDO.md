@@ -1,5 +1,7 @@
 # Guia Rápido — IZGITH
 
+**Versão documentada: 6.0.0.00067 · Rodada 00067**
+
 ## 1. Abrir a extensão
 
 No Chromium, abra `chrome://extensions`, ative o **Modo do desenvolvedor** e carregue **a pasta `extension/`** como extensão descompactada. O `manifest.json` precisa estar diretamente dentro dessa pasta.
@@ -7,10 +9,10 @@ No Chromium, abra `chrome://extensions`, ative o **Modo do desenvolvedor** e car
 ## 2. Central De Ferramentas
 
 ### CONV-D
-Ativa/desativa o módulo de exportação de conversas. Nas páginas de conversa suportadas, o botão **Baixar Conversa** permite escolher o recorte e o formato antes do salvamento.
+Ativa/desativa o módulo de exportação de conversas. Nas páginas de conversa suportadas, **Baixar Conversa** permite escolher `Tudo` ou `Ultima Rodada` e depois o formato antes do salvamento.
 
 ### UPPER URL
-Cole a URL HTTPS de uma conversa suportada. O segundo campo é o repositório GitHub pretendido. O botão de power controla o estado local do FORSE-SINC; ele não concede permissões nem envia tokens automaticamente.
+Cole a URL HTTPS de uma conversa suportada. O segundo campo é o repositório GitHub pretendido. O menu de UPPER URL fica ancorado ao card e pode ser aberto/fechado pelo ícone de menu.
 
 ### Download por Link
 Cole uma URL **HTTP/HTTPS direta** para um arquivo e use o ícone de download. O navegador abre o diálogo de salvamento quando configurado para isso. FTP, SMTP, POP e torrents não são transportes genéricos suportados pela API de downloads do navegador.
@@ -70,4 +72,4 @@ Há **36 temas**. A profundidade pode ser `2D`, `3D` ou `4D`:
 
 O módulo mantém perfis de servidor, valida host/porta e prepara configurações, compose e planos. A implementação atual é deliberadamente **browser-plan-only**: não inicia Docker, Wine, SteamCMD ou processos do sistema sem uma integração externa explicitamente autorizada.
 
-A arquitetura é compatível conceitualmente com o projeto de referência `lincolnthalles/enshrouded-container`, que atualmente usa a imagem `ghcr.io/lincolnthalles/enshrouded-container:latest`, `network_mode: host`, persistência e configuração por variáveis de ambiente.
+A referência pública usada para a arquitetura é `lincolnthalles/enshrouded-container`. Ela atualmente documenta Fedora 44 + Wine 11, Docker 24+, version pinning por manifest, mod injection, configuração por variáveis `ENSHROUDED_*`, backups automatizados, polling de recursos e volumes persistentes. O IZGITH usa essas informações como referência de composição/documentação, sem executar o projeto de referência automaticamente.
