@@ -5,7 +5,8 @@
     "SONPEF": {"status":"legacy-source-present","execution":"controlled","terminal_required_for_normal_ui_use":false,"source_recovery":"archive/legacy/root contains FULLONE and BUSCAR-TODOS-SCRIPTS; exact sonpef_unify.ps1 not present in current repository search"},
     "CONV-D": {"status":"adapter-present","execution":"user-initiated","terminal_required_for_normal_ui_use":false,"source_recovery":"extension/integrations/conv-d.js and integrations/CONV-D/integration.json present"},
     "KIT_UNICO": {"status":"historical-reference","execution":"pending_feature_validation","terminal_required_for_normal_ui_use":false,"source_recovery":"integration record and archive/legacy material present; original external KIT_UNICO package is not currently available as a separate source"},
-    "CHAT_HISTORY": {"status":"supported-flow","execution":"user-initiated","terminal_required_for_normal_ui_use":false}
+    "CHAT_HISTORY": {"status":"supported-flow","execution":"user-initiated","terminal_required_for_normal_ui_use":false},
+    "ENSHROUDED_MANAGER": {"status":"functional-local-profile-manager","execution":"user-initiated","terminal_required_for_normal_ui_use":false,"entry":"extension/integrations/enshrouded-manager.js"}
   },
   "assistants": {
     "julia": {"display_name":"Júlia"},
