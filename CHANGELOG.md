@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 6.0.0.00073 - UPPER F-SNC + WINDOW CONTROL + ENSHROUDED VISUAL HARDENING
+
+- Corrigido o acionamento do UPPER URL para persistir `upperUrlEnabled` como fonte única do estado do F-SNC.
+- O botão F-SNC passa a responder também a uma mensagem direta `SET_UPPER_URL_ENABLED`, permitindo atualização imediata nas abas de IA já abertas.
+- O UPPER URL envia a mudança de estado às abas suportadas sem exigir recarga manual da página.
+- Endurecidos os menus UPPER GITHUB e CONV-D para alternância determinística, fechamento ao clicar fora e proteção contra listeners concorrentes.
+- Os controles `ARQUIVOS`, `PASTAS`, `CHECK HOST/GIT` e `DOWNLOAD CONFIG HOST` permanecem ligados por handlers de captura no controlador de menu.
+- Corrigidos os controles da janela do Dashboard: `—` agora apenas muda para outra aba do navegador, sem minimizar a janela inteira do Chrome; `×` remove somente a aba do IZGITH.
+- Melhorada a identidade visual do ENSHROUDED MANAGER com hierarquia, estados, hover, profundidade, brilho e animações sutis, respeitando `prefers-reduced-motion`.
+- Sincronizados pacote, manifestos e registry para 00073.
+
 ## 6.0.0.00070 - REPOSITORY VERIFICATION
 
 - Revalidated the current main baseline after the extension service-worker path correction.
