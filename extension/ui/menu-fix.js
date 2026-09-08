@@ -3,128 +3,20 @@
   const $ = (id) => document.getElementById(id);
   const result = (text) => { const el = $('hostResult'); if (el) el.textContent = text; };
   const validRepo = (value) => /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/?$/.test(value);
-
-  function installMenuLayout() {
-    if ($('izgithMenuLayoutFix')) return;
-    const style = document.createElement('style'); style.id = 'izgithMenuLayoutFix';
-    style.textContent = `.tool-card{overflow:visible!important}.tool-grid{overflow:visible!important}.tool-card .tool-body{position:relative;min-width:0}.provider-menu{position:relative;z-index:40}.provider-list{z-index:100;max-height:60vh;overflow:auto}.upper-github-menu{position:absolute!important;right:0;left:auto;top:34px;z-index:100;min-width:210px}.tool-actions{position:relative;z-index:2}.tool-card .icon-action,.tool-card .menu-icon{pointer-events:auto;position:relative;z-index:101}.window-actions{position:relative;z-index:100}.window-actions .window-btn{pointer-events:auto}`;
-    document.head.appendChild(style);
-  }
-
-  function replaceButton(id) {
-    const old = $(id);
-    if (!old || old.dataset.menuFixReplaced === '1') return old;
-    const fresh = old.cloneNode(true); fresh.dataset.menuFixReplaced = '1'; old.replaceWith(fresh); return fresh;
-  }
-
-  function syncMenu(button, menu, open) {
-    menu.hidden = !open; button.setAttribute('aria-expanded', String(open)); button.dataset.menuOpen = open ? '1' : '0';
-  }
-
-  function bindMenu(buttonId, menuId) {
-    const button = replaceButton(buttonId), menu = $(menuId); if (!button || !menu || button.dataset.hardenedMenu === '1') return;
-    button.dataset.hardenedMenu = '1';
-    button.addEventListener('click', (e) => { e.preventDefault(); e.stopImmediatePropagation(); e.stopPropagation(); syncMenu(button, menu, menu.hidden); }, true);
-    menu.addEventListener('click', (e) => { e.stopImmediatePropagation(); e.stopPropagation(); }, true); syncMenu(button, menu, false);
-  }
-
-  function bindOutsideClose() {
-    if (document.documentElement.dataset.menuOutsideBound === '1') return;
-    document.documentElement.dataset.menuOutsideBound = '1';
-    document.addEventListener('click', (event) => {
-      for (const [buttonId, menuId] of [['providerMenuButton', 'providerMenu'], ['githubMenuButton', 'githubMenu']]) {
-        const button=$(buttonId), menu=$(menuId); if (!button || !menu || menu.hidden) continue;
-        if (!button.contains(event.target) && !menu.contains(event.target)) syncMenu(button, menu, false);
-      }
-    });
-  }
-
-  function bindUpperUrlPower() {
-    const button = replaceButton('toggleForceSync'); if (!button || button.dataset.upperUrlPower === '1') return;
-    button.dataset.upperUrlPower = '1';
-    const sync = async () => { const s=await chrome.storage.local.get({upperUrlEnabled:false}), on=s.upperUrlEnabled===true; const status=$('forceSyncStatus'); if(status)status.textContent=on?'ON':'OFF'; button.title=on?'Desativar UPPER URL · F-SNC':'Ativar UPPER URL · F-SNC'; };
-    button.addEventListener('click', async (event) => {
-      event.preventDefault(); event.stopImmediatePropagation(); event.stopPropagation();
-      const s=await chrome.storage.local.get({upperUrlEnabled:false}), on=s.upperUrlEnabled!==true;
-      await chrome.storage.local.set({upperUrlEnabled:on}); await sync();
-      try { const tabs=await chrome.tabs.query({url:['https://chatgpt.com/*','https://claude.ai/*','https://gemini.google.com/*','https://copilot.microsoft.com/*','https://perplexity.ai/*','https://www.perplexity.ai/*','https://grok.com/*','https://chat.deepseek.com/*','https://poe.com/*','https://chat.mistral.ai/*','https://you.com/*','https://www.meta.ai/*','https://meta.ai/*','https://chat.qwen.ai/*','https://huggingface.co/chat/*','https://character.ai/*']}); for(const tab of tabs){if(tab.id!=null){try{await chrome.tabs.sendMessage(tab.id,{type:'SET_UPPER_URL_ENABLED',enabled:on})}catch(_){}}} } catch (_) {}
-      result(on?'UPPER URL ativado. F-SNC disponível nas conversas suportadas.':'UPPER URL desativado.');
-    }, true);
-    chrome.storage.onChanged.addListener((changes,area)=>{if(area==='local'&&changes.upperUrlEnabled)sync();}); sync();
-  }
-
-  async function captureConversation(url) {
-    const normalized = url.replace(/#.*$/,''); const tabs = await chrome.tabs.query({});
-    let tab = tabs.find(t => typeof t.url === 'string' && t.url.replace(/#.*$/,'') === normalized);
-    if (!tab) { tab = await chrome.tabs.create({url, active:true}); await new Promise(r=>setTimeout(r,1200)); }
-    if (!tab?.id) throw new Error('Não foi possível abrir a conversa.');
-    const response = await chrome.tabs.sendMessage(tab.id, {type:'UPPER_URL_CAPTURE'});
-    if (!response?.ok) throw new Error(response?.error || 'A plataforma não respondeu ao capturador.'); return response.conversation;
-  }
-
-  function bindUpperUrlSend() {
-    const button = replaceButton('openConversationUrl'); if(!button || button.dataset.upperUrlSend==='1')return;
-    button.dataset.upperUrlSend='1'; button.title='Enviar'; button.setAttribute('aria-label','Enviar');
-    button.addEventListener('click', async (event) => {
-      event.preventDefault(); event.stopImmediatePropagation(); event.stopPropagation();
-      try {
-        const url=($('conversationUrl')?.value||'').trim(), repo=($('repositoryUrl')?.value||'').trim();
-        if(!/^https:\/\//i.test(url)) throw new Error('Informe uma URL HTTPS de conversa.');
-        if(repo && !validRepo(repo)) throw new Error('Repositório GitHub inválido.');
-        const conversation=await captureConversation(url);
-        await chrome.storage.local.set({lastConversationUrl:url,lastRepositoryUrl:repo,upperUrlLastCapture:conversation});
-        const queue=(await chrome.storage.local.get({izgithQueue:[]})).izgithQueue||[];
-        queue.push({type:'upper-url-conversation',name:conversation.title||'Conversa',url:conversation.url,repository:repo,turns:conversation.turns?.length||0,created_at:new Date().toISOString()});
-        await chrome.storage.local.set({izgithQueue:queue});
-        result(repo ? `Conversa capturada (${conversation.turns?.length||0} turno(s)). Destino ${repo} registrado; publicação exige autenticação explícita.` : `Conversa capturada (${conversation.turns?.length||0} turno(s)).`);
-      } catch(e) { result('Falha UPPER URL: '+(e?.message||e)); }
-    }, true);
-  }
-
-  function bindUpperGithubActions() {
-    for (const [buttonId,inputId,label] of [['githubFiles','githubFilesInput','arquivos'],['githubFolders','githubFolderInput','pasta']]) {
-      const button=$(buttonId),input=$(inputId); if(!button||!input||button.dataset.hardenedAction==='1')continue; button.dataset.hardenedAction='1';
-      button.addEventListener('click',(e)=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();input.click();}, true); input.addEventListener('change',()=>result(`${input.files.length} item(ns) preparado(s): ${label}.`));
-    }
-    const check=replaceButton('githubCheck'); if(check&&!check.dataset.hardenedAction){check.dataset.hardenedAction='1';check.addEventListener('click',async e=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();try{const r=await chrome.runtime.sendMessage({type:'PING'});result(r?.ok?'Host/Git disponível no modo web.':'Host/Git indisponível.')}catch(x){result('Host/Git indisponível: '+(x?.message||x))}}, true)}
-    const config=replaceButton('githubConfig'); if(config&&!config.dataset.hardenedAction){config.dataset.hardenedAction='1';config.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();const cfg={schema:'izgith.host.setup.v3',extension_id:chrome.runtime.id,generated_at:new Date().toISOString(),nativeMessaging:false,auth:'explicit'};const u=URL.createObjectURL(new Blob([JSON.stringify(cfg,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='izgith-host-config.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);result('Configuração do host baixada.')}, true)}
-    const power=replaceButton('githubPower'); if(power&&!power.dataset.hardenedAction){power.dataset.hardenedAction='1';power.addEventListener('click',async e=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();const s=await chrome.storage.local.get({upperGithubEnabled:false}),on=s.upperGithubEnabled!==true;await chrome.storage.local.set({upperGithubEnabled:on});if($('githubHostStatus'))$('githubHostStatus').textContent=on?'ON':'OFF';result(on?'UPPER GITHUB ativado.':'UPPER GITHUB desativado.')}, true)}
-    const send=replaceButton('githubSend'); if(send&&!send.dataset.hardenedAction){send.dataset.hardenedAction='1';send.addEventListener('click',async e=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();const repo=($('repositoryUrl')?.value||'').trim();if(!validRepo(repo)){result('Informe um repositório GitHub válido no UPPER URL.');return}await chrome.storage.local.set({lastRepositoryUrl:repo,upperGithubTarget:repo});result('Destino UPPER GITHUB registrado. A publicação usa autenticação explícita.')}, true)}
-    const menu=$('githubMenu'); if(menu&&!menu.dataset.actionsBound){menu.dataset.actionsBound='1';[...menu.querySelectorAll('.provider-row')].forEach((row,index)=>row.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();if(index===0)$('githubFiles')?.click();else if(index===1)$('githubFolders')?.click();else if(index===2)$('githubCheck')?.click();else if(index===3)$('githubConfig')?.click();}, true));}
-  }
-
-  function bindWindowControls() {
-    const min = replaceButton('minimizeDashboard');
-    const close = replaceButton('closeDashboard');
-    if (min && min.dataset.windowControl !== 'min') {
-      min.dataset.windowControl='min';
-      min.addEventListener('click', async (e) => {
-        e.preventDefault(); e.stopImmediatePropagation(); e.stopPropagation();
-        try {
-          const tab = await new Promise(resolve => chrome.tabs.getCurrent(resolve));
-          if (!tab?.id) return;
-          const tabs = await chrome.tabs.query({currentWindow:true});
-          const candidates = tabs.filter(t=>t.id!==tab.id).sort((a,b)=>Math.abs((a.index||0)-(tab.index||0))-Math.abs((b.index||0)-(tab.index||0)));
-          if (candidates[0]?.id!=null) await chrome.tabs.update(candidates[0].id,{active:true});
-          else await chrome.tabs.create({url:'chrome://newtab/',active:true});
-        } catch (err) { result('Não foi possível minimizar o painel: '+(err?.message||err)); }
-      }, true);
-    }
-    if (close && close.dataset.windowControl !== 'close') {
-      close.dataset.windowControl='close';
-      close.addEventListener('click', async (e) => {
-        e.preventDefault(); e.stopImmediatePropagation(); e.stopPropagation();
-        try {
-          const tab = await new Promise(resolve => chrome.tabs.getCurrent(resolve));
-          if (tab?.id!=null) await chrome.tabs.remove(tab.id);
-          else window.close();
-        } catch (err) { result('Não foi possível fechar o painel: '+(err?.message||err)); }
-      }, true);
-    }
-  }
-
-  function init(){installMenuLayout();bindMenu('providerMenuButton','providerMenu');bindMenu('githubMenuButton','githubMenu');bindOutsideClose();bindUpperUrlPower();bindUpperUrlSend();bindUpperGithubActions();bindWindowControls();}
+  const CHAT_HOSTS = ['https://chatgpt.com/*','https://claude.ai/*','https://gemini.google.com/*','https://copilot.microsoft.com/*','https://perplexity.ai/*','https://www.perplexity.ai/*','https://grok.com/*','https://chat.deepseek.com/*','https://poe.com/*','https://chat.mistral.ai/*','https://you.com/*','https://www.meta.ai/*','https://meta.ai/*','https://chat.qwen.ai/*','https://huggingface.co/chat/*','https://character.ai/*'];
+  function installMenuLayout(){if($('izgithMenuLayoutFix'))return;const style=document.createElement('style');style.id='izgithMenuLayoutFix';style.textContent=`.tool-card{overflow:visible!important}.tool-grid{overflow:visible!important}.tool-card .tool-body{position:relative;min-width:0}.provider-menu{position:relative;z-index:40}.provider-list{z-index:100;max-height:60vh;overflow:auto}.upper-github-menu{position:absolute!important;right:0;left:auto;top:34px;z-index:100;min-width:230px;background:var(--panel,#12141c);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:7px;box-shadow:0 18px 45px #0009}.tool-actions{position:relative;z-index:2}.tool-card .icon-action,.tool-card .menu-icon{pointer-events:auto;position:relative;z-index:101}.window-actions{position:relative;z-index:100}.window-actions .window-btn{pointer-events:auto}.github-auth-row{display:flex;gap:6px;align-items:center;padding:6px;border-top:1px solid rgba(255,255,255,.08);margin-top:6px}.github-auth-row button{flex:1}.fsnc-state{font-size:10px;color:#7ee7bd;margin-left:auto}.enshrouded-embed{width:100%;height:720px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:#08090e;box-shadow:0 20px 60px #0007}.enshrouded-embed-wrap{margin-top:12px;overflow:hidden;border-radius:14px}.enshrouded-embed-label{display:flex;align-items:center;gap:8px;padding:8px 10px;color:#bba7ff;font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:linear-gradient(90deg,#171320,#10131a);border:1px solid rgba(255,255,255,.08);border-bottom:0}`;document.head.appendChild(style)}
+  function replaceButton(id){const old=$(id);if(!old||old.dataset.menuFixReplaced==='1')return old;const fresh=old.cloneNode(true);fresh.dataset.menuFixReplaced='1';old.replaceWith(fresh);return fresh}
+  function syncMenu(button,menu,open){menu.hidden=!open;button.setAttribute('aria-expanded',String(open));button.dataset.menuOpen=open?'1':'0'}
+  function bindMenu(buttonId,menuId){const button=replaceButton(buttonId),menu=$(menuId);if(!button||!menu||button.dataset.hardenedMenu==='1')return;button.dataset.hardenedMenu='1';button.addEventListener('click',(e)=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();syncMenu(button,menu,menu.hidden)},true);menu.addEventListener('click',(e)=>{if(e.target.closest('button'))return;e.stopImmediatePropagation();e.stopPropagation()},true);syncMenu(button,menu,false)}
+  function bindOutsideClose(){if(document.documentElement.dataset.menuOutsideBound==='1')return;document.documentElement.dataset.menuOutsideBound='1';document.addEventListener('click',(event)=>{for(const [buttonId,menuId] of [['providerMenuButton','providerMenu'],['githubMenuButton','githubMenu']]){const button=$(buttonId),menu=$(menuId);if(!button||!menu||menu.hidden)continue;if(!button.contains(event.target)&&!menu.contains(event.target))syncMenu(button,menu,false)}})}
+  function syncUpperUrlPower(){const button=replaceButton('toggleForceSync');if(!button||button.dataset.upperUrlPower==='1')return;button.dataset.upperUrlPower='1';const sync=async()=>{const s=await chrome.storage.local.get({upperUrlEnabled:false}),on=s.upperUrlEnabled===true,status=$('forceSyncStatus');if(status)status.textContent=on?'ON':'OFF';button.title=on?'Desativar UPPER URL · F-SNC':'Ativar UPPER URL · F-SNC'};button.addEventListener('click',async(e)=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();const s=await chrome.storage.local.get({upperUrlEnabled:false}),on=s.upperUrlEnabled!==true;await chrome.storage.local.set({upperUrlEnabled:on});await sync();try{const tabs=await chrome.tabs.query({url:CHAT_HOSTS});for(const tab of tabs){if(tab.id!=null){try{await chrome.tabs.sendMessage(tab.id,{type:'SET_UPPER_URL_ENABLED',enabled:on})}catch(_){}}}}catch(_){}result(on?'UPPER URL ativado. F-SNC disponível nas conversas suportadas.':'UPPER URL desativado.')},true);chrome.storage.onChanged.addListener((c,a)=>{if(a==='local'&&c.upperUrlEnabled)sync()});sync()}
+  async function captureConversation(url){const normalized=url.replace(/#.*$/,'');const tabs=await chrome.tabs.query({});let tab=tabs.find(t=>typeof t.url==='string'&&t.url.replace(/#.*$/,'')===normalized);if(!tab){tab=await chrome.tabs.create({url,active:true});await new Promise(r=>setTimeout(r,1200))}if(!tab?.id)throw new Error('Não foi possível abrir a conversa.');const response=await chrome.tabs.sendMessage(tab.id,{type:'UPPER_URL_CAPTURE'});if(!response?.ok)throw new Error(response?.error||'A plataforma não respondeu ao capturador.');return response.conversation}
+  function bindUpperUrlSend(){const button=replaceButton('openConversationUrl');if(!button||button.dataset.upperUrlSend==='1')return;button.dataset.upperUrlSend='1';button.title='Enviar';button.setAttribute('aria-label','Enviar');button.addEventListener('click',async(e)=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();try{const url=($('conversationUrl')?.value||'').trim(),repo=($('repositoryUrl')?.value||'').trim();if(!/^https:\/\//i.test(url))throw new Error('Informe uma URL HTTPS de conversa.');if(repo&&!validRepo(repo))throw new Error('Repositório GitHub inválido.');const conversation=await captureConversation(url);await chrome.storage.local.set({lastConversationUrl:url,lastRepositoryUrl:repo,upperUrlLastCapture:conversation});const queue=(await chrome.storage.local.get({izgithQueue:[]})).izgithQueue||[];queue.push({type:'upper-url-conversation',name:conversation.title||'Conversa',url:conversation.url,repository:repo,turns:conversation.turns?.length||0,created_at:new Date().toISOString()});await chrome.storage.local.set({izgithQueue:queue});result(repo?`Conversa capturada (${conversation.turns?.length||0} turno(s)). Destino ${repo} registrado.`:`Conversa capturada (${conversation.turns?.length||0} turno(s)).`)}catch(e){result('Falha UPPER URL: '+(e?.message||e))}},true)}
+  function ensureGithubAuthControls(){const menu=$('githubMenu');if(!menu||menu.querySelector('.github-auth-row'))return;const row=document.createElement('div');row.className='github-auth-row';row.innerHTML='<span class="fsnc-state" id="fsncAuthState">GitHub não autorizado</span><button class="btn ghost" id="fsncAuthorize" type="button">Autorizar</button><button class="btn ghost" id="fsncPublish" type="button">Publicar captura</button>';menu.appendChild(row);const state=$('fsncAuthState'),auth=$('fsncAuthorize'),publish=$('fsncPublish');const sync=async()=>{const r=await chrome.runtime.sendMessage({type:'GITHUB_AUTH_STATUS'}).catch(()=>({}));const ok=!!r?.authorized;if(state)state.textContent=ok?'GitHub autorizado':'GitHub não autorizado';if(auth)auth.textContent=ok?'Reautorizar':'Autorizar'};auth?.addEventListener('click',async(e)=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();const token=prompt('Cole um Fine-grained GitHub token com Contents: Read and write. O token não será salvo em chrome.storage nem em cookies.');if(!token)return;const r=await chrome.runtime.sendMessage({type:'GITHUB_AUTHORIZE',token:token.trim()});result(r?.ok?'GitHub autorizado somente em memória.':'Falha na autorização: '+(r?.error||'token inválido'));sync()},true);publish?.addEventListener('click',async(e)=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();const c=await chrome.runtime.sendMessage({type:'GET_FSNC_CAPTURE'});if(!c?.capture){result('Nenhuma captura F-SNC disponível.');return}const repo=($('repositoryUrl')?.value||'').trim();const r=await chrome.runtime.sendMessage({type:'GITHUB_PUBLISH_CAPTURE',capture:c.capture,repository:repo});result(r?.ok?'Captura publicada no GitHub sem force push.':'Falha na publicação: '+(r?.error||'erro desconhecido'))},true);sync()}
+  function bindUpperGithubActions(){for(const [buttonId,inputId,label] of [['githubFiles','githubFilesInput','arquivos'],['githubFolders','githubFolderInput','pasta']]){const button=$(buttonId),input=$(inputId);if(!button||!input||button.dataset.hardenedAction==='1')continue;button.dataset.hardenedAction='1';button.addEventListener('click',(e)=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();input.click()},true);input.addEventListener('change',()=>result(`${input.files.length} item(ns) preparado(s): ${label}.`))}const check=replaceButton('githubCheck');if(check&&!check.dataset.hardenedAction){check.dataset.hardenedAction='1';check.addEventListener('click',async e=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();try{const r=await chrome.runtime.sendMessage({type:'PING'});result(r?.ok?'Host/Git disponível no modo web.':'Host/Git indisponível.')}catch(x){result('Host/Git indisponível: '+(x?.message||x))}},true)}const config=replaceButton('githubConfig');if(config&&!config.dataset.hardenedAction){config.dataset.hardenedAction='1';config.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();const cfg={schema:'izgith.host.setup.v4',extension_id:chrome.runtime.id,generated_at:new Date().toISOString(),nativeMessaging:false,auth:'explicit-in-memory',force_push:false};const u=URL.createObjectURL(new Blob([JSON.stringify(cfg,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='izgith-host-config.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);result('Configuração do host baixada.')},true)}const power=replaceButton('githubPower');if(power&&!power.dataset.hardenedAction){power.dataset.hardenedAction='1';power.addEventListener('click',async e=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();const s=await chrome.storage.local.get({upperGithubEnabled:false}),on=s.upperGithubEnabled!==true;await chrome.storage.local.set({upperGithubEnabled:on});if($('githubHostStatus'))$('githubHostStatus').textContent=on?'ON':'OFF';result(on?'UPPER GITHUB ativado.':'UPPER GITHUB desativado.')},true)}const send=replaceButton('githubSend');if(send&&!send.dataset.hardenedAction){send.dataset.hardenedAction='1';send.addEventListener('click',async e=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();const repo=($('repositoryUrl')?.value||'').trim();if(!validRepo(repo)){result('Informe um repositório GitHub válido no UPPER URL.');return}await chrome.storage.local.set({lastRepositoryUrl:repo,upperGithubTarget:repo});result('Destino UPPER GITHUB registrado. A publicação usa autorização explícita e nunca force push.')},true)}const menu=$('githubMenu');if(menu&&!menu.dataset.actionsBound){menu.dataset.actionsBound='1';[...menu.querySelectorAll('.provider-row')].forEach((row,index)=>row.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();if(index===0)$('githubFiles')?.click();else if(index===1)$('githubFolders')?.click();else if(index===2)$('githubCheck')?.click();else if(index===3)$('githubConfig')?.click()},true))}ensureGithubAuthControls()}
+  function bindWindowControls(){const min=replaceButton('minimizeDashboard'),close=replaceButton('closeDashboard');if(min&&min.dataset.windowControl!=='min'){min.dataset.windowControl='min';min.addEventListener('click',async(e)=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();try{const current=await new Promise(resolve=>chrome.windows.getCurrent(resolve));if(current?.type==='popup'){const normals=await chrome.windows.getAll({windowTypes:['normal']});const target=normals.find(w=>w.id!==current.id);if(target?.id!=null){await chrome.windows.update(target.id,{focused:true});await chrome.windows.remove(current.id);return}}const tab=await new Promise(resolve=>chrome.tabs.getCurrent(resolve));if(!tab?.id)return;const tabs=await chrome.tabs.query({currentWindow:true});const candidates=tabs.filter(t=>t.id!==tab.id).sort((a,b)=>Math.abs((a.index||0)-(tab.index||0))-Math.abs((b.index||0)-(tab.index||0)));if(candidates[0]?.id!=null)await chrome.tabs.update(candidates[0].id,{active:true});else await chrome.tabs.create({url:'chrome://newtab/',active:true});if(tab.id!=null)await chrome.tabs.remove(tab.id)}catch(err){result('Não foi possível minimizar o painel: '+(err?.message||err))}},true)}if(close&&close.dataset.windowControl!=='close'){close.dataset.windowControl='close';close.addEventListener('click',async(e)=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();try{const current=await new Promise(resolve=>chrome.windows.getCurrent(resolve));if(current?.type==='popup'){await chrome.windows.remove(current.id);return}const tab=await new Promise(resolve=>chrome.tabs.getCurrent(resolve));if(tab?.id!=null)await chrome.tabs.remove(tab.id);else window.close()}catch(err){result('Não foi possível fechar o painel: '+(err?.message||err))}},true)}}
+  function embedEnshrouded(){const section=$('servers');if(!section||section.querySelector('.enshrouded-embed-wrap'))return;const wrap=document.createElement('div');wrap.className='enshrouded-embed-wrap';const label=document.createElement('div');label.className='enshrouded-embed-label';label.textContent='ENSHROUDED MANAGER · painel completo';const frame=document.createElement('iframe');frame.className='enshrouded-embed';frame.title='ENSHROUDED MANAGER';frame.src=chrome.runtime.getURL('ui/enshrouded.html');frame.loading='lazy';frame.setAttribute('allow','clipboard-read; clipboard-write');wrap.append(label,frame);section.appendChild(wrap)}
+  function init(){installMenuLayout();bindMenu('providerMenuButton','providerMenu');bindMenu('githubMenuButton','githubMenu');bindOutsideClose();syncUpperUrlPower();bindUpperUrlSend();bindUpperGithubActions();bindWindowControls();embedEnshrouded()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-  new MutationObserver(()=>{bindMenu('providerMenuButton','providerMenu');bindMenu('githubMenuButton','githubMenu');bindUpperUrlPower();bindUpperUrlSend();bindUpperGithubActions();bindWindowControls();}).observe(document.documentElement,{childList:true,subtree:true});
-  // Validator anchors: ['githubMenuButton', 'githubMenu'] and ['providerMenuButton', 'providerMenu'].
+  new MutationObserver(()=>{bindMenu('providerMenuButton','providerMenu');bindMenu('githubMenuButton','githubMenu');syncUpperUrlPower();bindUpperUrlSend();bindUpperGithubActions();bindWindowControls();embedEnshrouded()}).observe(document.documentElement,{childList:true,subtree:true});
 })();
