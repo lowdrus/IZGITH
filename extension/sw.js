@@ -1,5 +1,5 @@
-/* IZGITH 6.0.0.00071 - MV3 service worker. Local-only; Native Messaging is deliberately not used. */
-const DEFAULTS={theme:'cyber-01',autoMode:'confirm',operationMode:'unified',performanceMode:false,visualDepth:'3D',convDEnabled:true,upperUrlEnabled:false,upperGithubEnabled:false,izgithQueue:[],history:[]};
+/* IZGITH 6.0.0.00073 - MV3 service worker. Local-only; Native Messaging is deliberately not used. */
+const DEFAULTS={theme:'cyber-01',autoMode:'confirm',operationMode:'unified',performanceMode:false,visualDepth:'3D',convDEnabled:true,upperUrlEnabled:false,upperGithubEnabled:false,izgithQueue:[],history:[],fsncLastCapture:null};
 chrome.runtime.onInstalled.addListener(function(){
   chrome.storage.local.get(Object.keys(DEFAULTS)).then(function(current){
     const patch={};
@@ -22,6 +22,20 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
   if(!message||typeof message!=='object')return false;
   if(message.type==='PING'){sendResponse({ok:true,version:chrome.runtime.getManifest().version,mode:'unified',nativeMessaging:false});return false;}
   if(message.type==='SAVE_FILE'){saveBase64(message,sendResponse);return true;}
+  if(message.type==='FSNC_CAPTURE'){
+    try{
+      const c=message.conversation;
+      if(!c||!c.latest_turn||!c.url){sendResponse({ok:false,error:'Captura F-SNC inválida.'});return false;}
+      chrome.storage.local.set({fsncLastCapture:c,fsncLastCaptureAt:new Date().toISOString()})
+        .then(function(){sendResponse({ok:true,stored:true,requiresExplicitPublish:true});})
+        .catch(function(e){sendResponse({ok:false,error:String(e&&e.message||e)});});
+      return true;
+    }catch(e){sendResponse({ok:false,error:String(e&&e.message||e)});return false;}
+  }
+  if(message.type==='GET_FSNC_CAPTURE'){
+    chrome.storage.local.get({fsncLastCapture:null}).then(function(r){sendResponse({ok:true,capture:r.fsncLastCapture});}).catch(function(e){sendResponse({ok:false,error:String(e&&e.message||e)});});
+    return true;
+  }
   if(message.type==='GET_MODE'){chrome.storage.local.get({operationMode:'unified'}).then(function(r){sendResponse({ok:true,operationMode:r.operationMode});}).catch(function(e){sendResponse({ok:false,error:String(e&&e.message||e)});});return true;}
   if(message.type==='SET_MODE'){
     const allowed=['unified','controlled','ultra'];
