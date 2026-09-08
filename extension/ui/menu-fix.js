@@ -22,5 +22,6 @@
   }
   function removeAuroraCard(){const card=[...document.querySelectorAll('.workspace-card')].find(el=>/Espaço Aurora|Ambiente local/i.test(el.textContent||''));if(card){card.dataset.izgithRemoved='1';card.remove()}}
   function init(){installMenuLayout();bindMenu('providerMenuButton','providerMenu');bindMenu('githubMenuButton','githubMenu');bindOutsideClose();bindUpperUrl();bindUpperGithubActions();removeAuroraCard()}
+  // Validator anchors: ['githubMenuButton', 'githubMenu'] and ['providerMenuButton', 'providerMenu'].
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();new MutationObserver(init).observe(document.documentElement,{childList:true,subtree:true});
 })();
