@@ -1,17 +1,21 @@
 {
-  "schema": "izgith.enshrouded.runtime.v1",
-  "mode": "browser-to-agent",
+  "schema": "izgith.enshrouded.runtime.v2",
+  "mode": "browser-to-authorized-remote-agent",
   "default_endpoint": "http://127.0.0.1:38751",
   "health": "/health",
+  "operation_prefix": "/v1/operations/",
+  "auth": "Bearer token supplied out-of-band and never stored in source",
   "principles": [
     "Chrome is the control plane, not the process executor",
-    "Runtime Agent owns Docker Engine access",
-    "Agent must run with least privilege and explicit allow-listed operations",
-    "Every mutating action is auditable",
+    "The authorized Runtime Agent owns Docker Engine access",
+    "Agent operations are allow-listed; arbitrary shell and arbitrary Docker arguments are forbidden",
+    "Every mutating request is authenticated and auditable",
     "No Docker socket is exposed to arbitrary web origins",
-    "Native Messaging is optional, not a baseline dependency"
+    "Native Messaging is optional, not a baseline dependency",
+    "Remote endpoints must be protected by TLS, VPN, private networking, or an equivalent trusted boundary"
   ],
   "operations": ["health","servers.list","server.start","server.stop","server.restart","server.update","players.list","player.kick","player.ban","player.unban","backups.list","backup.create","backup.restore","backup.prune","files.list","config.read","config.write","logs.tail"],
+  "implemented_remote_operations": ["health","servers.list","server.start","server.stop","server.restart","server.update"],
   "reference_project": "lincolnthalles/enshrouded-container",
   "reference_runtime": "Docker + Wine + Steam/DepotDownloader orchestrator",
   "browser_execution": false
