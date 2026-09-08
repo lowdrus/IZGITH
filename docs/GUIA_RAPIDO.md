@@ -1,13 +1,12 @@
-# IZGITH — Guia Rápido 00067
+# IZGITH — Guia Rápido 00075
 
 ## 1. Carregar a extensão sem erro de manifesto
 
-Há duas formas válidas:
+No Chrome, abra `chrome://extensions`, ative **Modo do desenvolvedor** e use **Carregar sem compactação** apontando para:
 
-- **Desenvolvimento:** abra `chrome://extensions`, ative **Modo do desenvolvedor** e use **Carregar sem compactação** apontando para a pasta que contém o `manifest.json` na raiz do pacote.
-- **Pacote CI:** extraia `dist/IZGITH_v*_FULL.zip` e selecione a pasta extraída que contém `manifest.json` diretamente na raiz.
+`IZGITH/extension/`
 
-Não selecione uma pasta pai que contenha outra pasta `IZGITH_v...`; o manifesto precisa estar no nível escolhido pelo Chrome.
+A pasta escolhida precisa conter `manifest.json` diretamente. Não selecione uma pasta pai que contenha outra pasta `IZGITH`.
 
 ## 2. Central De Ferramentas
 
@@ -15,7 +14,10 @@ Não selecione uma pasta pai que contenha outra pasta `IZGITH_v...`; o manifesto
 Ativa/desativa a captura/exportação de conversas suportadas. O botão **Baixar Conversa** aparece nas páginas de conversa suportadas. O usuário escolhe **Tudo** ou **Ultima Rodada** e depois o formato.
 
 ### UPPER URL
-Cole uma URL HTTPS de conversa. O campo de repositório é apenas o destino pretendido. A abertura é explícita e não envia tokens automaticamente.
+Cole uma URL HTTPS de conversa. UPPER URL abre a conversa indicada; ele não define nem usa o destino do UPPER GITHUB.
+
+### UPPER GITHUB
+Mantém seu próprio destino de repositório e seu próprio estado. Publicações usam autenticação explícita; nenhum token é coletado silenciosamente.
 
 ### Download por Link
 Aceita URLs HTTP/HTTPS diretas e usa a API de downloads do navegador. FTP, SMTP, POP e torrents não são transportes genéricos oferecidos pela API de downloads da extensão.
@@ -29,15 +31,9 @@ Hub de integrações e fluxos compartilhados do IZGITH.
 ### Selecionar .ZIP/.CRX
 Escolha um pacote local para conferir nome, tamanho e extensão antes de inspeção, auditoria ou instalação.
 
-### UPPER GITHUB
-Prepara arquivos/pastas e registra o destino. Publicações em GitHub devem usar autenticação explícita e permissões adequadas.
-
-### JDOWNLOADER
-Fornece integração/atalhos de captura sem instalar ou iniciar o aplicativo externo automaticamente.
-
 ## 3. Menus
 
-Os menus de **CONV-D** e **UPPER GITHUB** são alternáveis. Clique no ícone para abrir/fechar; clique fora para recolher. O estado é controlado pelo atributo `aria-expanded`.
+Os menus de **CONV-D** e **UPPER GITHUB** são alternáveis. Clique no ícone para abrir/fechar; clique fora para recolher. O estado é acompanhado por `aria-expanded`.
 
 ## 4. Assistentes
 
@@ -49,9 +45,39 @@ Os menus de **CONV-D** e **UPPER GITHUB** são alternáveis. Clique no ícone pa
 
 As três conversas ficam dentro do painel inicial e possuem **minimizar**, **fechar** e **limpar chat**.
 
-## 5. Enshrouded Manager
+## 5. ENSH-GERENC
 
-Em **Servidores**, informe nome, host e porta, valide e salve o perfil. O módulo prepara dados; não inicia Docker, Wine, SteamCMD ou executáveis silenciosamente.
+Em **Servidores**, o card **ENSH-GERENC** concentra:
+
+- Salvar perfil
+- Validar
+- Limpar
+- Baixar Config
+- Baixar Compose
+- Baixar Plano
+- Verificar
+- Preparar Instalação
+- Preparar Início
+- Preparar Parada
+- Backup
+- Restaurar
+- Retenção
+- Mods
+- Recursos
+- Versão
+
+O modo plano prepara dados sem iniciar processos externos.
+
+### Runtime remoto autorizado
+
+Quando houver um Runtime Agent administrado pelo usuário, informe no card:
+
+1. **Endpoint** do agente remoto.
+2. **Bearer token** somente no campo de sessão; nunca o coloque em arquivo versionado.
+3. Clique **Verificar** ou **Conectar Runtime**.
+4. Com o runtime saudável, **Iniciar** e **Parar** podem solicitar as operações allow-listed ao agente.
+
+O agente do repositório não aceita shell arbitrário. Para execução real, o servidor remoto precisa ter Docker e o Compose do Enshrouded configurados.
 
 ## 6. Configurações
 
@@ -75,8 +101,6 @@ Em **Servidores**, informe nome, host e porta, valide e salve o perfil. O módul
 
 **4D:** movimento e efeitos temporais/dinâmicos.
 
-Os três modos são aplicados por `data-depth` e podem ser trocados em Configurações.
-
 ## 8. Janela
 
 **—** minimiza somente a janela do IZGITH.
@@ -85,4 +109,4 @@ Os três modos são aplicados por `data-depth` e podem ser trocados em Configura
 
 ## 9. Segurança
 
-Não informe senhas, cookies, tokens ou chaves privadas ao dashboard. O navegador e a extensão não devem ser usados para contornar autenticação de terceiros.
+Não informe senhas, cookies, tokens ou chaves privadas ao dashboard. Runtime remoto deve ser protegido por TLS/VPN/rede privada. O usuário continua responsável por autorizar o servidor e os dados que administra.
