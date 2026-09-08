@@ -2,7 +2,7 @@
 
 Extensão Chrome Manifest V3 para preparação, auditoria, exportação local e organização de ferramentas. A árvore reúne popup, fila, painel geral, Central De Ferramentas, CONV-D, SONPEF, KIT_UNICO e **ENSH-GERENC**.
 
-## Estado atual — 6.0.0.00075
+## Estado atual — 6.0.0.00076
 
 A interface usa **Ultra + Controlado — Unificado** como padrão, com `Controlado` e `Ultra` disponíveis. A navegação é **Painel Geral → Ferramentas → Servidores → Configurações → Logs → Temas**, com EULA e Guia Rápido no rodapé.
 
@@ -19,7 +19,8 @@ A interface usa **Ultra + Controlado — Unificado** como padrão, com `Controla
 - assistentes IZART, Ayella e Júlia no Painel Geral;
 - UPPER URL, UPPER GITHUB e F-SNC;
 - menus de CONV-D e UPPER GITHUB com abertura/fechamento determinístico;
-- fronteira de runtime remoto autorizado para operações ENSH-GERENC allow-listed.
+- ENSHGERENC com todos os controles operacionais em um único painel;
+- contrato de Runtime Agent allow-listed para execução externa autorizada.
 
 ## Carregamento correto no Chrome
 
@@ -47,27 +48,38 @@ São módulos independentes.
 - **UPPER GITHUB** mantém seu próprio campo de repositório e seu próprio estado/fluxo.
 - Nenhum token é solicitado, inferido ou enviado automaticamente.
 
-## ENSH-GERENC
+## ENSH-GERENC / ENSHGERENC
 
-O card **ENSH-GERENC** concentra perfil, validação, preparação, downloads de configuração/Compose/plano e as ações operacionais solicitadas: Verificar, Preparar Instalação, Preparar Início, Preparar Parada, Backup, Restaurar, Retenção, Mods, Recursos e Versão.
+O **ENSHGERENC** concentra em um único painel: Salvar perfil, Validar, Limpar, Baixar Config, Baixar Compose, Baixar Plano, Verificar, Preparar Instalação, Preparar Início, Preparar Parada, Backup, Restaurar, Retenção, Mods, Recursos e Versão.
 
-A referência técnica é `lincolnthalles/enshrouded-container`. O projeto de referência atual documenta Fedora 44 + Wine 11, Docker 24+, versionamento por manifest, mods, backups e polling de recursos; também documenta as variáveis `VERSION`, `BACKUP_*`, `RESOURCE_POLL_INTERVAL` e `ENSHROUDED_*`.
+A referência técnica é `lincolnthalles/enshrouded-container`. O projeto de referência documenta Fedora 44 + Wine 11, Docker 24+, versionamento por manifest, mods, backups, polling de recursos e as variáveis `VERSION`, `BACKUP_*`, `RESOURCE_POLL_INTERVAL` e `ENSHROUDED_*`.
 
-O IZGITH mantém o navegador como plano de controle. Para executar Docker/Wine/SteamCMD de verdade, o ENSH-GERENC pode conversar com um **Runtime Agent remoto autorizado**. O agente deste repositório aceita somente operações allow-listed, exige Bearer token fora do código e não aceita shell arbitrário. Consulte `runtime/enshgerenc-agent/README.md`.
+O IZGITH mantém o navegador como plano de controle. Para executar Docker/Wine/SteamCMD de verdade, o ENSHGERENC conversa com um **Runtime Agent autorizado** por um endpoint HTTP allow-listed. O agente exige Bearer token fora do código e não aceita shell arbitrário.
 
-### Runtime remoto autorizado
+### Runtime Agent
 
-Endpoint padrão de desenvolvimento: `http://127.0.0.1:38751`.
+Endpoint padrão: `http://127.0.0.1:38751`.
 
-Para um ambiente remoto real, hospede o agente em um servidor administrado pelo usuário, proteja-o com TLS/VPN/rede privada e defina `IZGITH_RUNTIME_TOKEN`. O GitHub armazena o código do agente; ele não fornece sozinho uma máquina Docker remota para execução.
+- `GET /health`
+- `POST /v1/operations/servers.validate`
+- `POST /v1/operations/profiles.save`
+- `POST /v1/operations/server.prepare-install`
+- `POST /v1/operations/server.start`
+- `POST /v1/operations/server.stop`
+- `POST /v1/operations/backup.create`
+- `POST /v1/operations/backup.restore`
+- `POST /v1/operations/backup.prune`
+- `POST /v1/operations/mods.list`
+- `POST /v1/operations/resources.read`
+- `POST /v1/operations/server.version`
 
-## F-SNC
+O endpoint detalhado está em `integrations/ENSHROUDED_MANAGER/runtime-agent-endpoint.json`. O contrato geral está em `integrations/ENSHROUDED_MANAGER/runtime-contract.json`.
 
-F-SNC é um capturador de referência no contexto da conversa. Ao clicar, identifica a página/provedor suportado e registra localmente o último turno encontrado para posterior uso explícito. Por segurança, a extensão não coleta tokens, cookies ou credenciais e não executa `git push --force` silenciosamente.
+Para um ambiente remoto real, proteja o agente com TLS/VPN/rede privada. O GitHub armazena o código/contrato; ele não fornece sozinho uma máquina Docker remota para execução.
 
 ## Segurança
 
-Native Messaging não é requisito do baseline. Credenciais, cookies, tokens e chaves privadas não devem ser colocados no dashboard nem versionados. O runtime remoto deve usar autenticação explícita e rede protegida.
+Native Messaging não é requisito do baseline. Credenciais, cookies, tokens e chaves privadas não devem ser colocados no dashboard nem versionados. O Runtime Agent deve autenticar mutações, validar entradas, registrar auditoria e manter o Docker socket fora do navegador.
 
 ## Validação
 
