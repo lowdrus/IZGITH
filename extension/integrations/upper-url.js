@@ -56,9 +56,15 @@
   }
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (!message || message.type !== 'UPPER_URL_CAPTURE') return false;
-    try { sendResponse({ok: true, conversation: extractConversation()}); }
-    catch (error) { sendResponse({ok: false, error: String(error?.message || error)}); }
+    if (!message || !['UPPER_URL_CAPTURE','SET_UPPER_URL_ENABLED'].includes(message.type)) return false;
+    try {
+      if (message.type === 'SET_UPPER_URL_ENABLED') {
+        apply(message.enabled === true);
+        sendResponse({ok: true, enabled: message.enabled === true});
+      } else {
+        sendResponse({ok: true, conversation: extractConversation()});
+      }
+    } catch (error) { sendResponse({ok: false, error: String(error?.message || error)}); }
     return false;
   });
 
