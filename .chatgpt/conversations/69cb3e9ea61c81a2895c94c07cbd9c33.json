@@ -1,13 +1,23 @@
 {
-  "schema_version":3,
-  "conversation_url":"https://chatgpt.com/gg/69cb3e9ea61c81a2895c94c07cbd9c33",
-  "repository":"lowdrus/IZGITH",
-  "branch":"main",
-  "module":{"id":"conversations-by-url","name":"CONVERSAS POR URL","entry":"extension/ui/dashboard.js","input":"conversation_url","repository_input":"github_repository_url","action":"validate an HTTPS conversation URL, open the exact authenticated conversation in a Chromium tab, and let CONV-D export it locally","selection":["Tudo","Ultima Rodada"],"formats":["pdf","doc","txt","md","json","xls"],"local_save":true},
-  "supported_platforms":["ChatGPT","Claude","Gemini","Grok","Copilot","Perplexity","DeepSeek","Poe","Le Chat","You.com","Meta AI","Qwen","HuggingChat","Character.AI"],
-  "authentication":"the destination repository is informational only; GitHub authentication is explicit and external to this local module",
-  "permissions_required":["tabs","downloads","storage"],
-  "secrets_stored_in_repository":false,
-  "security_policy":"never execute git push --force, never collect or embed access tokens, and never publish conversation content without explicit user action",
-  "status":"functional-url-dispatch-module"
+  "schema_version": 3,
+  "conversation_url": "insira_aqui_a_url_da_conversa_desejada",
+  "repository": "lowdrus/IZGITH",
+  "branch": "main",
+  "module": {
+    "id": "upper-url",
+    "name": "UPPER URL",
+    "entry": "extension/ui/dashboard.js",
+    "input": "conversation_url",
+    "repository_input": "github_repository_url",
+    "action": "validate the HTTPS conversation URL, register the GitHub destination, and prepare an explicit authenticated publication flow",
+    "selection": ["Tudo", "Ultima Rodada"],
+    "formats": ["pdf", "doc", "txt", "md", "json", "xls"],
+    "local_save": true
+  },
+  "supported_platforms": ["ChatGPT", "Claude", "Gemini", "Grok", "Copilot", "Perplexity", "DeepSeek", "Poe", "Le Chat", "You.com", "Meta AI", "Qwen", "HuggingChat", "Character.AI"],
+  "authentication": "GitHub publication requires explicit authentication; the extension never collects, extracts, or silently transmits credentials",
+  "permissions_required": ["tabs", "downloads", "storage"],
+  "secrets_stored_in_repository": false,
+  "security_policy": "never execute git push --force, never collect or embed access tokens, and never publish conversation content without explicit user action",
+  "status": "functional-url-dispatch-module"
 }
