@@ -4,7 +4,7 @@ O ENSHROUDED MANAGER (ENSHGERENC) continua sendo o plano de controle do IZGITH p
 
 ## Referência técnica
 
-A arquitetura é alinhada ao projeto público `lincolnthalles/enshrouded-container`, cuja descrição do repositório destaca um container para servidor dedicado Enshrouded com backups agendados, injeção de mods e version pinning. citeturn107file0
+A arquitetura é alinhada ao projeto público `lincolnthalles/enshrouded-container`, cuja descrição do repositório destaca um container para servidor dedicado Enshrouded com backups agendados, injeção de mods e version pinning.
 
 No IZGITH, a extensão permanece como **control plane**: ela não tenta transformar o Chrome em daemon, não executa Docker/Wine/SteamCMD silenciosamente e mantém o Runtime Agent como fronteira explícita para execução real.
 
