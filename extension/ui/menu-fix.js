@@ -7,7 +7,7 @@
   function installMenuLayout() {
     if ($('izgithMenuLayoutFix')) return;
     const style = document.createElement('style'); style.id = 'izgithMenuLayoutFix';
-    style.textContent = `.tool-card{overflow:visible!important}.tool-grid{overflow:visible!important}.tool-card .tool-body{position:relative;min-width:0}.provider-menu{position:relative;z-index:40}.provider-list{z-index:100;max-height:60vh;overflow:auto}.upper-github-menu{position:absolute!important;right:0;left:auto;top:34px;z-index:100;min-width:210px}.tool-actions{position:relative;z-index:2}.tool-card .icon-action,.tool-card .menu-icon{pointer-events:auto;position:relative;z-index:101}`;
+    style.textContent = `.tool-card{overflow:visible!important}.tool-grid{overflow:visible!important}.tool-card .tool-body{position:relative;min-width:0}.provider-menu{position:relative;z-index:40}.provider-list{z-index:100;max-height:60vh;overflow:auto}.upper-github-menu{position:absolute!important;right:0;left:auto;top:34px;z-index:100;min-width:210px}.tool-actions{position:relative;z-index:2}.tool-card .icon-action,.tool-card .menu-icon{pointer-events:auto;position:relative;z-index:101}.window-actions{position:relative;z-index:100}.window-actions .window-btn{pointer-events:auto}`;
     document.head.appendChild(style);
   }
 
@@ -43,7 +43,13 @@
     const button = replaceButton('toggleForceSync'); if (!button || button.dataset.upperUrlPower === '1') return;
     button.dataset.upperUrlPower = '1';
     const sync = async () => { const s=await chrome.storage.local.get({upperUrlEnabled:false}), on=s.upperUrlEnabled===true; const status=$('forceSyncStatus'); if(status)status.textContent=on?'ON':'OFF'; button.title=on?'Desativar UPPER URL · F-SNC':'Ativar UPPER URL · F-SNC'; };
-    button.addEventListener('click', async (event) => { event.preventDefault(); event.stopImmediatePropagation(); event.stopPropagation(); const s=await chrome.storage.local.get({upperUrlEnabled:false}), on=s.upperUrlEnabled!==true; await chrome.storage.local.set({upperUrlEnabled:on}); await sync(); result(on?'UPPER URL ativado. F-SNC disponível nas conversas suportadas.':'UPPER URL desativado.'); }, true);
+    button.addEventListener('click', async (event) => {
+      event.preventDefault(); event.stopImmediatePropagation(); event.stopPropagation();
+      const s=await chrome.storage.local.get({upperUrlEnabled:false}), on=s.upperUrlEnabled!==true;
+      await chrome.storage.local.set({upperUrlEnabled:on}); await sync();
+      try { const tabs=await chrome.tabs.query({url:['https://chatgpt.com/*','https://claude.ai/*','https://gemini.google.com/*','https://copilot.microsoft.com/*','https://perplexity.ai/*','https://www.perplexity.ai/*','https://grok.com/*','https://chat.deepseek.com/*','https://poe.com/*','https://chat.mistral.ai/*','https://you.com/*','https://www.meta.ai/*','https://meta.ai/*','https://chat.qwen.ai/*','https://huggingface.co/chat/*','https://character.ai/*']}); for(const tab of tabs){if(tab.id!=null){try{await chrome.tabs.sendMessage(tab.id,{type:'SET_UPPER_URL_ENABLED',enabled:on})}catch(_){}}} } catch (_) {}
+      result(on?'UPPER URL ativado. F-SNC disponível nas conversas suportadas.':'UPPER URL desativado.');
+    }, true);
     chrome.storage.onChanged.addListener((changes,area)=>{if(area==='local'&&changes.upperUrlEnabled)sync();}); sync();
   }
 
@@ -87,8 +93,38 @@
     const menu=$('githubMenu'); if(menu&&!menu.dataset.actionsBound){menu.dataset.actionsBound='1';[...menu.querySelectorAll('.provider-row')].forEach((row,index)=>row.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();if(index===0)$('githubFiles')?.click();else if(index===1)$('githubFolders')?.click();else if(index===2)$('githubCheck')?.click();else if(index===3)$('githubConfig')?.click();}, true));}
   }
 
-  function init(){installMenuLayout();bindMenu('providerMenuButton','providerMenu');bindMenu('githubMenuButton','githubMenu');bindOutsideClose();bindUpperUrlPower();bindUpperUrlSend();bindUpperGithubActions();}
+  function bindWindowControls() {
+    const min = replaceButton('minimizeDashboard');
+    const close = replaceButton('closeDashboard');
+    if (min && min.dataset.windowControl !== 'min') {
+      min.dataset.windowControl='min';
+      min.addEventListener('click', async (e) => {
+        e.preventDefault(); e.stopImmediatePropagation(); e.stopPropagation();
+        try {
+          const tab = await new Promise(resolve => chrome.tabs.getCurrent(resolve));
+          if (!tab?.id) return;
+          const tabs = await chrome.tabs.query({currentWindow:true});
+          const candidates = tabs.filter(t=>t.id!==tab.id).sort((a,b)=>Math.abs((a.index||0)-(tab.index||0))-Math.abs((b.index||0)-(tab.index||0)));
+          if (candidates[0]?.id!=null) await chrome.tabs.update(candidates[0].id,{active:true});
+          else await chrome.tabs.create({url:'chrome://newtab/',active:true});
+        } catch (err) { result('Não foi possível minimizar o painel: '+(err?.message||err)); }
+      }, true);
+    }
+    if (close && close.dataset.windowControl !== 'close') {
+      close.dataset.windowControl='close';
+      close.addEventListener('click', async (e) => {
+        e.preventDefault(); e.stopImmediatePropagation(); e.stopPropagation();
+        try {
+          const tab = await new Promise(resolve => chrome.tabs.getCurrent(resolve));
+          if (tab?.id!=null) await chrome.tabs.remove(tab.id);
+          else window.close();
+        } catch (err) { result('Não foi possível fechar o painel: '+(err?.message||err)); }
+      }, true);
+    }
+  }
+
+  function init(){installMenuLayout();bindMenu('providerMenuButton','providerMenu');bindMenu('githubMenuButton','githubMenu');bindOutsideClose();bindUpperUrlPower();bindUpperUrlSend();bindUpperGithubActions();bindWindowControls();}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-  new MutationObserver(()=>{bindMenu('providerMenuButton','providerMenu');bindMenu('githubMenuButton','githubMenu');bindUpperUrlPower();bindUpperUrlSend();bindUpperGithubActions();}).observe(document.documentElement,{childList:true,subtree:true});
+  new MutationObserver(()=>{bindMenu('providerMenuButton','providerMenu');bindMenu('githubMenuButton','githubMenu');bindUpperUrlPower();bindUpperUrlSend();bindUpperGithubActions();bindWindowControls();}).observe(document.documentElement,{childList:true,subtree:true});
   // Validator anchors: ['githubMenuButton', 'githubMenu'] and ['providerMenuButton', 'providerMenu'].
 })();
