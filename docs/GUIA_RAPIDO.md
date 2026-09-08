@@ -1,4 +1,4 @@
-# IZGITH — Guia Rápido 00075
+# IZGITH — Guia Rápido 00076
 
 ## 1. Carregar a extensão sem erro de manifesto
 
@@ -45,9 +45,9 @@ Os menus de **CONV-D** e **UPPER GITHUB** são alternáveis. Clique no ícone pa
 
 As três conversas ficam dentro do painel inicial e possuem **minimizar**, **fechar** e **limpar chat**.
 
-## 5. ENSH-GERENC
+## 5. ENSH-GERENC / ENSHGERENC
 
-Em **Servidores**, o card **ENSH-GERENC** concentra:
+O **ENSHGERENC** concentra os controles operacionais em um único painel:
 
 - Salvar perfil
 - Validar
@@ -68,16 +68,25 @@ Em **Servidores**, o card **ENSH-GERENC** concentra:
 
 O modo plano prepara dados sem iniciar processos externos.
 
-### Runtime remoto autorizado
+### Runtime Agent
 
-Quando houver um Runtime Agent administrado pelo usuário, informe no card:
+O painel agora expõe um contrato explícito para agentes runtime:
 
-1. **Endpoint** do agente remoto.
-2. **Bearer token** somente no campo de sessão; nunca o coloque em arquivo versionado.
-3. Clique **Verificar** ou **Conectar Runtime**.
-4. Com o runtime saudável, **Iniciar** e **Parar** podem solicitar as operações allow-listed ao agente.
+- endpoint padrão: `http://127.0.0.1:38751`
+- health: `GET /health`
+- operações: `POST /v1/operations/<operação>`
+- autenticação: `Authorization: Bearer <token>` somente em sessão
+- operações allow-listed; shell arbitrário e argumentos Docker arbitrários são proibidos
 
-O agente do repositório não aceita shell arbitrário. Para execução real, o servidor remoto precisa ter Docker e o Compose do Enshrouded configurados.
+Informe o endpoint e, se necessário, o Bearer token em **Configurações**. O token fica apenas em `sessionStorage` durante a sessão e não é versionado.
+
+A arquitetura continua separando **Browser → Runtime Agent → Docker Engine**. A extensão não executa Docker, Wine ou SteamCMD diretamente.
+
+O contrato detalhado está em `integrations/ENSHROUDED_MANAGER/runtime-agent-endpoint.json` e `integrations/ENSHROUDED_MANAGER/runtime-contract.json`.
+
+### Referência ENSHROUDED
+
+O modelo de servidor é alinhado ao projeto `lincolnthalles/enshrouded-container`, que documenta version pinning, mods, configuração por `ENSHROUDED_*`, backups agendados e por desligamento, polling de recursos e as portas 15636/15637/27015. citeturn0view0
 
 ## 6. Configurações
 
