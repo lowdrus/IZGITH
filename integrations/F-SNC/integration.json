@@ -1,0 +1,27 @@
+{
+  "schema": "izgith.f-snc.v3",
+  "name": "F-SNC",
+  "description": "Captura de conversas nas plataformas suportadas e publicação opcional no GitHub após autorização explícita.",
+  "capture": true,
+  "automatic_publication_after_authorization": true,
+  "authorization": {
+    "method": "fine_grained_token_explicit",
+    "storage": "memory_only",
+    "cookies": false,
+    "hardcoded_token": false,
+    "force_push": false,
+    "required_repository_permission": "Contents: Read and write"
+  },
+  "publication": {
+    "transport": "GitHub Contents API",
+    "commit_strategy": "safe_contents_commit",
+    "overwrite_existing": true,
+    "branch_default": "main",
+    "path_prefix": "captures/fsnc"
+  },
+  "boundary": {
+    "native_messaging": false,
+    "local_executor_required": false,
+    "credential_silent_collection": false
+  }
+}
