@@ -44,7 +44,7 @@ class EnshroudedManagerContractTests(unittest.TestCase):
     def test_dashboard_card_is_ensh_gerenc_and_contains_all_actions(self):
         dashboard = (EXT / 'ui/dashboard.html').read_text(encoding='utf-8')
         screen = (EXT / 'integrations/enshrouded-manager.js').read_text(encoding='utf-8')
-        for text in ('ENSH-GERENC', 'Salvar perfil', 'Validar', 'Limpar'):
+        for text in ('data-tab="servers"', 'serverSave', 'serverValidate', 'serverClear'):
             self.assertIn(text, dashboard)
         for text in ('ENSH-GERENC', 'Verificar', 'Preparar Instalação', 'Preparar Início', 'Preparar Parada', 'Backup', 'Restaurar', 'Retenção', 'Mods', 'Recursos', 'Versão', 'Baixar Config', 'Baixar Compose', 'Baixar Plano', 'Conectar Runtime'):
             self.assertIn(text, screen)
