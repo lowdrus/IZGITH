@@ -1,7 +1,7 @@
 {
   "id": "enshrouded-manager",
   "name": "ENSHGERENC",
-  "status": "ui-v3-embedded-runtime-agent-ready",
+  "status": "ui-v4-unified-runtime-agent",
   "entry": "../../extension/integrations/enshrouded-manager.js",
   "scope": "local Enshrouded server profiles, configuration, lifecycle, backups, players and orchestration",
   "source_reference": "https://github.com/lincolnthalles/enshrouded-container",
@@ -11,8 +11,16 @@
   "external_process": false,
   "native_messaging": false,
   "docker_execution": false,
-  "runtime_agent": {"enabled": true, "default_endpoint": "http://127.0.0.1:38751", "health": "/health", "contract": "integrations/ENSHROUDED_MANAGER/runtime-contract.json"},
-  "ui": {"embedded_in_dashboard_servers_card": true, "entry_page": "extension/ui/enshrouded.html", "visual_layer": "enshrouded-manager.css"},
+  "runtime_agent": {
+    "enabled": true,
+    "default_endpoint": "http://127.0.0.1:38751",
+    "health": "/health",
+    "operation_prefix": "/v1/operations/",
+    "endpoint_contract": "integrations/ENSHROUDED_MANAGER/runtime-agent-endpoint.json",
+    "contract": "integrations/ENSHROUDED_MANAGER/runtime-contract.json",
+    "auth": "Bearer session token, never stored in source"
+  },
+  "ui": {"embedded_in_dashboard_servers_card": true, "entry_page": "extension/ui/enshrouded.html", "visual_layer": "enshrouded-manager.css", "unified_control_panel": true},
   "security_boundary": "browser-control-plane-runtime-agent-executor",
   "description": "Painel ENSHGERENC alinhado ao enshrouded-container. A extensão gera e controla planos; execução de Docker/Wine/Steam/DepotDownloader fica no Runtime Agent explicitamente instalado e autorizado pelo sistema operacional."
 }

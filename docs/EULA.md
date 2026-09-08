@@ -1,6 +1,6 @@
 # IZGITH — EULA / Termos de Uso
 
-**Versão documental: 00075 — 8 de setembro de 2026**
+**Versão documental: 00076 — 8 de setembro de 2026**
 
 ## 1. Natureza do software
 
@@ -18,11 +18,15 @@ CONV-D opera sobre conteúdo que o usuário já consegue visualizar em plataform
 
 UPPER URL e UPPER GITHUB são módulos independentes. UPPER URL abre a conversa HTTPS indicada pelo usuário. UPPER GITHUB registra/prepara um destino de repositório próprio. Nenhum token de GitHub é inferido, coletado ou transmitido silenciosamente.
 
-## 5. ENSH-GERENC e execução externa
+## 5. ENSH-GERENC e Runtime Agent
 
 O baseline do IZGITH evita execução silenciosa de processos do sistema. Native Messaging não é requisito para o carregamento normal. O ENSH-GERENC prepara perfis, configuração, Compose e planos.
 
-Para execução real de Docker/Wine/SteamCMD, o usuário pode operar um Runtime Agent remoto autorizado. Esse agente é uma fronteira separada, autenticada por Bearer token e limitada a operações allow-listed. Ele não aceita shell arbitrário. O usuário é responsável pela infraestrutura remota, rede, TLS/VPN, Docker e credenciais do ambiente.
+Para execução real de Docker/Wine/SteamCMD, o usuário pode operar um Runtime Agent autorizado. O painel utiliza um endpoint allow-listed (`/health` e `/v1/operations/*`) e Bearer token somente durante a sessão. O token não é salvo no código-fonte nem enviado para o repositório.
+
+O Runtime Agent deve validar perfis, autorizar somente operações conhecidas, auditar mutações e nunca aceitar shell arbitrário ou argumentos Docker arbitrários. O Docker socket não deve ser exposto ao navegador.
+
+A infraestrutura remota continua sob responsabilidade do usuário, incluindo Docker, rede, TLS/VPN, Steam/DepotDownloader e credenciais do ambiente.
 
 ## 6. Terceiros
 

@@ -1,0 +1,32 @@
+{
+  "schema": "izgith.enshrouded.runtime-agent.endpoint.v1",
+  "base_path": "/v1/operations/",
+  "health": "GET /health",
+  "authentication": "Authorization: Bearer <session-token>",
+  "token_policy": "session-only; never committed to source",
+  "content_type": "application/json",
+  "allowed_operations": {
+    "health": "GET /health",
+    "servers.validate": "POST /v1/operations/servers.validate",
+    "profiles.save": "POST /v1/operations/profiles.save",
+    "server.prepare-install": "POST /v1/operations/server.prepare-install",
+    "server.start": "POST /v1/operations/server.start",
+    "server.stop": "POST /v1/operations/server.stop",
+    "backup.create": "POST /v1/operations/backup.create",
+    "backup.restore": "POST /v1/operations/backup.restore",
+    "backup.prune": "POST /v1/operations/backup.prune",
+    "mods.list": "POST /v1/operations/mods.list",
+    "resources.read": "POST /v1/operations/resources.read",
+    "server.version": "POST /v1/operations/server.version"
+  },
+  "request": {"profile": "object", "optional_fields": ["operation_id", "reason"]},
+  "response": {"ok": "boolean", "operation": "string", "data": "object", "message": "string"},
+  "security": [
+    "Do not expose Docker socket to the browser.",
+    "Do not accept arbitrary shell commands or arbitrary Docker arguments.",
+    "Allow-list operations and validate every profile field.",
+    "Use TLS/VPN/private networking for remote agents.",
+    "Audit every mutating operation."
+  ],
+  "reference": "https://github.com/lincolnthalles/enshrouded-container"
+}

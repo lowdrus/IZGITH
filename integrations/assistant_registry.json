@@ -6,6 +6,6 @@
     {"id":"ayella","name":"Ayella","role":"orientacao, fluxos e operacao"},
     {"id":"izart","name":"IZART","role":"diagnostico, auditoria e ferramentas"}
   ],
-  "naming_policy": {"ayella_is_alias": false, "forbidden_display_names":["Ayelle","alias Ayella","Alias: Ayella"]},
-  "version": "6.0.0.00075"
+  "naming_policy": {"ayella_is_alias": false,"forbidden_display_names":["Ayelle","alias Ayella","Alias: Ayella"]},
+  "version":"6.0.0.00076"
 }
