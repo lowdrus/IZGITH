@@ -3,70 +3,74 @@
 
   const BUTTON_ID = 'izgith-f-snc';
   const SUPPORTED_HOSTS = [
-    /(^|\.)chatgpt\.com$/i,/^chatgpt\.com$/i,
-    /(^|\.)claude\.ai$/i,/^claude\.ai$/i,
-    /(^|\.)gemini\.google\.com$/i,/^gemini\.google\.com$/i,
-    /(^|\.)copilot\.microsoft\.com$/i,/^copilot\.microsoft\.com$/i,
-    /(^|\.)perplexity\.ai$/i,/^www\.perplexity\.ai$/i,
-    /(^|\.)grok\.com$/i,/^grok\.com$/i,
-    /(^|\.)chat\.deepseek\.com$/i,/^chat\.deepseek\.com$/i,
-    /(^|\.)poe\.com$/i,/^poe\.com$/i,
-    /(^|\.)chat\.mistral\.ai$/i,/^chat\.mistral\.ai$/i,
-    /(^|\.)you\.com$/i,/^you\.com$/i,
-    /(^|\.)meta\.ai$/i,/^www\.meta\.ai$/i,
-    /(^|\.)chat\.qwen\.ai$/i,/^chat\.qwen\.ai$/i,
-    /(^|\.)huggingface\.co$/i,/^huggingface\.co$/i,
-    /(^|\.)character\.ai$/i,/^character\.ai$/i
+    'chatgpt.com','claude.ai','gemini.google.com','copilot.microsoft.com','perplexity.ai',
+    'www.perplexity.ai','grok.com','chat.deepseek.com','poe.com','chat.mistral.ai','you.com',
+    'www.meta.ai','meta.ai','chat.qwen.ai','huggingface.co','character.ai'
   ];
 
-  function supported() { return SUPPORTED_HOSTS.some((rx) => rx.test(location.hostname)); }
-  function remove() { document.getElementById(BUTTON_ID)?.remove(); }
-
-  function textOf(el) {
-    return String(el?.innerText || el?.textContent || '').replace(/\s+/g, ' ').trim();
+  function supported() { return SUPPORTED_HOSTS.includes(location.hostname); }
+  function textOf(el) { return String(el?.innerText || el?.textContent || '').replace(/\s+/g, ' ').trim(); }
+  function uniquePush(list, role, node) {
+    const text = textOf(node);
+    if (!text || text.length < 2) return;
+    const last = list[list.length - 1];
+    if (last && last.role === role && last.text === text) return;
+    if (list.some((x) => x.text === text && x.role === role)) return;
+    list.push({ role, text });
   }
 
-  function extractConversation() {
+  function extractTurns() {
     const host = location.hostname;
     const turns = [];
-    const seen = new Set();
-    const add = (role, node) => {
-      const text = textOf(node);
-      if (!text || text.length < 2 || seen.has(text)) return;
-      seen.add(text); turns.push({role, text});
-    };
-    if (/chatgpt\.com$/i.test(host)) {
-      document.querySelectorAll('[data-message-author-role]').forEach((n) => add(n.getAttribute('data-message-author-role') === 'user' ? 'user' : 'assistant', n));
+    if (/^chatgpt\.com$/i.test(host)) {
+      document.querySelectorAll('[data-message-author-role]').forEach((node) => {
+        uniquePush(turns, node.getAttribute('data-message-author-role') === 'user' ? 'user' : 'assistant', node);
+      });
     }
     if (!turns.length) {
-      document.querySelectorAll('[data-testid*="message"], [data-testid*="conversation-turn"], [data-is-streaming], main article, main [role="article"]').forEach((n) => add('unknown', n));
+      const selectors = [
+        '[data-testid*="conversation-turn"]', '[data-testid*="message"]',
+        '[data-is-streaming]', 'main article', 'main [role="article"]'
+      ];
+      for (const selector of selectors) document.querySelectorAll(selector).forEach((node) => uniquePush(turns, 'unknown', node));
     }
-    if (!turns.length) {
-      const main = document.querySelector('main') || document.body;
-      add('unknown', main);
-    }
+    return turns;
+  }
+
+  function capture() {
+    const turns = extractTurns();
+    const latest = turns.length ? turns[turns.length - 1] : null;
     return {
-      schema: 'izgith.upper-url.conversation.v1',
+      schema: 'izgith.f-snc.capture.v2',
       url: location.href,
-      host,
+      host: location.hostname,
       title: document.title,
       captured_at: new Date().toISOString(),
-      turns
+      latest_turn: latest,
+      turn_count: turns.length
     };
   }
 
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (!message || !['UPPER_URL_CAPTURE','SET_UPPER_URL_ENABLED'].includes(message.type)) return false;
-    try {
-      if (message.type === 'SET_UPPER_URL_ENABLED') {
-        apply(message.enabled === true);
-        sendResponse({ok: true, enabled: message.enabled === true});
-      } else {
-        sendResponse({ok: true, conversation: extractConversation()});
-      }
-    } catch (error) { sendResponse({ok: false, error: String(error?.message || error)}); }
-    return false;
-  });
+  async function sendCapture(button) {
+    const conversation = capture();
+    if (!conversation.latest_turn) throw new Error('Nenhum conteúdo de conversa foi encontrado na página.');
+    const response = await new Promise((resolve, reject) => {
+      try {
+        chrome.runtime.sendMessage({ type: 'FSNC_CAPTURE', conversation }, (result) => {
+          const err = chrome.runtime.lastError;
+          if (err) reject(new Error(err.message));
+          else resolve(result);
+        });
+      } catch (error) { reject(error); }
+    });
+    if (!response?.ok) throw new Error(response?.error || 'Falha ao registrar captura.');
+    button.textContent = 'F-SNC ✓';
+    button.dataset.synced = '1';
+    button.title = `Último conteúdo capturado · ${conversation.latest_turn.role}`;
+    setTimeout(() => { if (button.isConnected) button.textContent = 'F-SNC'; }, 1600);
+  }
+
+  function remove() { document.getElementById(BUTTON_ID)?.remove(); }
 
   function mount() {
     if (!supported() || document.getElementById(BUTTON_ID)) return;
@@ -74,21 +78,22 @@
     button.id = BUTTON_ID;
     button.type = 'button';
     button.textContent = 'F-SNC';
-    button.title = 'UPPER URL · sincronização de referência';
-    button.setAttribute('aria-label', 'F-SNC · UPPER URL');
+    button.title = 'Capturar o último conteúdo desta conversa';
+    button.setAttribute('aria-label', 'F-SNC · capturar último conteúdo da conversa');
     button.addEventListener('click', async () => {
-      try {
-        await chrome.storage.local.set({upperUrlLastSync:{url:location.href,host:location.hostname,at:new Date().toISOString()}});
-        button.dataset.synced = '1'; button.textContent = 'F-SNC ✓';
-        setTimeout(() => { if (button.isConnected) button.textContent = 'F-SNC'; }, 1200);
-      } catch (error) { console.warn('[IZGITH UPPER URL]', error); }
+      button.disabled = true;
+      try { await sendCapture(button); }
+      catch (error) { console.warn('[IZGITH F-SNC]', error); button.title = `F-SNC: ${error.message}`; }
+      finally { button.disabled = false; }
     });
     document.body.appendChild(button);
   }
 
   function apply(enabled) { if (enabled) mount(); else remove(); }
-  chrome.storage.local.get({upperUrlEnabled:false}, (state) => apply(state.upperUrlEnabled === true));
-  chrome.storage.onChanged.addListener((changes, area) => { if (area === 'local' && changes.upperUrlEnabled) apply(changes.upperUrlEnabled.newValue === true); });
+  chrome.storage.local.get({ upperUrlEnabled: false }, (state) => apply(state.upperUrlEnabled === true));
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes.upperUrlEnabled) apply(changes.upperUrlEnabled.newValue === true);
+  });
   mount();
-  new MutationObserver(mount).observe(document.documentElement, {childList:true, subtree:true});
+  new MutationObserver(mount).observe(document.documentElement, { childList: true, subtree: true });
 })();
