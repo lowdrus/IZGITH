@@ -43,7 +43,7 @@ Formatos: PDF, Word `.doc`, TXT, Markdown `.md`, JSON estruturado e Excel `.xls`
 
 São módulos independentes.
 
-- **UPPER URL** abre uma conversa HTTPS indicada pelo usuário e não define o destino de publicação do GitHub.
+- **UPPER URL** abre uma URL HTTPS de conversa indicada pelo usuário e não define o destino de publicação do GitHub.
 - **UPPER GITHUB** mantém seu próprio campo de repositório e seu próprio estado/fluxo.
 - Nenhum token é solicitado, inferido ou enviado automaticamente.
 
@@ -51,7 +51,7 @@ São módulos independentes.
 
 O card **ENSH-GERENC** concentra perfil, validação, preparação, downloads de configuração/Compose/plano e as ações operacionais solicitadas: Verificar, Preparar Instalação, Preparar Início, Preparar Parada, Backup, Restaurar, Retenção, Mods, Recursos e Versão.
 
-A referência técnica é `lincolnthalles/enshrouded-container`. O projeto de referência atual documenta Fedora 44 + Wine 11, Docker 24+, versionamento por manifest, mods, backups e polling de recursos; também documenta as variáveis `VERSION`, `BACKUP_*`, `RESOURCE_POLL_INTERVAL` e `ENSHROUDED_*`. citeturn214file0
+A referência técnica é `lincolnthalles/enshrouded-container`. O projeto de referência atual documenta Fedora 44 + Wine 11, Docker 24+, versionamento por manifest, mods, backups e polling de recursos; também documenta as variáveis `VERSION`, `BACKUP_*`, `RESOURCE_POLL_INTERVAL` e `ENSHROUDED_*`.
 
 O IZGITH mantém o navegador como plano de controle. Para executar Docker/Wine/SteamCMD de verdade, o ENSH-GERENC pode conversar com um **Runtime Agent remoto autorizado**. O agente deste repositório aceita somente operações allow-listed, exige Bearer token fora do código e não aceita shell arbitrário. Consulte `runtime/enshgerenc-agent/README.md`.
 
