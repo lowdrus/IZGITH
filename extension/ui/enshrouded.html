@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>IZGITH · ENSHROUDED MANAGER</title>
+<title>IZGITH · ENSHGERENC</title>
 <link rel="stylesheet" href="enshrouded-manager.css">
 </head>
 <body>
 <div class="app-shell">
   <aside class="sidebar">
-    <div class="brand"><div class="brand-mark">◈</div><div><strong>ENSHROUDED</strong><span>MANAGER</span></div></div>
+    <div class="brand"><div class="brand-mark">◈</div><div><strong>ENSHGERENC</strong><span>IZGITH</span></div></div>
     <div class="nav-label">PRINCIPAL</div>
     <nav id="sideNav">
       <button class="nav-item active" data-view="overview">⌂ <span>Visão geral</span></button>
@@ -31,12 +31,12 @@
     <div class="sidebar-footer"><span>Runtime</span><b id="runtimeState">PLANO</b></div>
   </aside>
   <main class="main">
-    <header class="topbar"><div class="crumb">ENSHROUDED MANAGER <span>/</span> <b id="viewTitle">Visão geral</b></div><div class="top-actions"><button id="refresh" class="ghost">↻ Atualizar</button><button id="connectRuntime" class="primary">+ Conectar runtime</button><button class="circle" id="close">×</button></div></header>
+    <header class="topbar"><div class="crumb">ENSHGERENC <span>/</span> <b id="viewTitle">Visão geral</b></div><div class="top-actions"><button id="refresh" class="ghost">↻ Atualizar</button><button id="connectRuntime" class="primary">+ Conectar runtime</button><button class="circle" id="close">×</button></div></header>
     <section class="content" id="views">
       <div class="view active" data-panel="overview">
         <div class="hero"><div><span class="eyebrow">ESPAÇO DE OPERAÇÕES</span><h1>Seu mundo, sob controle.</h1><p>Uma camada de gestão inspirada no <b>enshrouded-container</b>: perfis, configuração, ciclo de vida, backups, recursos e auditoria — com uma fronteira clara entre a UI e o runtime.</p><div class="hero-actions"><button class="primary" data-view-jump="servers">+ Gerenciar servidores</button><button class="ghost" data-view-jump="diagnostic">Executar diagnóstico</button></div></div><div class="hero-orbit"><div class="orbit-ring"></div><div class="orbit-core">E</div><span class="orbit-label">LOCAL / SAFE</span></div></div>
         <div class="cards four"><article class="metric"><span>Servidores</span><b id="mServers">00</b><small id="mServerHint">Nenhum perfil</small></article><article class="metric"><span>Jogadores conectados</span><b id="mPlayers">00 <i>/ 16</i></b><small>telemetria do runtime</small></article><article class="metric"><span>Cópias de segurança</span><b id="mBackups">00</b><small>política configurada</small></article><article class="metric"><span>Saúde do ambiente</span><b id="mHealth">Local</b><small id="mHealthHint">Runtime não conectado</small></article></div>
-        <div class="grid-two"><article class="panel"><div class="panel-head"><div><h2>Desempenho do ambiente</h2><small>amostras ilustrativas até o runtime responder</small></div><span class="pill">Últimas 24 horas</span></div><div class="chart"><div class="gridline g1"></div><div class="gridline g2"></div><div class="gridline g3"></div><svg viewBox="0 0 700 210" preserveAspectRatio="none" aria-label="Gráfico de desempenho"><polyline points="0,175 28,160 56,168 84,132 112,144 140,106 168,118 196,112 224,127 252,83 280,96 308,70 336,90 364,54 392,72 420,42 448,64 476,38 504,62 532,26 560,49 588,35 616,45 644,18 672,30 700,12"></polyline></svg></div></article><article class="panel resources"><div class="panel-head"><h2>Recursos do sistema</h2><button class="tiny" data-view-jump="diagnostic">Detalhes</button></div><div class="resource-row"><span>CPU</span><b id="cpu">--%</b><div><i style="width:28%"></i></div></div><div class="resource-row"><span>Memória</span><b id="ram">-- GB</b><div><i style="width:41%"></i></div></div><div class="resource-row"><span>Armazenamento</span><b id="disk">--%</b><div><i style="width:41%"></i></div></div><div class="resource-foot"><span>Tráfego de rede</span><b id="net">--</b></div></article></div>
+        <div class="grid-two"><article class="panel"><div class="panel-head"><div><h2>Desempenho do ambiente</h2><small>amostras ilustrativas até o runtime responder</small></div><span class="pill">Últimas 24 horas</span></div><div class="chart"><div class="gridline g1"></div><div class="gridline g2"></div><div class="gridline g3"></div><svg viewBox="0 0 700 210" preserveAspectRatio="none" aria-label="Gráfico de desempenho"><polyline points="0,175 28,160 56,168 84,132 112,144 140,106 168,118 196,112 224,127 252,83 280,96 308,70 336,90 364,54 392,72 420,42 448,64 476,38 504,62 532,26 560,49 588,35 616,45 644,18 672,30 700,12"></polyline></div></article><article class="panel resources"><div class="panel-head"><h2>Recursos do sistema</h2><button class="tiny" data-view-jump="diagnostic">Detalhes</button></div><div class="resource-row"><span>CPU</span><b id="cpu">--%</b><div><i style="width:28%"></i></div></div><div class="resource-row"><span>Memória</span><b id="ram">-- GB</b><div><i style="width:41%"></i></div></div><div class="resource-row"><span>Armazenamento</span><b id="disk">--%</b><div><i style="width:41%"></i></div></div><div class="resource-foot"><span>Tráfego de rede</span><b id="net">--</b></div></article></div>
         <article class="panel activity"><div class="panel-head"><h2>Atividade recente</h2><span class="pill green">● seguro</span></div><div id="activityList" class="activity-list"></div></article>
       </div>
       <div class="view" data-panel="servers"><div class="section-title"><div><span class="eyebrow">INVENTÁRIO</span><h1>Seus servidores</h1><p>Perfis locais e estado do runtime. Ações de processo ficam atrás de um adaptador autorizado.</p></div><button id="newServer" class="primary">+ Novo servidor</button></div><div id="serverList" class="server-table"></div></div>
