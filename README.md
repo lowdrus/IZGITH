@@ -1,8 +1,8 @@
 # IZGITH
 
-Extensão Chrome Manifest V3 para preparação, auditoria, exportação local e organização de ferramentas. A árvore reúne popup, fila, painel geral, Central De Ferramentas, CONV-D, SONPEF, KIT_UNICO e ENSHROUDED MANAGER.
+Extensão Chrome Manifest V3 para preparação, auditoria, exportação local e organização de ferramentas. A árvore reúne popup, fila, painel geral, Central De Ferramentas, CONV-D, SONPEF, KIT_UNICO e ENSHGERENC.
 
-## Estado atual — 6.0.0.00067
+## Estado atual — 6.0.0.00073
 
 A interface usa **Ultra + Controlado — Unificado** como padrão, com `Controlado` e `Ultra` disponíveis. A navegação é **Painel Geral → Ferramentas → Servidores → Configurações → Logs → Temas**, com EULA e Guia Rápido no rodapé.
 
@@ -15,9 +15,9 @@ A interface usa **Ultra + Controlado — Unificado** como padrão, com `Controla
 - preparação de ZIP/CRX;
 - 36 temas com profundidades 2D/3D/4D;
 - CI, testes, CodeQL e empacotamento;
-- SONPEF, CONV-D, KIT_UNICO e ENSHROUDED MANAGER;
+- SONPEF, CONV-D, KIT_UNICO e ENSHGERENC;
 - assistentes IZART, Ayella e Júlia no Painel Geral;
-- UPPER URL e UPPER GITHUB;
+- UPPER URL, UPPER GITHUB e F-SNC;
 - menus de CONV-D e UPPER GITHUB com abertura/fechamento determinístico e fechamento ao clicar fora.
 
 ## Carregamento correto no Chrome
@@ -30,8 +30,6 @@ Essa pasta contém diretamente `manifest.json`, `sw.js`, `ui/`, `assets/` e `int
 
 O `manifest.json` da raiz também é mantido como uma entrada **root-loadable** para ferramentas que precisam iniciar pelo diretório do repositório. O pacote oficial do CI, entretanto, é gerado a partir de `extension/` e coloca `manifest.json` na raiz do ZIP.
 
-Se o Chrome disser **“O arquivo de manifesto está faltando ou não pode ser lido”**, quase sempre a pasta selecionada não é a pasta que contém diretamente o manifesto. Não selecione `dist/`, `dist/IZGITH_v..._FULL/` pai, `docs/` ou uma pasta intermediária.
-
 ## CONV-D
 
 CONV-D adiciona **Baixar Conversa** às páginas de provedores suportados quando o conteúdo da conversa é acessível ao content script. O usuário escolhe o escopo e o formato antes do salvamento.
@@ -40,11 +38,17 @@ Escopos: **Tudo** ou **Ultima Rodada**.
 
 Formatos: PDF, Word `.doc`, TXT, Markdown `.md`, JSON estruturado e Excel `.xls`, conforme o adaptador/implementação disponível.
 
+## F-SNC
+
+F-SNC é um capturador de referência no contexto da conversa. Ao clicar, identifica a página/provedor suportado e registra localmente o **último turno de conteúdo encontrado**, incluindo URL, host, título, papel e texto. O service worker mantém a captura em `chrome.storage.local` para posterior uso explícito por uma rotina de publicação.
+
+Por segurança, a extensão **não coleta tokens, cookies ou credenciais e não executa `git push --force` silenciosamente**. Publicação em GitHub exige uma ação/autenticação explícita fora do capturador. Isso evita transformar uma página de conversa em um canal de exfiltração de credenciais.
+
 ## Menus
 
 Os menus são controles de estado locais. O ícone abre e fecha a lista, `aria-expanded` acompanha o estado e um clique fora recolhe o menu. O controlador `extension/ui/menu-fix.js` é carregado depois do dashboard para impedir dupla alternância causada por listeners antigos.
 
-## ENSHROUDED MANAGER
+## ENSHGERENC
 
 O módulo mantém perfis e prepara informações de servidores. A referência técnica declarada é `lincolnthalles/enshrouded-container`, que documenta Docker 24+, Fedora 44 + Wine 11, versionamento por manifest, mods, backups, polling e variáveis `ENSHROUDED_*`. O IZGITH não inicia processos externos silenciosamente.
 
