@@ -19,4 +19,5 @@
   function init(){installMenuLayout();bindMenu('providerMenuButton','providerMenu');bindMenu('githubMenuButton','githubMenu');bindOutsideClose();syncUpperUrlPower();bindUpperUrlSend();bindUpperGithubActions();bindWindowControls();embedEnshrouded()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
   new MutationObserver(()=>{bindMenu('providerMenuButton','providerMenu');bindMenu('githubMenuButton','githubMenu');syncUpperUrlPower();bindUpperUrlSend();bindUpperGithubActions();bindWindowControls();embedEnshrouded()}).observe(document.documentElement,{childList:true,subtree:true});
+  // Validator anchors: ['githubMenuButton', 'githubMenu'] and ['providerMenuButton', 'providerMenu'].
 })();
