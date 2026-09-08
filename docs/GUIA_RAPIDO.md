@@ -86,7 +86,7 @@ O contrato detalhado está em `integrations/ENSHROUDED_MANAGER/runtime-agent-end
 
 ### Referência ENSHROUDED
 
-O modelo de servidor é alinhado ao projeto `lincolnthalles/enshrouded-container`, que documenta version pinning, mods, configuração por `ENSHROUDED_*`, backups agendados e por desligamento, polling de recursos e as portas 15636/15637/27015. citeturn0view0
+O modelo de servidor é alinhado ao projeto `lincolnthalles/enshrouded-container`, que documenta version pinning, mods, configuração por `ENSHROUDED_*`, backups agendados e por desligamento, polling de recursos e as portas 15636/15637/27015.
 
 ## 6. Configurações
 
