@@ -1,6 +1,6 @@
 # IZGITH — EULA / Termos de Uso
 
-**Versão documental: 00067 — 4 de setembro de 2026**
+**Versão documental: 00075 — 8 de setembro de 2026**
 
 ## 1. Natureza do software
 
@@ -14,13 +14,15 @@ O usuário decide quais arquivos selecionar, quais conversas exportar e quais de
 
 CONV-D opera sobre conteúdo que o usuário já consegue visualizar em plataformas suportadas. A disponibilidade e a estrutura de uma conversa podem mudar conforme cada provedor. O usuário é responsável por verificar se a exportação e o armazenamento são permitidos pelos termos do respectivo serviço.
 
-## 4. GitHub
+## 4. UPPER URL e UPPER GITHUB
 
-Recursos relacionados a UPPER URL e UPPER GITHUB registram/preparam destinos. Operações de publicação devem utilizar autenticação explícita e permissões apropriadas. O IZGITH não promete acesso de escrita a um repositório sem uma credencial ou sessão autorizada.
+UPPER URL e UPPER GITHUB são módulos independentes. UPPER URL abre a conversa HTTPS indicada pelo usuário. UPPER GITHUB registra/prepara um destino de repositório próprio. Nenhum token de GitHub é inferido, coletado ou transmitido silenciosamente.
 
-## 5. Execução externa
+## 5. ENSH-GERENC e execução externa
 
-O baseline do IZGITH evita execução silenciosa de processos do sistema. Native Messaging não é requisito para o carregamento normal. O Enshrouded Manager prepara perfis e informações; não inicia Docker, Wine, SteamCMD ou executáveis externos automaticamente.
+O baseline do IZGITH evita execução silenciosa de processos do sistema. Native Messaging não é requisito para o carregamento normal. O ENSH-GERENC prepara perfis, configuração, Compose e planos.
+
+Para execução real de Docker/Wine/SteamCMD, o usuário pode operar um Runtime Agent remoto autorizado. Esse agente é uma fronteira separada, autenticada por Bearer token e limitada a operações allow-listed. Ele não aceita shell arbitrário. O usuário é responsável pela infraestrutura remota, rede, TLS/VPN, Docker e credenciais do ambiente.
 
 ## 6. Terceiros
 
@@ -28,11 +30,11 @@ Integrações com ChatGPT, Claude, Gemini, Grok, GitHub, Enshrouded e outros ser
 
 ## 7. Segurança
 
-Não coloque segredos em arquivos versionados. Para operações que exigem autenticação, utilize os mecanismos oficiais do serviço e as práticas de secrets do ambiente correspondente.
+Não coloque segredos em arquivos versionados. Tokens de runtime devem permanecer fora do repositório. Não exponha um endpoint de runtime diretamente à Internet sem autenticação e transporte seguro.
 
 ## 8. Limitação de responsabilidade
 
-O software é fornecido conforme sua implementação e documentação. Mudanças de navegador, provedores, APIs, políticas, formatos de páginas, redes ou sistemas externos podem afetar funcionalidades.
+O software é fornecido conforme sua implementação e documentação. Mudanças de navegador, provedores, APIs, políticas, formatos de páginas, redes ou sistemas externos podem afetar funcionalidades. Um endpoint remoto pode ficar indisponível independentemente da extensão.
 
 ## 9. Aceite
 
