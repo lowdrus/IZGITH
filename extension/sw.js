@@ -1,5 +1,5 @@
-/* IZGITH 6.0.0.00061 - MV3 service worker. Local-only; Native Messaging is deliberately not used. */
-const DEFAULTS={theme:'cyber-01',autoMode:'confirm',operationMode:'unified',performanceMode:false,visualDepth:'3D',convDEnabled:true,izgithQueue:[],history:[]};
+/* IZGITH 6.0.0.00071 - MV3 service worker. Local-only; Native Messaging is deliberately not used. */
+const DEFAULTS={theme:'cyber-01',autoMode:'confirm',operationMode:'unified',performanceMode:false,visualDepth:'3D',convDEnabled:true,upperUrlEnabled:false,upperGithubEnabled:false,izgithQueue:[],history:[]};
 chrome.runtime.onInstalled.addListener(function(){
   chrome.storage.local.get(Object.keys(DEFAULTS)).then(function(current){
     const patch={};
@@ -30,7 +30,7 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
     return true;
   }
   if(message.type==='GET_INTEGRATION_STATUS'){
-    sendResponse({ok:true,nativeMessaging:{enabled:false,required:false},integrations:['SONPEF','CONV-D','KIT_UNICO','CHAT_HISTORY'],assistants:['Júlia','Ayella','IZART'],operationMode:'unified'});
+    sendResponse({ok:true,nativeMessaging:{enabled:false,required:false},integrations:['SONPEF','CONV-D','KIT_UNICO','CHAT_HISTORY','UPPER URL'],assistants:['Júlia','Ayella','IZART'],operationMode:'unified'});
     return false;
   }
   return false;
