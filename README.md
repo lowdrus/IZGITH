@@ -1,8 +1,8 @@
 # IZGITH
 
-Extensão Chrome Manifest V3 para preparação, auditoria, exportação local e organização de ferramentas. A árvore reúne popup, fila, painel geral, Central De Ferramentas, CONV-D, SONPEF, KIT_UNICO e ENSHGERENC.
+Extensão Chrome Manifest V3 para preparação, auditoria, exportação local e organização de ferramentas. A árvore reúne popup, fila, painel geral, Central De Ferramentas, CONV-D, SONPEF, KIT_UNICO e **ENSH-GERENC**.
 
-## Estado atual — 6.0.0.00073
+## Estado atual — 6.0.0.00075
 
 A interface usa **Ultra + Controlado — Unificado** como padrão, com `Controlado` e `Ultra` disponíveis. A navegação é **Painel Geral → Ferramentas → Servidores → Configurações → Logs → Temas**, com EULA e Guia Rápido no rodapé.
 
@@ -15,20 +15,21 @@ A interface usa **Ultra + Controlado — Unificado** como padrão, com `Controla
 - preparação de ZIP/CRX;
 - 36 temas com profundidades 2D/3D/4D;
 - CI, testes, CodeQL e empacotamento;
-- SONPEF, CONV-D, KIT_UNICO e ENSHGERENC;
+- SONPEF, CONV-D, KIT_UNICO e ENSH-GERENC;
 - assistentes IZART, Ayella e Júlia no Painel Geral;
 - UPPER URL, UPPER GITHUB e F-SNC;
-- menus de CONV-D e UPPER GITHUB com abertura/fechamento determinístico e fechamento ao clicar fora.
+- menus de CONV-D e UPPER GITHUB com abertura/fechamento determinístico;
+- fronteira de runtime remoto autorizado para operações ENSH-GERENC allow-listed.
 
 ## Carregamento correto no Chrome
 
-O repositório possui uma árvore de desenvolvimento e uma árvore de extensão. Para **Carregar sem compactação**, selecione a pasta:
+Para **Carregar sem compactação**, selecione:
 
 `IZGITH/extension/`
 
 Essa pasta contém diretamente `manifest.json`, `sw.js`, `ui/`, `assets/` e `integrations/`.
 
-O `manifest.json` da raiz também é mantido como uma entrada **root-loadable** para ferramentas que precisam iniciar pelo diretório do repositório. O pacote oficial do CI, entretanto, é gerado a partir de `extension/` e coloca `manifest.json` na raiz do ZIP.
+O `manifest.json` da raiz também é mantido como entrada root-loadable. O pacote oficial do CI é construído a partir de `extension/` e coloca `manifest.json` na raiz do ZIP.
 
 ## CONV-D
 
@@ -38,23 +39,35 @@ Escopos: **Tudo** ou **Ultima Rodada**.
 
 Formatos: PDF, Word `.doc`, TXT, Markdown `.md`, JSON estruturado e Excel `.xls`, conforme o adaptador/implementação disponível.
 
+## UPPER URL × UPPER GITHUB
+
+São módulos independentes.
+
+- **UPPER URL** abre uma conversa HTTPS indicada pelo usuário e não define o destino de publicação do GitHub.
+- **UPPER GITHUB** mantém seu próprio campo de repositório e seu próprio estado/fluxo.
+- Nenhum token é solicitado, inferido ou enviado automaticamente.
+
+## ENSH-GERENC
+
+O card **ENSH-GERENC** concentra perfil, validação, preparação, downloads de configuração/Compose/plano e as ações operacionais solicitadas: Verificar, Preparar Instalação, Preparar Início, Preparar Parada, Backup, Restaurar, Retenção, Mods, Recursos e Versão.
+
+A referência técnica é `lincolnthalles/enshrouded-container`. O projeto de referência atual documenta Fedora 44 + Wine 11, Docker 24+, versionamento por manifest, mods, backups e polling de recursos; também documenta as variáveis `VERSION`, `BACKUP_*`, `RESOURCE_POLL_INTERVAL` e `ENSHROUDED_*`. citeturn214file0
+
+O IZGITH mantém o navegador como plano de controle. Para executar Docker/Wine/SteamCMD de verdade, o ENSH-GERENC pode conversar com um **Runtime Agent remoto autorizado**. O agente deste repositório aceita somente operações allow-listed, exige Bearer token fora do código e não aceita shell arbitrário. Consulte `runtime/enshgerenc-agent/README.md`.
+
+### Runtime remoto autorizado
+
+Endpoint padrão de desenvolvimento: `http://127.0.0.1:38751`.
+
+Para um ambiente remoto real, hospede o agente em um servidor administrado pelo usuário, proteja-o com TLS/VPN/rede privada e defina `IZGITH_RUNTIME_TOKEN`. O GitHub armazena o código do agente; ele não fornece sozinho uma máquina Docker remota para execução.
+
 ## F-SNC
 
-F-SNC é um capturador de referência no contexto da conversa. Ao clicar, identifica a página/provedor suportado e registra localmente o **último turno de conteúdo encontrado**, incluindo URL, host, título, papel e texto. O service worker mantém a captura em `chrome.storage.local` para posterior uso explícito por uma rotina de publicação.
-
-Por segurança, a extensão **não coleta tokens, cookies ou credenciais e não executa `git push --force` silenciosamente**. Publicação em GitHub exige uma ação/autenticação explícita fora do capturador. Isso evita transformar uma página de conversa em um canal de exfiltração de credenciais.
-
-## Menus
-
-Os menus são controles de estado locais. O ícone abre e fecha a lista, `aria-expanded` acompanha o estado e um clique fora recolhe o menu. O controlador `extension/ui/menu-fix.js` é carregado depois do dashboard para impedir dupla alternância causada por listeners antigos.
-
-## ENSHGERENC
-
-O módulo mantém perfis e prepara informações de servidores. A referência técnica declarada é `lincolnthalles/enshrouded-container`, que documenta Docker 24+, Fedora 44 + Wine 11, versionamento por manifest, mods, backups, polling e variáveis `ENSHROUDED_*`. O IZGITH não inicia processos externos silenciosamente.
+F-SNC é um capturador de referência no contexto da conversa. Ao clicar, identifica a página/provedor suportado e registra localmente o último turno encontrado para posterior uso explícito. Por segurança, a extensão não coleta tokens, cookies ou credenciais e não executa `git push --force` silenciosamente.
 
 ## Segurança
 
-Native Messaging não é requisito do baseline. Credenciais, cookies, tokens e chaves privadas não devem ser colocados no dashboard nem versionados. Publicações em GitHub devem usar autenticação explícita e permissões apropriadas.
+Native Messaging não é requisito do baseline. Credenciais, cookies, tokens e chaves privadas não devem ser colocados no dashboard nem versionados. O runtime remoto deve usar autenticação explícita e rede protegida.
 
 ## Validação
 
@@ -67,12 +80,13 @@ npm test
 npm run package
 ```
 
-O CI deve validar primeiro e só depois gerar o ZIP. O artefato distribuível é construído a partir de `extension/` para evitar o erro histórico de ZIP com `manifest.json` em subpasta.
+O CI valida primeiro e só depois gera o ZIP. O artefato distribuível é construído a partir de `extension/` para evitar o erro histórico de ZIP com `manifest.json` em subpasta.
 
 ## Estrutura
 
 - `extension/` — árvore distribuível e diretamente carregável.
 - `integrations/` — contratos de integração.
+- `runtime/enshgerenc-agent/` — Runtime Agent remoto autorizado.
 - `scripts/` — validação e empacotamento.
 - `tests/` — testes.
 - `docs/` — documentação ativa e histórica.
