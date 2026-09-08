@@ -5,6 +5,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 EXT = ROOT / 'extension'
 
+
 class EnshroudedManagerContractTests(unittest.TestCase):
     def test_ui_assets_and_manifest_reference(self):
         self.assertTrue((EXT / 'ui/enshrouded.html').is_file())
@@ -33,6 +34,13 @@ class EnshroudedManagerContractTests(unittest.TestCase):
         self.assertNotIn('os.system(', agent)
         self.assertNotIn('eval(', agent)
 
+    def test_manager_screen_is_safe_when_loaded_outside_its_page(self):
+        screen = (EXT / 'ui/enshrouded-manager-screen.js').read_text(encoding='utf-8')
+        self.assertIn('const isManagerScreen = !!($', screen)
+        self.assertIn("if (!isManagerScreen) return;", screen)
+        self.assertIn('Cannot set properties of null', screen)
+        self.assertIn('const on = (id, event, handler)', screen)
+
     def test_manager_contains_required_controls(self):
         page = (EXT / 'ui/enshrouded.html').read_text(encoding='utf-8')
         for text in ('Servidores', 'Jogadores', 'Backups', 'Registros', 'Configurações', 'Instalação', 'Atualizações', 'Diagnóstico'):
@@ -48,6 +56,7 @@ class EnshroudedManagerContractTests(unittest.TestCase):
             self.assertIn(text, dashboard)
         for text in ('ENSH-GERENC', 'Verificar', 'Preparar Instalação', 'Preparar Início', 'Preparar Parada', 'Backup', 'Restaurar', 'Retenção', 'Mods', 'Recursos', 'Versão', 'Baixar Config', 'Baixar Compose', 'Baixar Plano', 'Conectar Runtime'):
             self.assertIn(text, screen)
+
 
 if __name__ == '__main__':
     unittest.main()
