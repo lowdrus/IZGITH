@@ -1,8 +1,8 @@
 {
   "name": "izgith",
-  "version": "6.0.0-00074",
+  "version": "6.0.0-00075",
   "private": true,
-  "description": "Extensao Manifest V3 para preparacao, auditoria, ferramentas, exportacao e ENSHGERENC",
+  "description": "Extensao Manifest V3 para preparacao, auditoria, ferramentas, exportacao e ENSH-GERENC",
   "scripts": {"test": "python scripts/validate_project.py && python -m unittest discover -s tests -v", "package": "python scripts/package_extension.py"},
   "engines": {"node": ">=24"},
   "license": "SEE LICENSE IN LICENSE"
