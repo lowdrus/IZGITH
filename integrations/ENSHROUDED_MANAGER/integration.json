@@ -1,6 +1,6 @@
 {
   "id": "enshrouded-manager",
-  "name": "ENSHROUDED MANAGER",
+  "name": "ENSHGERENC",
   "status": "ui-v2-runtime-agent-ready",
   "entry": "../../extension/integrations/enshrouded-manager.js",
   "scope": "local Enshrouded server profiles, configuration, lifecycle, backups, players and orchestration",
@@ -13,5 +13,5 @@
   "docker_execution": false,
   "runtime_agent": {"enabled": true, "default_endpoint": "http://127.0.0.1:38751", "health": "/health", "contract": "integrations/ENSHROUDED_MANAGER/runtime-contract.json"},
   "security_boundary": "browser-control-plane-runtime-agent-executor",
-  "description": "Painel de operação alinhado ao enshrouded-container. A extensão gera e controla planos; execução de Docker/Wine/Steam/DepotDownloader fica no Runtime Agent explicitamente instalado e autorizado pelo sistema operacional."
+  "description": "Painel ENSHGERENC alinhado ao enshrouded-container. A extensão gera e controla planos; execução de Docker/Wine/Steam/DepotDownloader fica no Runtime Agent explicitamente instalado e autorizado pelo sistema operacional."
 }
