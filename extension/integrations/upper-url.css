@@ -1,0 +1,16 @@
+#izgith-f-snc {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 2147483647;
+  border: 1px solid rgba(120, 220, 255, .55);
+  border-radius: 999px;
+  padding: 8px 13px;
+  background: rgba(8, 12, 22, .92);
+  color: #dff8ff;
+  font: 700 12px/1.1 system-ui, sans-serif;
+  letter-spacing: .08em;
+  box-shadow: 0 0 18px rgba(70, 200, 255, .22);
+  cursor: pointer;
+}
+#izgith-f-snc:hover { transform: translateY(-1px); }
