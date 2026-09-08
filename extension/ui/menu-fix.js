@@ -1,188 +1,26 @@
 (() => {
   'use strict';
-
   const $ = (id) => document.getElementById(id);
-
   function installMenuLayout() {
     if ($('izgithMenuLayoutFix')) return;
-    const style = document.createElement('style');
-    style.id = 'izgithMenuLayoutFix';
-    style.textContent = `
-      .tool-card{overflow:visible!important;min-height:68px!important}
-      .tool-grid{overflow:visible!important}
-      .tool-card .tool-body{position:relative;min-width:0}
-      .provider-menu{position:relative;z-index:40}
-      .provider-list{z-index:100;max-height:60vh;overflow:auto}
-      .upper-github-menu{position:absolute;right:0;left:auto;top:34px;z-index:100;min-width:190px}
-      .tool-actions{position:relative;z-index:2}
-      #toolCardUpperGithub .btn,#toolCardUpperGithub .icon-action{pointer-events:auto;position:relative;z-index:3}
-      #toolCardUpperGithub .provider-row{cursor:pointer}
-      #toolCardUpperUrl{max-width:100%}
-      .workspace-card[data-izgith-removed="1"]{display:none!important}
-    `;
+    const style = document.createElement('style'); style.id='izgithMenuLayoutFix';
+    style.textContent=`.tool-card{overflow:visible!important;min-height:68px!important}.tool-grid{overflow:visible!important}.tool-card .tool-body{position:relative;min-width:0}.provider-menu{position:relative;z-index:40}.provider-list{z-index:100;max-height:60vh;overflow:auto}.upper-github-menu{position:absolute;right:0;left:auto;top:34px;z-index:100;min-width:190px}.tool-actions{position:relative;z-index:2}#toolCardUpperGithub .btn,#toolCardUpperGithub .icon-action{pointer-events:auto;position:relative;z-index:3}#toolCardUpperGithub .provider-row{cursor:pointer}#toolCardUpperUrl{max-width:100%}.workspace-card[data-izgith-removed="1"]{display:none!important}`;
     document.head.appendChild(style);
   }
-
-  function sync(button, menu, open) {
-    menu.hidden = !open;
-    button.setAttribute('aria-expanded', String(open));
-    button.dataset.menuOpen = open ? '1' : '0';
+  function sync(button,menu,open){menu.hidden=!open;button.setAttribute('aria-expanded',String(open));button.dataset.menuOpen=open?'1':'0';}
+  function bindMenu(buttonId,menuId){const button=$(buttonId),menu=$(menuId);if(!button||!menu||button.dataset.hardenedMenu==='1')return;button.dataset.hardenedMenu='1';button.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();sync(button,menu,menu.hidden)},true);menu.addEventListener('click',e=>e.stopPropagation(),true);sync(button,menu,false)}
+  function bindOutsideClose(){if(document.documentElement.dataset.menuOutsideBound==='1')return;document.documentElement.dataset.menuOutsideBound='1';document.addEventListener('click',event=>{for(const [buttonId,menuId] of [['providerMenuButton','providerMenu'],['githubMenuButton','githubMenu']]){const button=$(buttonId),menu=$(menuId);if(!button||!menu||menu.hidden)continue;if(!button.contains(event.target)&&!menu.contains(event.target))sync(button,menu,false)}})}
+  function result(text){const el=$('hostResult');if(el)el.textContent=text}
+  function validRepo(value){return /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/?$/.test(value)}
+  function bindUpperUrl(){const button=$('openConversationUrl');if(!button||button.dataset.upperUrlPublisher==='1')return;button.dataset.upperUrlPublisher='1';button.title='Publicar conversa no GitHub';button.setAttribute('aria-label','Publicar conversa no GitHub');button.addEventListener('click',async event=>{event.preventDefault();event.stopImmediatePropagation();try{const conversationUrl=($('conversationUrl')?.value||'').trim();const repositoryUrl=($('repositoryUrl')?.value||'').trim();const u=new URL(conversationUrl);if(u.protocol!=='https:')throw new Error('A URL da conversa deve usar HTTPS.');if(!validRepo(repositoryUrl))throw new Error('Informe um repositório GitHub válido.');await chrome.storage.local.set({lastConversationUrl:u.href,lastRepositoryUrl:repositoryUrl,upperUrlAction:'publish'});result('Publicação preparada. A conversa não é aberta aqui; a publicação exige autenticação GitHub explícita.') }catch(error){result('Falha UPPER URL: '+(error?.message||error))}},true)}
+  function bindUpperGithubActions(){const pairs=[['githubFiles','githubFilesInput','Selecionar arquivos'],['githubFolders','githubFolderInput','Selecionar pasta']];for(const [buttonId,inputId,label]of pairs){const button=$(buttonId),input=$(inputId);if(!button||!input||button.dataset.hardenedAction==='1')continue;button.dataset.hardenedAction='1';button.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();input.click()},true);input.addEventListener('change',()=>result(`${input.files.length} item(ns) preparado(s): ${label}.`))}
+    const check=$('githubCheck');if(check&&check.dataset.hardenedAction!=='1'){check.dataset.hardenedAction='1';check.addEventListener('click',async event=>{event.preventDefault();event.stopImmediatePropagation();try{const response=await chrome.runtime.sendMessage({type:'PING'});result(response?.ok?'Host/Git disponível no modo web.':'Host/Git indisponível.')}catch(e){result('Host/Git indisponível: '+(e?.message||e))}},true)}
+    const config=$('githubConfig');if(config&&config.dataset.hardenedAction!=='1'){config.dataset.hardenedAction='1';config.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();const cfg={schema:'izgith.host.setup.v2',extension_id:chrome.runtime.id,generated_at:new Date().toISOString(),nativeMessaging:false,auth:'explicit'};const url=URL.createObjectURL(new Blob([JSON.stringify(cfg,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='izgith-host-config.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);result('Configuração do host baixada.')},true)}
+    const power=$('githubPower');if(power&&power.dataset.hardenedAction!=='1'){power.dataset.hardenedAction='1';power.addEventListener('click',async event=>{event.preventDefault();event.stopImmediatePropagation();const s=await chrome.storage.local.get({upperGithubEnabled:false}),on=!s.upperGithubEnabled;await chrome.storage.local.set({upperGithubEnabled:on});if($('githubHostStatus'))$('githubHostStatus').textContent=on?'ON':'OFF';result(on?'UPPER GITHUB ativado.':'UPPER GITHUB desativado.')},true)}
+    const send=$('githubSend');if(send&&send.dataset.hardenedAction!=='1'){send.dataset.hardenedAction='1';send.addEventListener('click',async event=>{event.preventDefault();event.stopImmediatePropagation();const repo=($('repositoryUrl')?.value||'').trim();if(!validRepo(repo)){result('Informe um repositório GitHub válido no UPPER URL.');return}await chrome.storage.local.set({lastRepositoryUrl:repo,upperGithubTarget:repo});result('Destino UPPER GITHUB registrado. Publicação requer autenticação explícita.')},true)}
+    const menu=$('githubMenu');if(menu&&menu.dataset.actionsBound!=='1'){menu.dataset.actionsBound='1';[...menu.querySelectorAll('.provider-row')].forEach((row,index)=>row.addEventListener('click',()=>{if(index===0)$('githubFiles')?.click();else if(index===1)$('githubFolders')?.click();else if(index===2)$('githubCheck')?.click();else if(index===3)$('githubConfig')?.click()}))}
   }
-
-  function bindMenu(buttonId, menuId) {
-    const button = $(buttonId), menu = $(menuId);
-    if (!button || !menu || button.dataset.hardenedMenu === '1') return;
-    button.dataset.hardenedMenu = '1';
-    button.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      sync(button, menu, menu.hidden);
-    }, true);
-    menu.addEventListener('click', (event) => event.stopPropagation(), true);
-    sync(button, menu, false);
-  }
-
-  function bindOutsideClose() {
-    if (document.documentElement.dataset.menuOutsideBound === '1') return;
-    document.documentElement.dataset.menuOutsideBound = '1';
-    document.addEventListener('click', (event) => {
-      for (const [buttonId, menuId] of [['providerMenuButton','providerMenu'],['githubMenuButton','githubMenu']]) {
-        const button = $(buttonId), menu = $(menuId);
-        if (!button || !menu || menu.hidden) continue;
-        if (!button.contains(event.target) && !menu.contains(event.target)) sync(button, menu, false);
-      }
-    });
-  }
-
-  function result(text) {
-    const el = $('hostResult');
-    if (el) el.textContent = text;
-  }
-
-  function validRepo(value) {
-    return /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/?$/.test(value);
-  }
-
-  function bindUpperUrl() {
-    const button = $('openConversationUrl');
-    if (!button || button.dataset.upperUrlPublisher === '1') return;
-    button.dataset.upperUrlPublisher = '1';
-    button.title = 'Publicar conversa no GitHub';
-    button.setAttribute('aria-label', 'Publicar conversa no GitHub');
-    button.addEventListener('click', async (event) => {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      try {
-        const conversationUrl = ($('conversationUrl')?.value || '').trim();
-        const repositoryUrl = ($('repositoryUrl')?.value || '').trim();
-        const u = new URL(conversationUrl);
-        if (u.protocol !== 'https:') throw new Error('A URL da conversa deve usar HTTPS.');
-        if (!validRepo(repositoryUrl)) throw new Error('Informe um repositório GitHub válido.');
-        await chrome.storage.local.set({
-          lastConversationUrl: u.href,
-          lastRepositoryUrl: repositoryUrl,
-          upperUrlAction: 'publish'
-        });
-        result('Destino registrado. Publicação exige autenticação GitHub explícita; nenhuma credencial é coletada automaticamente.');
-        await chrome.tabs.create({ url: u.href, active: true });
-      } catch (error) {
-        result('Falha UPPER URL: ' + (error?.message || error));
-      }
-    }, true);
-  }
-
-  function bindUpperGithubActions() {
-    const pairs = [
-      ['githubFiles','githubFilesInput','Selecionar arquivos'],
-      ['githubFolders','githubFolderInput','Selecionar pasta']
-    ];
-    for (const [buttonId,inputId,label] of pairs) {
-      const button=$(buttonId), input=$(inputId);
-      if (!button || !input || button.dataset.hardenedAction==='1') continue;
-      button.dataset.hardenedAction='1';
-      button.addEventListener('click', (event) => {
-        event.preventDefault(); event.stopImmediatePropagation(); input.click();
-      }, true);
-      input.addEventListener('change', () => result(`${input.files.length} item(ns) preparado(s): ${label}.`));
-    }
-
-    const check=$('githubCheck');
-    if (check && check.dataset.hardenedAction!=='1') {
-      check.dataset.hardenedAction='1';
-      check.addEventListener('click', async (event) => {
-        event.preventDefault(); event.stopImmediatePropagation();
-        try {
-          const response=await chrome.runtime.sendMessage({type:'PING'});
-          result(response?.ok ? 'Host/Git disponível no modo web.' : 'Host/Git indisponível.');
-        } catch (e) { result('Host/Git indisponível: '+(e?.message||e)); }
-      }, true);
-    }
-
-    const config=$('githubConfig');
-    if (config && config.dataset.hardenedAction!=='1') {
-      config.dataset.hardenedAction='1';
-      config.addEventListener('click', (event) => {
-        event.preventDefault(); event.stopImmediatePropagation();
-        const cfg={schema:'izgith.host.setup.v2',extension_id:chrome.runtime.id,generated_at:new Date().toISOString(),nativeMessaging:false,auth:'explicit'};
-        const url=URL.createObjectURL(new Blob([JSON.stringify(cfg,null,2)],{type:'application/json'}));
-        const a=document.createElement('a'); a.href=url; a.download='izgith-host-config.json'; a.click();
-        setTimeout(()=>URL.revokeObjectURL(url),1000); result('Configuração do host baixada.');
-      }, true);
-    }
-
-    const power=$('githubPower');
-    if (power && power.dataset.hardenedAction!=='1') {
-      power.dataset.hardenedAction='1';
-      power.addEventListener('click', async (event) => {
-        event.preventDefault(); event.stopImmediatePropagation();
-        const s=await chrome.storage.local.get({upperGithubEnabled:false}), on=!s.upperGithubEnabled;
-        await chrome.storage.local.set({upperGithubEnabled:on});
-        if ($('githubHostStatus')) $('githubHostStatus').textContent=on?'ON':'OFF';
-        result(on?'UPPER GITHUB ativado.':'UPPER GITHUB desativado.');
-      }, true);
-    }
-
-    const send=$('githubSend');
-    if (send && send.dataset.hardenedAction!=='1') {
-      send.dataset.hardenedAction='1';
-      send.addEventListener('click', async (event) => {
-        event.preventDefault(); event.stopImmediatePropagation();
-        const repo=($('repositoryUrl')?.value||'').trim();
-        if (!validRepo(repo)) { result('Informe um repositório GitHub válido no UPPER URL.'); return; }
-        await chrome.storage.local.set({lastRepositoryUrl:repo,upperGithubTarget:repo});
-        result('Destino UPPER GITHUB registrado. Publicação requer autenticação explícita.');
-      }, true);
-    }
-
-    const menu=$('githubMenu');
-    if (menu && menu.dataset.actionsBound!=='1') {
-      menu.dataset.actionsBound='1';
-      const rows=[...menu.querySelectorAll('.provider-row')];
-      rows.forEach((row,index)=>row.addEventListener('click',()=>{
-        if(index===0) $('githubFiles')?.click();
-        else if(index===1) $('githubFolders')?.click();
-        else if(index===2) $('githubCheck')?.click();
-        else if(index===3) $('githubConfig')?.click();
-      }));
-    }
-  }
-
-  function removeAuroraCard() {
-    const card=[...document.querySelectorAll('.workspace-card')].find(el => /Espaço Aurora|Ambiente local/i.test(el.textContent||''));
-    if (card) { card.dataset.izgithRemoved='1'; card.remove(); }
-  }
-
-  function init() {
-    installMenuLayout();
-    bindMenu('providerMenuButton','providerMenu');
-    bindMenu('githubMenuButton','githubMenu');
-    bindOutsideClose();
-    bindUpperUrl();
-    bindUpperGithubActions();
-    removeAuroraCard();
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, {once:true});
-  else init();
-  new MutationObserver(init).observe(document.documentElement,{childList:true,subtree:true});
+  function removeAuroraCard(){const card=[...document.querySelectorAll('.workspace-card')].find(el=>/Espaço Aurora|Ambiente local/i.test(el.textContent||''));if(card){card.dataset.izgithRemoved='1';card.remove()}}
+  function init(){installMenuLayout();bindMenu('providerMenuButton','providerMenu');bindMenu('githubMenuButton','githubMenu');bindOutsideClose();bindUpperUrl();bindUpperGithubActions();removeAuroraCard()}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();new MutationObserver(init).observe(document.documentElement,{childList:true,subtree:true});
 })();
